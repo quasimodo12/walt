@@ -1,0 +1,41 @@
+/* label-styles.css */
+#addTextLabelButton {
+    position: absolute;
+    top: 132px;
+    left: 10px;
+    width: 38.2px; 
+    height: 38.2px; 
+    background-color: white;
+    border: 2px solid rgba(128, 128, 128, 0.5); 
+    border-radius: 5px; /* Rounded corners */
+    z-index: 1000; 
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-image: url("../../images/tt-symbol-24px.png");
+  }
+
+  #addTextLabelButton-clicked {
+    border-color:chartreuse !important;
+  }
+
+.label-icon {
+  pointer-events: auto; /* Allow click events */
+  cursor: pointer;
+  z-index: 9999;
+}
+
+.custom-label {
+  white-space: nowrap; 
+  background-color: rgba(255, 255, 255, 0.8);
+  padding: 2px 4px;
+  border-radius: 3px;
+  border: 1px solid #ccc;
+  display: inline-block; 
+  overflow: visible; 
+}
+  

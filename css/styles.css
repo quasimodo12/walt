@@ -1,0 +1,39 @@
+/* styles.css */
+
+#map {
+   width: 65%;
+   height: 100vh;
+   float: left;
+   position: relative; 
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    user-select: none;
+}
+
+
+/* Style for selected markers */
+.selected-marker {
+    border: 2px solid red;
+}
+
+
+  /* ============================================= */
+  /* Latitude and Longitude Gridline Styles        */
+  /* ============================================= */
+.grid-label {
+    background: rgba(255, 255, 255, 0.7);
+    padding: 2px;
+    border-radius: 3px;
+    font-size: 10px;
+}
+.my-grid-label {
+    background: rgba(0, 0, 255, 0.7);
+    color: white;
+    padding: 2px;
+    border-radius: 3px;
+    font-size: 12px;
+}

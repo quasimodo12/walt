@@ -1,0 +1,119 @@
+
+/* OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD */
+
+
+
+
+
+ /* Center the table and make it larger */
+ /* #table-container {
+    width: 80%;
+    margin: 0 auto;
+} */
+
+
+
+
+
+/* table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: center;
+}
+th, td {
+    border: 1px solid #ccc;
+    padding: 10px;
+} */
+/* Adjust the canvas size within the cells */
+.pie-chart-canvas {
+    width: 160px !important;
+    height: 160px !important;
+}
+
+/* Style for the configuration panel */
+#config-panel {
+    padding: 20px;
+}
+#config-panel h3 {
+    font-size: 1.5em;
+    color: #333;
+}
+
+/* Label styling */
+#config-panel label {
+    display: block;
+    font-weight: bold;
+    color: #333;
+    margin: 10px 0 5px;
+}
+
+/* Dropdown styling */
+#config-panel select {
+    width: 100%;
+    padding: 10px;
+    font-size: 1em;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #fff;
+    color: #333;
+    min-height: 8em;
+}
+
+#config-panel table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 5px;
+    text-align: center;
+}
+
+#config-panel th, 
+#config-panel td {
+    padding: 10px;
+    border: 1px solid #ccc;
+}
+
+#config-panel #side {
+    width: 50%;
+    padding: 5px;
+    font-size: 0.9em;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #fff;
+    color: #333;
+    min-height: auto; /* Reset height for this specific dropdown */
+}
+
+#config-panel th {
+    font-weight: bold; /* Makes the text bold */
+    background-color: #f2f2f2; /* Light gray background */
+    color: #333; /* Ensures the text remains readable */
+    padding: 10px; /* Adjusts padding for consistency */
+    text-align: center; /* Centers the text */
+    border: 1px solid #ccc; /* Matches the table's border style */
+}        
+
+#config-panel #chart-type {
+    width: 50%;
+    padding: 5px;
+    font-size: 0.9em;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #fff;
+    color: #333;
+    min-height: auto;
+}
+
+/* Button styling */
+#open-config-button {
+    padding: 10px 15px;
+    font-size: 1em;
+    color: #fff;
+    background-color: #007bff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+#open-config-button:hover {
+    background-color: #0056b3;
+}

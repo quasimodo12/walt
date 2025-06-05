@@ -1,0 +1,77 @@
+ /* Reset some default browser styles for consistency */
+ * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+ 
+/* Style for the parent container */
+.parent-container {
+    width: 80%;                    /* Occupies 80% of the window's width */
+    margin: 20px auto;             /* Centers the container with top and bottom margin */
+    display: flex;
+    flex-direction: column;        /* Stacks children vertically */
+    align-items: flex-start;       /* Aligns children to the left */
+    gap: 20px;                     /* Adds space between legend and table */
+    font-family: Arial, sans-serif;/* Sets a clean font for readability */
+}
+
+/* Style for the legend container */
+#legend-container {
+    width: 30%;                    /* 25% of the parent container's width */
+    background-color: #f9f9f9;     /* Light background for contrast */
+    padding: 15px;                 /* Inner spacing */
+    border: 1px solid #ddd;        /* Subtle border */
+    border-radius: 5px;            /* Rounded corners */
+}
+
+#legend-container h2 {
+    margin-bottom: 10px;           /* Space below the heading */
+    font-size: 1.2em;
+}
+
+#legend-container ul {
+    list-style: none;              /* Removes default list styling */
+}
+
+#legend-container li {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+    font-size: 0.95em;
+}
+
+#legend-container td {
+    padding: 5px; /* Adds padding to the rows */
+}
+
+
+/* Style for the table container */
+#table-container {
+    width: 100%;                   /* Occupies full width of the parent container (75% of window) */
+    background-color: #ffffff;     /* White background */
+    /* box-shadow: 0 2px 5px rgba(0,0,0,0.1); Subtle shadow for depth */
+}
+
+#table-container h2 {
+    margin-bottom: 15px;           /* Space below the heading */
+    font-size: 1.3em;
+}
+
+#table-container table {
+    width: 100%;                   /* Table spans the full width of the container */
+    border-collapse: collapse;     /* Removes default spacing between table cells */
+}
+
+#table-container th, 
+#table-container td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+}
+
+#table-container th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+    text-align: center;
+}

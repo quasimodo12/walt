@@ -1,0 +1,188 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Eruda for debugging -->
+<script src="libs/eruda/eruda.min.js"></script>
+<script>
+  // Initialize Eruda for debugging
+  eruda.init();
+</script>
+
+<head>
+  <!-- Metadata -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WALT Map</title>
+
+  <!------------------------------------------------>
+  <!------------ External CSS Libraries ------------>
+  <!------------------------------------------------>
+  <!-- Leaflet -->
+  <link rel="stylesheet" href="libs/leaflet/leaflet.css">
+  <link rel="stylesheet" href="libs/leaflet/leaflet-ruler.css">
+  <!-- JQuery DataTables -->
+  <link rel="stylesheet" href="libs/datatables/jquery.dataTables.min.css">
+  <link rel="stylesheet" href="libs/datatables/dataTables.dataTables.min.css">
+  <!-- JQuery UI -->
+  <link rel="stylesheet" href="libs/jquery/jquery-ui.css">
+
+  <!---------------------------------------------->
+  <!------------ Internal Stylesheets ------------>
+  <!---------------------------------------------->
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/walt-menu-styles.css">
+  <link rel="stylesheet" href="js/labels/label-styles.css">
+</head>
+
+<body>
+
+  <!------------------------------------->
+  <!------------ Map Objects ------------>
+  <!------------------------------------->
+  <!-- Map Container -->
+  <div id="map">
+    <!-- Clear Markers Button (clears selection of markers from the map) -->
+    <button id="clearSelectedButton">
+      Clear Markers
+    </button>
+    <!-- Clear Range Rings Button -->
+    <button id="clearRangeRingsButton">
+      Clear Range Rings
+    </button>
+    <!-- Button for adding text labels to the map -->
+    <button id="addTextLabelButton"></button>
+  </div>
+
+  <!------------------------------------------->
+  <!------------ WALT Menu Objects ------------>
+  <!------------------------------------------->
+  <!-- Platform Table and Controls Container -->
+  <div id="platformTableContainer">
+    <h2 class="platform-table-header">Warfighting Analysis Laydown Tool (WALT)</h2>
+    <!-- Data Table -->
+    <table id="platformTable" class="display"></table>
+    <!-- Button Controls -->
+    <div class="button-container">
+      <!-- Add New Platform Button -->
+      <div class="custom-button" id="createPlatformButton">Add New Platform</div>
+      <!-- Configuration Buttons Group -->
+      <div class="side-by-side">
+        <div class="custom-button" id="rangeRingsButton">Range Rings</div>
+        <div class="custom-button" id="weaponsButton">Weapons</div>
+        <div class="custom-button" id="sensorsButton">Sensors</div>
+      </div>
+      <!-- Display results and send updated data to results page -->
+      <div class="side-by-side">
+        <div class="custom-button" id="openChartsButton">Display Results</div>
+        <div class="custom-button" id="refreshDataButton">Refresh Data</div>
+      </div>
+      <!-- Export Functionality -->
+      <div class="custom-button" id="exportLaydownButton">Export Laydown</div>
+    </div>
+  </div>
+
+  <!-------------------------------------------------------->
+  <!------------ External JavaScript Libraries  ------------>
+  <!-------------------------------------------------------->
+  <!-- jQuery Library -->
+  <script src="libs/jquery/jquery.min.js"></script>
+  <!-- jQuery UI -->
+  <script src="libs/jquery/jquery-ui.js"></script>
+  <!-- DataTables  -->
+  <script src="libs/datatables/jquery.dataTables.min.js"></script>
+  <script src="libs/datatables/dataTables.min.js"></script>
+  <!-- Leaflet  -->
+  <script src="libs/leaflet/leaflet.js"></script>
+  <script src="libs/leaflet/leaflet.draw.js"></script>
+  <!-- Leaflet Ruler -->
+  <script src="libs/leaflet/leaflet-ruler.js"></script>
+  <!-- Geolib for geospatial calculations -->
+  <script src="libs/geo/geolib.min.js"></script>
+
+
+  <!----------------------------------------------------->
+  <!------------ Custom JavaScript Libraries ------------>
+  <!----------------------------------------------------->
+  <!-- Custom Gridlines Overlay for Leaflet -->
+  <script src="libs/custom/GridlinesOverlay.js"></script>
+  <!-- Custom AFSIM Ground Range Calculator -->
+  <script src="libs/custom/GroundRange.js"></script>
+  
+
+  <!--------------------------------------->
+  <!------------ Input Scripts ------------>
+  <!--------------------------------------->
+  <script src="input/platform_details.js"></script>
+  <script src="input/weapon_details.js"></script>
+  <script src="input/sensor_details.js"></script>
+  <script src="input/labels.js"></script>
+
+  <!-------------------------------------------------------------------------->
+  <!------------ Storage, Configuration, and Logic Scripts ------------>
+  <!-------------------------------------------------------------------------->
+  <!-- Storage Scripts -->
+  <script src="js/platforms/platform_model.js"></script>
+  <script src="js/weapons/weapon_storage.js"></script>
+  <script src="js/sensors/sensor_storage.js"></script>
+  <script src="js/distance_storage.js"></script>
+  <script src="js/labels/label_storage.js"></script>
+  <script src="js/view.js"></script>
+
+
+  <!-- Range Ring Scripts -->
+  <script src="js/range_rings/range_ring_storage.js"></script>
+  <script src="js/range_rings/range_ring_logic.js"></script>
+  <script src="js/range_rings/range_ring_config.js"></script>
+
+  <!-- Label Scripts -->
+  <script src="js/labels/label_storage.js"></script>
+  <script src="js/labels/label_controller.js"></script>
+  
+  <!-- Controller Scripts -->
+  <script src="js/selection_controller.js"></script> <!-- Should be loaded before map_controller -->
+  <script src="js/map_controller.js"></script>
+  <script src="js/table_controller.js"></script>
+
+  <!-- Configuration Menu Scripts -->
+  <script src="js/platforms/plat_config.js"></script>
+  <script src="js/platforms/create_plat_config.js"></script>
+  <script src="js/weapons/weapon_config.js"></script>
+  <script src="js/sensors/sensor_config.js"></script>
+
+
+  <!----------------------------------------->
+  <!------------ Startup Scripts ------------>
+  <!----------------------------------------->  
+  <script src="dialog_init.js"></script>
+  <script src="init.js"></script>  
+
+  
+  <!-- Dialogs for Configurations -->
+  <!-- Platform Info Dialog -->
+  <div id="platformInfoDialog" title="Platform Configuration">
+    <p id="platformInfoContent"></p>
+  </div>
+
+  <!-- Weapon Info Dialog -->
+  <div id="weaponInfoDialog" title="Weapon Configuration">
+    <p id="weaponInfoContent"></p>
+  </div>
+
+  <!-- Sensor Info Dialog -->
+  <div id="sensorInfoDialog" title="Sensor Configuration">
+    <p id="sensorInfoContent"></p>
+  </div>
+
+  <!-- Range Ring Info Dialog -->
+  <div id="rangeRingInfoDialog" title="Range Ring Configuration">
+    <p id="rangeRingInfoContent"></p>
+  </div>
+
+  <!-- Create Platform Dialog -->
+  <div id="createPlatformDialog" title="Create New Platform">
+    <p id="createPlatformContent"></p>
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,182 @@
+/* walt-menu-styles.css */
+
+/* This stylesheet contains style edits for menu items on the 
+   WALT Map page, including:
+   1. The table of platforms
+   2. The 'clear' buttons aligned on the map
+   3. The buttons on the right half of the page below the platform table
+   4. The JQuery UI Dialog menus
+
+*/
+
+/* ============================================= */
+/* Platform Table Container                      */
+/* ============================================= */
+#platformTableContainer {
+    overflow-y: auto;
+    width: 35%;
+    height: 100vh;
+    float: right;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    box-sizing: border-box;
+    border: 2px solid #ddd; 
+    background-color: #f9f9f9;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+  }
+  
+  /* ============================================= */
+  /* Platform Table Header                         */
+  /* ============================================= */
+  .platform-table-header {
+    width: 100%;
+    text-align: center;
+    font-size: 28px;
+    font-weight: 700; 
+    color: #333;
+    background-color: #f0f0f0; 
+    padding: 5px 0; 
+    border-bottom: 3px solid #1b1d1b86;
+    border-radius: 0;
+    box-shadow: none;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  
+  /* Responsive adjustments for platform header */
+  @media (max-width: 600px) {
+    .platform-table-header {
+      font-size: 22px;
+      padding: 15px 0;
+    }
+    .platform-table-header::after {
+      width: 40px;
+    }
+  }
+  
+  /* ============================================= */
+  /* Platform Table                                */
+  /* ============================================= */
+  #platformTable {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  #platformTable th,
+  #platformTable td {
+    padding: 10px;
+    text-align: left;
+  }
+  
+  /* ============================================= */
+  /* Clear Buttons                                 */
+  /* ============================================= */
+  #clearSelectedButton {
+    position: absolute;
+    bottom: 60px; /* Positioned above the Clear Range Rings button */
+    right: 10px;
+    z-index: 1000;
+    background-color: #ff6347; 
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 14px;
+    border-radius: 5px;
+  }
+  
+  #clearSelectedButton:hover {
+    background-color: #ff4500;
+  }
+  
+  #clearRangeRingsButton {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    z-index: 1000;
+    background-color: #ff6347; 
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 14px;
+    border-radius: 5px;
+  }
+  
+  #clearRangeRingsButton:hover {
+    background-color: #ff4500; /* Darker shade on hover */
+  }
+  
+  /* ============================================= */
+  /* Button Container & Custom Buttons             */
+  /* ============================================= */
+  .button-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px; 
+    padding: 10px;
+  }
+  
+  .side-by-side {
+    display: flex;
+    gap: 10px; /* Space between individual buttons */
+  }
+  
+  .custom-button {
+    background-color: #1b1d1b86;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px; 
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease, transform 0.2s ease; 
+    flex: 1; /* Make buttons take equal space within side-by-side */
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
+  }
+  
+  .custom-button:hover {
+    background-color: #bcc0bccb;
+    transform: translateY(-2px); /* Slight lift on hover */
+  }
+  
+  .custom-button:active {
+    background-color: #3e8e41;
+    transform: translateY(0); 
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); 
+  }
+  
+  @media (max-width: 600px) {
+    .side-by-side {
+      flex-direction: column;
+    }
+    .custom-button {
+      width: 100%;
+    }
+  }
+  
+
+
+  /* ============================================= */
+  /* JQuery UI Dialog Custom Styles                */
+  /* ============================================= */
+.ui-dialog {
+    z-index: 2000 !important; /* Dialog menus should always be on top */
+}
+
+.ui-dialog-titlebar {
+    background-color: #b8c7b8;
+    color: white;
+    z-index: 2001 !important; 
+}
+
+.ui-dialog-titlebar-close {
+    color: #c5a6a6;
+}
+
+.ui-dialog-content {
+    padding: 20px;
+}

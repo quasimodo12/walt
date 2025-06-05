@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Metadata -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WALT Results</title>
+
+    <!-- External CSS Libraries -->
+    <!-- jQuery UI CSS for UI components -->
+    <link rel="stylesheet" href="libs/jquery/jquery-ui.css">
+
+    <!-- DataTables CSS for enhanced table features -->
+    <link rel="stylesheet" href="libs/datatables/dataTables.dataTables.min.css">
+    <link rel="stylesheet" href="libs/datatables/jquery.dataTables.min.css">
+
+    <!-- Tabulator CSS for interactive tables -->
+    <link rel="stylesheet" href="libs/tabulator/tabulator.min.css">
+
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="results/css/res_styles.css">
+    <link rel="stylesheet" href="results/css/table_styles.css">
+
+    <!-- External JavaScript Libraries -->
+    <!-- jQuery Library -->
+    <script src="libs/jquery/jquery.min.js"></script>
+
+    <!-- jQuery UI JS for interactive UI components -->
+    <script src="libs/jquery/jquery-ui.js"></script>
+
+    <!-- DataTables JS for enhanced table functionalities -->
+    <script src="libs/datatables/jquery.dataTables.min.js"></script>
+    <script src="libs/datatables/dataTables.min.js"></script>
+
+    <!-- Tabulator JS for interactive tables -->
+    <script src="libs/tabulator/tabulator.min.js"></script>
+
+    <!-- Chart.js for charting functionalities -->
+    <script src="libs/charts/chart.js"></script>
+
+    <!-- Custom JavaScript Libraries -->
+    <!-- Custom Bar Chart Implementation -->
+    <script src="libs/custom/CustomBarChart.js"></script>
+
+    <!-- Pie Chart Table Script -->
+    <script src="libs/custom/PieChartTable.js"></script>
+
+    <!-- Custom Bar Chart Table Script -->
+    <script src="libs/custom/CustomBarChartTable.js"></script>
+
+    <!-- Eruda for debugging (visible only on mobile devices) -->
+    <script src="libs/eruda/eruda.min.js"></script>
+    <script>
+        // Initialize Eruda for debugging
+        eruda.init();
+    </script>
+
+    <!-- Custom JavaScript Files -->
+    <script src="results/js/legend.js"></script>
+    <script src="results/js/results.js"></script>
+</head>
+<body>
+    <!-- Configuration Controls -->
+    <!-- Button to open the configuration dialog -->
+    <button id="open-config-button">Configure Display</button>
+
+    <!-- Configuration Dialog -->
+    <div id="config-dialog" style="display: none;">
+        <div id="config-panel">
+            <table>
+                <!-- Chart Type Selection -->
+                <tr>
+                    <th>Chart Type</th>
+                    <td colspan="2">
+                        <select id="chart-type">
+                            <option value="Pie" selected>Pie</option>
+                            <option value="Loadouts" selected>Loadouts</option>
+                        </select>
+                    </td>
+                </tr>
+                <!-- Side Selection -->
+                <tr>
+                    <th>Side</th>
+                    <td colspan="2">
+                        <select id="side"></select>
+                    </td>
+                </tr>
+                <!-- Friendly Platforms and Groups -->
+                <tr>
+                    <th>Friendly Platforms</th>
+                    <th>Friendly Groups</th>
+                </tr>
+                <tr>
+                    <td>
+                        <select id="friendly-platforms" multiple></select>
+                    </td>
+                    <td>
+                        <select id="friendly-groups" multiple></select>
+                    </td>
+                </tr>
+                <!-- Enemy Platforms and Groups -->
+                <tr>
+                    <th>Enemy Platforms</th>
+                    <th>Enemy Groups</th>
+                </tr>
+                <tr>
+                    <td>
+                        <select id="enemy-platforms" multiple></select>
+                    </td>
+                    <td>
+                        <select id="enemy-groups" multiple></select>
+                    </td>
+                </tr>
+                <!-- Weapons and Sensors Selection -->
+                <tr>
+                    <th>Weapons</th>
+                    <th>Sensors</th>
+                </tr>
+                <tr>
+                    <td>
+                        <select id="weapons" multiple></select>
+                    </td>
+                    <td>
+                        <select id="sensors" multiple></select>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <!-- Main Content Container -->
+    <div class="parent-container">
+        <!-- Legend Container -->
+        <div id="legend-container"></div>
+
+        <!-- Table Container -->
+        <div id="table-container"></div>
+    </div>
+</body>
+</html>
