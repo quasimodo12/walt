@@ -7,7 +7,7 @@ var MapController = (function() {
         PlatformModel.loadInitialData(PLATFORM_DATA);
         DistanceStorage.initializeDistanceData(); // calculate distances
         WeaponStorage.loadInitialData(WEAPON_DATA);
-        SensorStorage.loadInitialData(SENSOR_DATA);``
+        SensorStorage.loadInitialData(SENSOR_DATA);
         LabelStorage.loadInitialData(LABEL_DATA);
 
 
