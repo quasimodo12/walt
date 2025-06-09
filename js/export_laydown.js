@@ -69,11 +69,15 @@ var LaydownExporter = (function() {
         var afsimPlatformData = convertPlatformData(PlatformModel.getPlatformData());
         var afsimPlatformDataStr = JSON.stringify(afsimPlatformData);
 
+        // Determine a base href so relative paths work in the new window
+        var baseHref = window.location.href.substring(0, window.location.href.lastIndexOf('/') + 1);
+
         // Construct HTML containing CodeMirror editors
         var htmlContent = `
         <!DOCTYPE html>
         <html lang="en">
         <head>
+            <base href="${baseHref}">
             <meta charset="UTF-8">
             <title>Platform Laydown Editor</title>
             <link rel="stylesheet" href="libs/codemirror/lib/codemirror.css">
