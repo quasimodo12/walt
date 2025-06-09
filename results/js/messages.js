@@ -1,5 +1,12 @@
-/* Message handling for results window */
+/**
+ * Message handling for the results window.
+ *
+ * The main application posts JSON data to the results iframe.  This module
+ * listens for those messages and updates the global data structures before
+ * triggering a refresh of the charts.
+ */
 
+/** Mapping of message types to handler functions. */
 const messageHandlers = {
     platformData: (data) => {
         platformData = data;
@@ -22,6 +29,7 @@ const messageHandlers = {
     }
 };
 
+// Listen for data sent from the main window via postMessage.
 window.addEventListener('message', function(event) {
     const { type, data } = event.data;
     console.log('Received message:', event.data);

@@ -1,5 +1,19 @@
-/* Functions for managing and updating result charts */
+/**
+ * Functions for managing and updating the various result charts.
+ *
+ * This module computes range relationships between friendly and enemy
+ * platforms and then updates either pie charts or loadout bar charts based on
+ * the user's selections.
+ */
 
+/**
+ * Sum the quantity of a particular weapon across a set of platforms.
+ *
+ * @param {Object[]} pData - list of platform objects
+ * @param {string[]} pNames - platform names to search
+ * @param {string} wName - weapon name to count
+ * @returns {number}
+ */
 function getTotalWeaponQuantity(pData, pNames, wName) {
     console.log("results.js >>> getTotalWeaponQuantity() entered");
     let totalQuantity = 0;
@@ -15,6 +29,10 @@ function getTotalWeaponQuantity(pData, pNames, wName) {
     return totalQuantity;
 }
 
+/**
+ * Create a new bar chart table for weapon loadouts and populate it with the
+ * current selections.
+ */
 function regenerateLoadoutsChartTable() {
     console.log("results.js >>> regenerateLoadoutsChartTable() entered");
     document.getElementById('table-container').innerHTML = '';
@@ -31,23 +49,35 @@ function regenerateLoadoutsChartTable() {
     updateLoadoutCharts();
 }
 
+/**
+ * Build a new table of pie charts and populate with current data.
+ */
 function regeneratePieChartTable() {
     document.getElementById('table-container').innerHTML = '';
     pieChartTable = new PieChartTable(colNameList.concat(sensorList), rowNameList, 'table-container');
     updatePieCharts();
 }
 
+/** Refresh all pie charts with the current selection data. */
 function updatePieCharts() {
     processItems(colNameList, 'weapon');
     processItems(sensorList, 'sensor');
     console.log('Finished updatePieCharts');
 }
 
+/** Refresh all loadout bar charts. */
 function updateLoadoutCharts() {
     processItems(colNameList, 'weapon');
     console.log('Finished updateLoadoutCharts');
 }
 
+/**
+ * Core routine that calculates range data for each weapon or sensor and
+ * updates the appropriate chart for every enemy group.
+ *
+ * @param {string[]} itemList - list of weapons or sensors
+ * @param {'weapon'|'sensor'} itemType
+ */
 function processItems(itemList, itemType) {
     itemList.forEach(function(itemName) {
         rowNameList.forEach(function(group) {

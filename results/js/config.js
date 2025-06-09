@@ -1,5 +1,16 @@
-/* Configuration and dropdown handling */
+/**
+ * Functions responsible for populating and applying the configuration dialog
+ * in the results page.
+ *
+ * These helpers read the global data arrays defined in `globals.js` and
+ * populate the UI dropdowns.  User selections are then translated into the
+ * various lists consumed by the chart module.
+ */
 
+/**
+ * Populate all dropdowns in the configuration dialog based on the currently
+ * loaded platform, weapon and sensor data.
+ */
 function populateConfigDropdowns() {
     const elements = {
         side: document.getElementById('side'),
@@ -44,6 +55,10 @@ function populateConfigDropdowns() {
     populateDropdown(elements.enemyGroups, enemyGroups);
 }
 
+/**
+ * Read the user's selections from the configuration form and regenerate the
+ * appropriate charts.
+ */
 function applyConfig() {
     const getSelectedValues = (selectId) => {
         const selectElement = document.getElementById(selectId);
@@ -94,6 +109,9 @@ function applyConfig() {
     }
 }
 
+/**
+ * Clear the form selections and reset all state variables.
+ */
 function resetConfig() {
     document.getElementById('chart-type').selectedIndex = -1;
     document.getElementById('side').selectedIndex = -1;

@@ -1,4 +1,15 @@
 
+/**
+ * Utility for building the legend shown next to the charts in results.html.
+ */
+
+/**
+ * Create a small legend table used by the chart displays.
+ *
+ * @param {string} divId - id of the container element
+ * @param {'Pie'|'Loadout'} legendType - determines which legend layout to use
+ * @param {string} side - currently selected friendly side
+ */
 function createLegend(divId, legendType, side) {
     var container = document.getElementById(divId);
 
