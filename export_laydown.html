@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Platform Laydown Editor</title>
+  <link rel="stylesheet" href="libs/codemirror/lib/codemirror.css">
+  <link rel="stylesheet" href="libs/codemirror/theme/moxer.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { height: 100%; width: 100%; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f8f9fa; color: #333; }
+    body { display: flex; flex-direction: column; }
+    h1 { text-align: center; padding: 20px 0; background-color: #6c757d; color: #fff; font-size: 2em; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 10px; }
+    .editor-container { flex: 1; display: flex; flex-direction: row; padding: 10px 20px; gap: 20px; }
+    .editor-wrapper { flex: 1; display: flex; flex-direction: column; background-color: #fff; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); padding: 15px; position: relative; }
+    .editor-label { font-weight: 600; margin-bottom: 10px; color: #0d0d0d; font-size: 1.1em; }
+    .copy-button { position: absolute; top: 15px; right: 15px; padding: 6px 12px; background-color: #6c757d; color: #fff; border: none; border-radius: 4px; cursor: pointer; }
+    .copy-button:hover { background-color: #5a6268; }
+    .CodeMirror { height: 100%; border: 1px solid #ddd; border-radius: 4px; }
+  </style>
+</head>
+<body>
+  <h1>Platform Laydown Editor</h1>
+  <div class="editor-container">
+    <div class="editor-wrapper">
+      <div class="editor-label">Platform Data</div>
+      <button class="copy-button" data-editor="left">Copy</button>
+      <textarea id="editorLeft"></textarea>
+    </div>
+    <div class="editor-wrapper">
+      <div class="editor-label">AFSIM Platform Data</div>
+      <button class="copy-button" data-editor="right">Copy</button>
+      <textarea id="editorRight"></textarea>
+    </div>
+  </div>
+
+  <script src="libs/codemirror/lib/codemirror.js"></script>
+  <script src="libs/codemirror/mode/javascript/javascript.js"></script>
+  <script>
+    function setupEditors() {
+      var editorLeft = CodeMirror.fromTextArea(document.getElementById('editorLeft'), { lineNumbers: true, mode: 'javascript', theme: 'moxer' });
+      var editorRight = CodeMirror.fromTextArea(document.getElementById('editorRight'), { lineNumbers: true, mode: 'javascript', theme: 'moxer' });
+      var platData = sessionStorage.getItem('laydownData') || '';
+      var afsimData = sessionStorage.getItem('afsimLaydownData') || '';
+      if (platData) editorLeft.setValue('"use strict";\nvar PLATFORM_DATA = ' + platData + ';');
+      if (afsimData) editorRight.setValue(afsimData);
+      document.querySelectorAll('.copy-button').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          var val = (this.getAttribute('data-editor') === 'left') ? editorLeft.getValue() : editorRight.getValue();
+          navigator.clipboard.writeText(val).then(() => {
+            var original = this.textContent;
+            this.textContent = 'Copied!';
+            this.disabled = true;
+            setTimeout(() => { this.textContent = original; this.disabled = false; }, 2000);
+          }).catch(() => alert('Failed to copy text. Please try manually.'));
+        });
+      });
+    }
+    window.addEventListener('DOMContentLoaded', setupEditors);
+  </script>
+</body>
+</html>
