@@ -14,6 +14,12 @@ body {
     user-select: none;
 }
 
+/* Make Leaflet tiles pixelated when scaled up */
+.leaflet-tile {
+  image-rendering: pixelated;      /* modern */
+  image-rendering: crisp-edges;    /* fallback */
+}
+
 
 /* Style for selected markers */
 .selected-marker {
