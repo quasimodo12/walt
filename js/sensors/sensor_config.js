@@ -105,8 +105,7 @@ var SensorConfig = (function() {
         // Handle delete sensor
         $('.delete-sensor').off('click').on('click', function() {
             var index = $(this).data('index');
-            deleteSensorFromStorage(index);
-            createSensorConfigDialog();
+            handleSensorDeletion(index);
         });
 
         // Handle add sensor
@@ -181,8 +180,9 @@ var SensorConfig = (function() {
     function deleteSensorFromStorage(index) {
         var sensorData = SensorStorage.getSensorData();
         if (index >= 0 && index < sensorData.length) {
-            sensorData.splice(index, 1);
+            return sensorData.splice(index, 1)[0];
         }
+        return null;
     }
 
     function isUniqueSensorName(name, indexToIgnore = -1) {
@@ -199,14 +199,63 @@ var SensorConfig = (function() {
     // Helper function to update sensor names after they have been changed
     function updatePlatformSensorReferences(oldName, newName) {
         var platformData = PlatformModel.getPlatformData();
-    
+
         platformData.forEach(platform => {
+            if (!Array.isArray(platform.sensors)) {
+                return;
+            }
+
             // Find and replace old sensor name with the new one
             if (platform.sensors.includes(oldName)) {
                 const index = platform.sensors.indexOf(oldName);
                 platform.sensors[index] = newName;
             }
         });
+    }
+
+    function removeSensorFromPlatforms(sensorName) {
+        var platformData = PlatformModel.getPlatformData();
+
+        platformData.forEach(platform => {
+            if (!Array.isArray(platform.sensors)) {
+                return;
+            }
+
+            for (var i = platform.sensors.length - 1; i >= 0; i--) {
+                if (platform.sensors[i] === sensorName) {
+                    platform.sensors.splice(i, 1);
+                }
+            }
+        });
+    }
+
+    function handleSensorDeletion(index) {
+        var sensorData = SensorStorage.getSensorData();
+
+        if (!Array.isArray(sensorData) || index < 0 || index >= sensorData.length) {
+            return;
+        }
+
+        var sensorEntry = sensorData[index];
+        var sensorName = sensorEntry.sensor_name;
+
+        if (!sensorName) {
+            return;
+        }
+
+        var confirmed = confirm('Are you sure you want to delete the sensor "' + sensorName + '"?');
+        if (!confirmed) {
+            return;
+        }
+
+        removeSensorFromPlatforms(sensorName);
+        deleteSensorFromStorage(index);
+
+        RangeRingStorage.init();
+        RangeRingLogic.drawRangeRings();
+        View.updateAll();
+
+        createSensorConfigDialog();
     }
 
     return {
