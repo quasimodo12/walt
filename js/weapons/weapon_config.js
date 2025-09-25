@@ -105,8 +105,7 @@ var WeaponConfig = (function() {
         // Handle delete weapon
         $('.delete-weapon').off('click').on('click', function() {
             var index = $(this).data('index');
-            //deleteWeaponFromStorage(index);
-            createWeaponConfigDialog();
+            handleWeaponDeletion(index);
         });
 
         // Handle add weapon
@@ -197,12 +196,42 @@ var WeaponConfig = (function() {
         }
     }
 
+    function handleWeaponDeletion(index) {
+        var weaponData = WeaponStorage.getWeaponData();
+
+        if (!Array.isArray(weaponData) || index < 0 || index >= weaponData.length) {
+            return;
+        }
+
+        var weaponEntry = weaponData[index];
+        var weaponName = weaponEntry.weapon_name;
+
+        if (!weaponName) {
+            return;
+        }
+
+        var confirmed = confirm('Are you sure you want to delete the weapon "' + weaponName + '"?');
+        if (!confirmed) {
+            return;
+        }
+
+        removeWeaponFromPlatforms(weaponName);
+        deleteWeaponFromStorage(index);
+
+        RangeRingStorage.init();
+        RangeRingLogic.drawRangeRings();
+        View.updateAll();
+
+        createWeaponConfigDialog();
+    }
+
     // Function to delete weapon from storage
     function deleteWeaponFromStorage(index) {
         var weaponData = WeaponStorage.getWeaponData();
         if (index >= 0 && index < weaponData.length) {
-            weaponData.splice(index, 1);
+            return weaponData.splice(index, 1)[0];
         }
+        return null;
     }
 
     // Function to check if weapon name is unique
@@ -219,7 +248,7 @@ var WeaponConfig = (function() {
     // Helper function to change weapon names in platformData after they have been modified
     function updatePlatformWeaponReferences(oldName, newName) {
         var platformData = PlatformModel.getPlatformData();
-    
+
         platformData.forEach(platform => {
             // Find and replace old weapon name with the new one
             platform.weapons.forEach(weapon => {
@@ -227,6 +256,22 @@ var WeaponConfig = (function() {
                     weapon.name = newName;
                 }
             });
+        });
+    }
+
+    function removeWeaponFromPlatforms(weaponName) {
+        var platformData = PlatformModel.getPlatformData();
+
+        platformData.forEach(platform => {
+            if (!Array.isArray(platform.weapons)) {
+                return;
+            }
+
+            for (var i = platform.weapons.length - 1; i >= 0; i--) {
+                if (platform.weapons[i].name === weaponName) {
+                    platform.weapons.splice(i, 1);
+                }
+            }
         });
     }
 
