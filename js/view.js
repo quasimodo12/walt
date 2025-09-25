@@ -12,19 +12,25 @@ var View = (function() {
             center: [0, 0], // Set the initial center of the map
             zoom: 2,        // Set the initial zoom level
             minZoom: 2,     // Set the minimum zoom level
-            maxZoom: 10,    // Set the maximum zoom level
+            maxZoom: 22,    // Set the maximum zoom level
             maxBounds: [
                 [-90, -180],
                 [90, 180]
             ],
             maxBoundsViscosity: 1.0,
-            boxZoom: false // Disable the shift-click drag-to-zoom feature
+            boxZoom: false, // Disable the shift-click drag-to-zoom feature
+            zoomAnimation: true,
+            fadeAnimation: true
         }).setView([0, 0], 2);
 
         L.tileLayer('tiles/{z}/{x}/{y}.png', {
-            maxNativeZoom: 8,
+            maxNativeZoom: 2,
             minZoom: 2,
+            maxZoom: 22,
             noWrap: true, // Disable wrapping of tiles horizontally
+            updateWhenZooming: true,
+            keepBuffer: 8,
+            detectRetina: false
         }).addTo(map);
 
         // Add the ruler to the map
