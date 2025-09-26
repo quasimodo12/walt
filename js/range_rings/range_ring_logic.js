@@ -25,9 +25,14 @@ var RangeRingLogic = (function() {
     }, {});
 
     // Iterate through each range ring in the array
-    rangeRings.forEach(function(rangeRing) {
-      // Only render if toggled is set to 1
-      if (rangeRing.toggled === 1) {
+    rangeRings
+      .filter(function(rangeRing) {
+        return rangeRing.toggled === 1;
+      })
+      .sort(function(a, b) {
+        return b.range_val - a.range_val;
+      })
+      .forEach(function(rangeRing) {
         // Determine the side and corresponding color
         var side = platformSideLookup[rangeRing.platform_name];
         var color = side === 'blue' ? 'blue' : (side === 'red' ? 'red' : 'gray');
@@ -41,11 +46,29 @@ var RangeRingLogic = (function() {
           fillOpacity: 0.01 // Inner fill opacity
         });
 
+        var rangeValue = typeof rangeRing.range_val === 'number'
+          ? rangeRing.range_val
+          : parseFloat(rangeRing.range_val);
+        var formattedRange = isFinite(rangeValue)
+          ? rangeValue.toLocaleString()
+          : 'Unknown';
+
+        var tooltipContent = [
+          rangeRing.system_name || 'Unknown System',
+          rangeRing.platform_name || 'Unknown Platform',
+          formattedRange + ' m'
+        ].join('<br>');
+
+        circle.bindTooltip(tooltipContent, {
+          direction: 'top',
+          sticky: true,
+          className: 'range-ring-tooltip'
+        });
+
         // Add the circle to the map and keep track of it
         circle.addTo(map);
         rangeRingLayers.push(circle);
-      }
-    });
+      });
   }
 
   // New function to draw a range ring around a specific platform by name
@@ -58,9 +81,13 @@ var RangeRingLogic = (function() {
     }, {});
   
     // Filter range rings for the specified platform that are toggled
-    var matchingRangeRings = rangeRings.filter(function(ring) {
-      return ring.platform_name === platformName;
-    });
+    var matchingRangeRings = rangeRings
+      .filter(function(ring) {
+        return ring.platform_name === platformName;
+      })
+      .sort(function(a, b) {
+        return b.range_val - a.range_val;
+      });
   
     // Draw each matching range ring
     matchingRangeRings.forEach(function(rangeRing) {
@@ -76,6 +103,25 @@ var RangeRingLogic = (function() {
         fillOpacity: 0.01
       });
   
+      var rangeValue = typeof rangeRing.range_val === 'number'
+        ? rangeRing.range_val
+        : parseFloat(rangeRing.range_val);
+      var formattedRange = isFinite(rangeValue)
+        ? rangeValue.toLocaleString()
+        : 'Unknown';
+
+      var tooltipContent = [
+        rangeRing.system_name || 'Unknown System',
+        rangeRing.platform_name || 'Unknown Platform',
+        formattedRange + ' m'
+      ].join('<br>');
+
+      circle.bindTooltip(tooltipContent, {
+        direction: 'top',
+        sticky: true,
+        className: 'range-ring-tooltip'
+      });
+
       // Add the circle to the map and keep track of it
       circle.addTo(map);
       rangeRingLayers.push(circle);
