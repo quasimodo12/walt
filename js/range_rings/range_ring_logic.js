@@ -46,6 +46,25 @@ var RangeRingLogic = (function() {
           fillOpacity: 0.01 // Inner fill opacity
         });
 
+        var rangeValue = typeof rangeRing.range_val === 'number'
+          ? rangeRing.range_val
+          : parseFloat(rangeRing.range_val);
+        var formattedRange = isFinite(rangeValue)
+          ? rangeValue.toLocaleString()
+          : 'Unknown';
+
+        var tooltipContent = [
+          rangeRing.system_name || 'Unknown System',
+          rangeRing.platform_name || 'Unknown Platform',
+          formattedRange + ' m'
+        ].join('<br>');
+
+        circle.bindTooltip(tooltipContent, {
+          direction: 'top',
+          sticky: true,
+          className: 'range-ring-tooltip'
+        });
+
         // Add the circle to the map and keep track of it
         circle.addTo(map);
         rangeRingLayers.push(circle);
@@ -84,6 +103,25 @@ var RangeRingLogic = (function() {
         fillOpacity: 0.01
       });
   
+      var rangeValue = typeof rangeRing.range_val === 'number'
+        ? rangeRing.range_val
+        : parseFloat(rangeRing.range_val);
+      var formattedRange = isFinite(rangeValue)
+        ? rangeValue.toLocaleString()
+        : 'Unknown';
+
+      var tooltipContent = [
+        rangeRing.system_name || 'Unknown System',
+        rangeRing.platform_name || 'Unknown Platform',
+        formattedRange + ' m'
+      ].join('<br>');
+
+      circle.bindTooltip(tooltipContent, {
+        direction: 'top',
+        sticky: true,
+        className: 'range-ring-tooltip'
+      });
+
       // Add the circle to the map and keep track of it
       circle.addTo(map);
       rangeRingLayers.push(circle);
