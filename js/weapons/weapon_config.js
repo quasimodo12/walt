@@ -103,8 +103,8 @@ var WeaponConfig = (function() {
         
     function bindWeaponActions() {
         // Handle delete weapon
-        $('.delete-weapon').off('click').on('click', function() {
-            var index = $(this).data('index');
+        $('#weaponTable').off('click', '.delete-weapon').on('click', '.delete-weapon', function() {
+            var index = parseInt($(this).data('index'), 10);
             handleWeaponDeletion(index);
         });
 
