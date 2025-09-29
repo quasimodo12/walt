@@ -74,7 +74,28 @@
     background-image: url('../images/tt-symbol-24px.png');
 }
 
+.map-tools__tool-icon--range-ring-opacity {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 16px;
+    color: #1a1a1a;
+}
+
 .map-tools__tool--active {
     border-color: chartreuse !important;
     box-shadow: 0 0 0 1px rgba(127, 255, 0, 0.6);
+}
+
+.range-ring-opacity-dialog__input {
+    width: 100%;
+    box-sizing: border-box;
+    margin-top: 4px;
+}
+
+.range-ring-opacity-dialog__hint {
+    margin-top: 8px;
+    font-size: 0.85em;
+    color: #555;
 }

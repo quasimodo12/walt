@@ -3,6 +3,9 @@ var RangeRingLogic = (function() {
   // Array to keep track of range ring layers added to the map
   var rangeRingLayers = [];
 
+  var DEFAULT_RING_OPACITY = 0.2;
+  var rangeRingOpacity = DEFAULT_RING_OPACITY;
+
   // Function to draw range rings on the map
   function drawRangeRings() {
 
@@ -42,7 +45,7 @@ var RangeRingLogic = (function() {
           radius: rangeRing.range_val, // radius in meters
           color: color,
           weight: 0.5,
-          opacity: 0.2, // Set the line opacity here
+          opacity: rangeRingOpacity, // Set the line opacity here
           fillOpacity: 0.01 // Inner fill opacity
         });
 
@@ -99,7 +102,7 @@ var RangeRingLogic = (function() {
         radius: rangeRing.range_val,
         color: color,
         weight: 0.5,
-        opacity: 0.2,
+        opacity: rangeRingOpacity,
         fillOpacity: 0.01
       });
   
@@ -139,11 +142,32 @@ var RangeRingLogic = (function() {
     rangeRingLayers = [];
   }
 
+  function setRangeRingOpacity(opacity) {
+    var parsed = parseFloat(opacity);
+    if (!isFinite(parsed)) {
+      return;
+    }
+
+    // Clamp value between 0 and 1
+    parsed = Math.max(0, Math.min(1, parsed));
+    rangeRingOpacity = parsed;
+
+    rangeRingLayers.forEach(function(layer) {
+      layer.setStyle({ opacity: rangeRingOpacity });
+    });
+  }
+
+  function getRangeRingOpacity() {
+    return rangeRingOpacity;
+  }
+
   // Return public functions
   return {
     drawRangeRings: drawRangeRings,
     drawRangeRingForPlatform: drawRangeRingForPlatform,
-    clearRangeRings: clearRangeRings
+    clearRangeRings: clearRangeRings,
+    setRangeRingOpacity: setRangeRingOpacity,
+    getRangeRingOpacity: getRangeRingOpacity
   };
 
 })();
