@@ -45,6 +45,9 @@ var View = (function() {
         };
         L.control.ruler(options).addTo(map);
 
+        // Initialize the dynamic map tools menu
+        MapToolsMenu.init({ map: map });
+
         // Create gridlines overlay
         var gridlines = new GridlinesOverlay(map);
         // var gridlines = new GridlinesOverlay(map, {
@@ -124,12 +127,6 @@ var View = (function() {
         // Add an event listener to the 'Display Results' button
         document.getElementById('refreshDataButton').addEventListener('click', updateAll);
 
-        // Add an event listener to the 'Add Text Label' button
-        document.getElementById('addTextLabelButton').addEventListener('click', function(event) {
-            event.preventDefault(); // Prevent default button behavior if any
-            event.stopPropagation(); // Stop the event from bubbling up to the map
-            LabelController.createLabel();
-        });
     }
 
     // Render platforms from platform details

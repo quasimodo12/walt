@@ -1,0 +1,80 @@
+/* map-tools.css */
+.map-tools {
+    position: absolute;
+    top: 132px;
+    left: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    z-index: 1000;
+}
+
+.map-tools__toggle,
+.map-tools__tool {
+    width: 40px;
+    height: 40px;
+    border: 2px solid rgba(128, 128, 128, 0.5);
+    border-radius: 5px;
+    background-color: #fff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    transition: border-color 0.16s ease, box-shadow 0.16s ease;
+}
+
+.map-tools__toggle:hover,
+.map-tools__tool:hover {
+    border-color: rgba(70, 130, 180, 0.8);
+}
+
+.map-tools__toggle:focus-visible,
+.map-tools__tool:focus-visible {
+    outline: 2px solid #2684ff;
+    outline-offset: 2px;
+}
+
+.map-tools__toggle-icon {
+    font-size: 16px;
+    line-height: 1;
+}
+
+.map-tools__tray {
+    display: flex;
+    flex-direction: column;
+    gap: var(--map-tools-gap, 8px);
+    overflow: hidden;
+    max-height: 0;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-4px);
+    transition: max-height 0.2s ease, opacity 0.2s ease, transform 0.2s ease;
+}
+
+.map-tools--open .map-tools__tray {
+    max-height: var(--map-tools-tray-size, 0px);
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+}
+
+.map-tools__tool-icon {
+    width: 24px;
+    height: 24px;
+    display: block;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+}
+
+.map-tools__tool-icon--label {
+    background-image: url('../images/tt-symbol-24px.png');
+}
+
+.map-tools__tool--active {
+    border-color: chartreuse !important;
+    box-shadow: 0 0 0 1px rgba(127, 255, 0, 0.6);
+}

@@ -1,8 +1,9 @@
 // label_controller.js
 var LabelController = (function(LabelStorage) {
-    var map; 
-    var labelLayerGroup; 
-    var addLabelMode = false; 
+    var map;
+    var labelLayerGroup;
+    var addLabelMode = false;
+    var LABEL_TOOL_ID = 'add-text-label';
 
     function init() {
         map = View.getMap();
@@ -15,6 +16,19 @@ var LabelController = (function(LabelStorage) {
         renderLabels();
 
         map.on('click', onMapClick);
+
+        registerMapTool();
+    }
+
+    function registerMapTool() {
+        MapToolsMenu.registerTool({
+            id: LABEL_TOOL_ID,
+            label: 'Add text label',
+            iconClass: 'map-tools__tool-icon--label',
+            onClick: function() {
+                createLabel();
+            }
+        });
     }
 
     function renderLabels() {
@@ -95,10 +109,10 @@ var LabelController = (function(LabelStorage) {
         addLabelMode = !addLabelMode;
         if (addLabelMode) {
             map.getContainer().style.cursor = 'crosshair';
-            document.getElementById('addTextLabelButton').classList.add('addTextLabelButton-clicked');
+            MapToolsMenu.setToolActive(LABEL_TOOL_ID, true);
         } else {
             map.getContainer().style.cursor = '';
-            document.getElementById('addTextLabelButton').classList.remove('addTextLabelButton-clicked');
+            MapToolsMenu.setToolActive(LABEL_TOOL_ID, false);
         }
     }
 
