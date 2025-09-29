@@ -103,8 +103,8 @@ var SensorConfig = (function() {
 
     function bindSensorActions() {
         // Handle delete sensor
-        $('.delete-sensor').off('click').on('click', function() {
-            var index = $(this).data('index');
+        $('#sensorTable').off('click', '.delete-sensor').on('click', '.delete-sensor', function() {
+            var index = parseInt($(this).data('index'), 10);
             handleSensorDeletion(index);
         });
 
