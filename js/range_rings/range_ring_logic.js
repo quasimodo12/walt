@@ -2,6 +2,7 @@ var RangeRingLogic = (function() {
 
   // Array to keep track of range ring layers added to the map
   var rangeRingLayers = [];
+  var RANGE_RING_OPACITY_TOOL_ID = 'range-ring-opacity';
 
   // Function to draw range rings on the map
   function drawRangeRings() {
@@ -42,7 +43,7 @@ var RangeRingLogic = (function() {
           radius: rangeRing.range_val, // radius in meters
           color: color,
           weight: 0.5,
-          opacity: 0.2, // Set the line opacity here
+          opacity: getRangeRingOpacity(rangeRing),
           fillOpacity: 0.01 // Inner fill opacity
         });
 
@@ -71,8 +72,15 @@ var RangeRingLogic = (function() {
       });
   }
 
+  function getRangeRingOpacity(rangeRing) {
+    if (typeof rangeRing.opacity === 'number') {
+      return rangeRing.opacity;
+    }
+    return RangeRingStorage.getOpacity();
+  }
+
   // New function to draw a range ring around a specific platform by name
-  function drawRangeRingForPlatform(platformName, rangeRings, map) {  
+  function drawRangeRingForPlatform(platformName, rangeRings, map) {
     // Get platform data from PlatformModel
     var platformData = PlatformModel.getPlatformData();
     var platformSideLookup = platformData.reduce(function(acc, platform) {
@@ -99,7 +107,7 @@ var RangeRingLogic = (function() {
         radius: rangeRing.range_val,
         color: color,
         weight: 0.5,
-        opacity: 0.2,
+        opacity: getRangeRingOpacity(rangeRing),
         fillOpacity: 0.01
       });
   
@@ -138,6 +146,34 @@ var RangeRingLogic = (function() {
     });
     rangeRingLayers = [];
   }
+
+  function registerOpacityTool() {
+    MapToolsMenu.registerTool({
+      id: RANGE_RING_OPACITY_TOOL_ID,
+      label: 'Set range ring opacity',
+      content: 'Op',
+      onClick: function() {
+        var currentOpacity = RangeRingStorage.getOpacity();
+        var input = window.prompt('Set range ring opacity (0 to 1)', currentOpacity);
+        if (input === null) {
+          return;
+        }
+        var parsedOpacity = parseFloat(input);
+        if (!isFinite(parsedOpacity) || parsedOpacity < 0 || parsedOpacity > 1) {
+          window.alert('Please enter a numeric opacity between 0 and 1.');
+          return;
+        }
+        RangeRingStorage.setOpacity(parsedOpacity);
+        rangeRingLayers.forEach(function(layer) {
+          if (layer && typeof layer.setStyle === 'function') {
+            layer.setStyle({ opacity: parsedOpacity });
+          }
+        });
+      }
+    });
+  }
+
+  registerOpacityTool();
 
   // Return public functions
   return {

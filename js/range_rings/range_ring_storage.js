@@ -1,6 +1,7 @@
 // range_rings_storage.js
 var RangeRingStorage = (function() {
     var rangeRings = [];
+    var currentOpacity = 0.2;
 
     // Load initial data from separate data models
     function init() {
@@ -36,7 +37,8 @@ var RangeRingStorage = (function() {
                             range_val: weaponDict[weapon.name].weapon_range,
                             latitude: parseFloat(platform.latitude),
                             longitude: parseFloat(platform.longitude),
-                            toggled: setToggled
+                            toggled: setToggled,
+                            opacity: currentOpacity
                         });
                     }
                 });
@@ -53,7 +55,8 @@ var RangeRingStorage = (function() {
                             range_val: sensorDict[sensorName].sensor_range,
                             latitude: parseFloat(platform.latitude),
                             longitude: parseFloat(platform.longitude),
-                            toggled: setToggled
+                            toggled: setToggled,
+                            opacity: currentOpacity
                         });
                     }
                 });
@@ -82,6 +85,9 @@ var RangeRingStorage = (function() {
 
     function createRangeRing(newRangeRing) {
         if (!getRangeRing(newRangeRing.platform_name, newRangeRing.system_name)) {
+            if (typeof newRangeRing.opacity !== 'number') {
+                newRangeRing.opacity = currentOpacity;
+            }
             rangeRings.push(newRangeRing);
         } else {
             console.warn("Range ring with specified platform and system names already exists.");
@@ -92,12 +98,25 @@ var RangeRingStorage = (function() {
         return JSON.stringify(rangeRings, null, 2);
     }
 
+    function getOpacity() {
+        return currentOpacity;
+    }
+
+    function setOpacity(newOpacity) {
+        currentOpacity = newOpacity;
+        rangeRings.forEach(function(ring) {
+            ring.opacity = currentOpacity;
+        });
+    }
+
     return {
         init: init,
         getAllRangeRings: getAllRangeRings,
         getRangeRing: getRangeRing,
         setRangeRing: setRangeRing,
         createRangeRing: createRangeRing,
-        exportData: exportData
+        exportData: exportData,
+        getOpacity: getOpacity,
+        setOpacity: setOpacity
     };
 })();
