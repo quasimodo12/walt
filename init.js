@@ -32,5 +32,6 @@ LabelController.init(); // Add labels from LabelStorage to the map
 View.renderPlatforms(); // Add platforms to the map from PlatformModel and add event listeners to each added platform
 SelectionController.init(); // Initialize the selection controller (allows for platforms to be selected and dragged around)
 PlatformCopyController.init(); // Enable copy-paste workflows for selected platforms
+PlatformDeletionController.init(); // Enable deletion of selected platforms via the Delete key
 
 

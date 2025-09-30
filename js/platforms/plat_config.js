@@ -515,20 +515,12 @@ var PlatformConfig = (function() {
             }
 
             // Proceed with deletion
-            var deletionSuccess = PlatformModel.deletePlatform(platform.platform_name);
+            var deletedNames = PlatformDeletionController.deletePlatforms([platform.platform_name]);
 
             // Close the dialog after deletion
             $('#platformInfoDialog').dialog('close');
 
-            if (deletionSuccess) {
-                // Update platforms in the table view
-                TableController.redrawTable();
-                // Update platforms on the map view
-                View.renderPlatforms();
-                // Update the range rings
-                RangeRingStorage.init();
-
-            } else {
+            if (deletedNames.length === 0) {
                 alert(`Failed to delete platform "${platform.platform_name}". It may not exist.`);
             }
         });
