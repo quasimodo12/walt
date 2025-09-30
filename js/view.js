@@ -150,6 +150,9 @@ var View = (function() {
                 draggable: false
             }).addTo(map);
 
+            // Store the platform name on the marker for external reference (e.g., copy/paste)
+            marker._platformName = platform.platform_name;
+
             // Add tooltip to display the platform name on hover
             marker.bindTooltip(platform.platform_name, 
                 { 
