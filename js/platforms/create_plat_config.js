@@ -29,6 +29,10 @@ var CreatePlatConfig = (function () {
                         <td><input type="text" id="category" required></td>
                     </tr>
                     <tr>
+                        <td><label for="type">Type:</label></td>
+                        <td><input type="text" id="type" required></td>
+                    </tr>
+                    <tr>
                         <td><label for="latitude">Latitude:</label></td>
                         <td><input type="number" id="latitude" step="0.00001" value="0"></td>
                     </tr>
@@ -67,16 +71,17 @@ var CreatePlatConfig = (function () {
         // Handle create platform button click using event delegation
         $('#createPlatformContent').off('click', '#createPlatformButton').on('click', '#createPlatformButton', function() {
             console.log('Create Platform button clicked');
-            var platformName = $('#platformName').val();
+            var platformName = ($('#platformName').val() || '').trim();
             var side = $('#side').val();
-            var group = $('#group').val();
-            var category = $('#category').val();
+            var group = ($('#group').val() || '').trim();
+            var category = ($('#category').val() || '').trim();
+            var type = ($('#type').val() || '').trim();
             var latitude = $('#latitude').val() || "0";
             var longitude = $('#longitude').val() || "0";
             var altitude = $('#altitude').val() || "0";
 
             // Validate required fields
-            if (!platformName || !side || !group || !category) {
+            if (!platformName || !side || !group || !category || !type) {
                 console.warn('Validation failed: Missing required fields');
                 alert('Please fill in all required fields.');
                 return;
@@ -107,6 +112,7 @@ var CreatePlatConfig = (function () {
                 longitude: longitude,
                 altitude: altitude,
                 category: category,
+                type: type,
                 weapons: [],
                 sensors: []
             };

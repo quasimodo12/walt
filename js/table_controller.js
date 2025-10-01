@@ -29,7 +29,9 @@ var TableController = (function() {
                 { title: "Name", data: "platform_name" },
                 { title: "Side", data: "side" },
                 { title: "Group", data: "group" },
-                { title: "Subgroup", data: function(row) { 
+                { title: "Category", data: "category" },
+                { title: "Type", data: "type" },
+                { title: "Subgroup", data: function(row) {
                     return row.subgroups && row.subgroups.length > 0 ? row.subgroups[0] : "";
                 }},
                 { 

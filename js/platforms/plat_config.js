@@ -82,8 +82,20 @@ var PlatformConfig = (function() {
                             <td><label for="platformGroupInput"><strong>Group:</strong></label></td>
                             <td><input type="text" id="platformGroupInput" value="${platform.group}" class="full-width"></td>
                         </tr>
-                        
-                        <!-- Row 3: Side -->
+
+                        <!-- Row 3: Category -->
+                        <tr>
+                            <td><label for="platformCategoryInput"><strong>Category:</strong></label></td>
+                            <td><input type="text" id="platformCategoryInput" value="${platform.category || ''}" class="full-width"></td>
+                        </tr>
+
+                        <!-- Row 4: Type -->
+                        <tr>
+                            <td><label for="platformTypeInput"><strong>Type:</strong></label></td>
+                            <td><input type="text" id="platformTypeInput" value="${platform.type && platform.type !== 'Unspecified' ? platform.type : ''}" class="full-width"></td>
+                        </tr>
+
+                        <!-- Row 5: Side -->
                         <tr>
                             <td><label for="platformSideInput"><strong>Side:</strong></label></td>
                             <td>
@@ -94,19 +106,19 @@ var PlatformConfig = (function() {
                             </td>
                         </tr>
                         
-                        <!-- Row 4: Latitude -->
+                        <!-- Row 6: Latitude -->
                         <tr>
                             <td><label for="platformLatitudeInput"><strong>Latitude:</strong></label></td>
                             <td><input type="text" id="platformLatitudeInput" value="${platform.latitude}" class="full-width"></td>
                         </tr>
-                        
-                        <!-- Row 5: Longitude -->
+
+                        <!-- Row 7: Longitude -->
                         <tr>
                             <td><label for="platformLongitudeInput"><strong>Longitude:</strong></label></td>
                             <td><input type="text" id="platformLongitudeInput" value="${platform.longitude}" class="full-width"></td>
                         </tr>
-                        
-                        <!-- Row 6: Altitude -->
+
+                        <!-- Row 8: Altitude -->
                         <tr>
                             <td><label for="platformAltitudeInput"><strong>Altitude:</strong></label></td>
                             <td><input type="text" id="platformAltitudeInput" value="${platform.altitude}" class="full-width"></td>
@@ -533,6 +545,8 @@ var PlatformConfig = (function() {
         var newName = $('#platformNameInput').val();
         var newSide = $('#platformSideInput').val();
         var newGroup = $('#platformGroupInput').val();
+        var newCategory = ($('#platformCategoryInput').val() || '').trim();
+        var newType = ($('#platformTypeInput').val() || '').trim();
         var newLat = $('#platformLatitudeInput').val();
         var newLon = $('#platformLongitudeInput').val();
         var newAlt = $('#platformAltitudeInput').val();
@@ -565,6 +579,8 @@ var PlatformConfig = (function() {
             platformToUpdate.platform_name = newName;
             platformToUpdate.side = newSide;
             platformToUpdate.group = newGroup;
+            platformToUpdate.category = newCategory || 'Unspecified';
+            platformToUpdate.type = newType || 'Unspecified';
             platformToUpdate.latitude = newLat;
             platformToUpdate.longitude = newLon;
             platformToUpdate.altitude = newAlt;
