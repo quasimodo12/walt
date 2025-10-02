@@ -7,7 +7,13 @@ var PlatformModel = (function() {
     // platformData
     function loadInitialData(PLATFORM_DATA) {
         platformData = PLATFORM_DATA.map(function(item) {
-            return Object.assign({}, item);
+            var copy = Object.assign({}, item);
+            if (!copy.type || (typeof copy.type === 'string' && copy.type.trim() === '')) {
+                copy.type = 'Unspecified';
+            } else if (typeof copy.type === 'string') {
+                copy.type = copy.type.trim();
+            }
+            return copy;
         });
     }
 
@@ -42,7 +48,7 @@ var PlatformModel = (function() {
     }
 
     // Function to create and add a platform to platformData
-    function createPlatform(platformName, side, group, subgroups, latitude, longitude, altitude, category, weapons, sensors) {
+    function createPlatform(platformName, side, group, subgroups, latitude, longitude, altitude, category, type, weapons, sensors) {
         var newPlatform = {
             platform_name: platformName,
             side: side,
@@ -52,6 +58,7 @@ var PlatformModel = (function() {
             longitude: longitude,
             altitude: altitude,
             category: category,
+            type: (typeof type === 'string' && type.trim() !== '') ? type.trim() : 'Unspecified',
             weapons: weapons,
             sensors: sensors
         };
@@ -60,6 +67,11 @@ var PlatformModel = (function() {
 
     // Function to add an already defined platform object to platformData
     function pushPlatform(newPlatform) {
+        if (!newPlatform.type || (typeof newPlatform.type === 'string' && newPlatform.type.trim() === '')) {
+            newPlatform.type = 'Unspecified';
+        } else if (typeof newPlatform.type === 'string') {
+            newPlatform.type = newPlatform.type.trim();
+        }
         platformData.push(newPlatform);
     }
 

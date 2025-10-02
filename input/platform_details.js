@@ -34,7 +34,8 @@ var PLATFORM_DATA = [
     ],
     "sensors": [
       "BLUE_SENSOR_2"
-    ]
+    ],
+    "type": "Unspecified"
   },
   {
     "platform_name": "blue_ship_2",
@@ -55,7 +56,8 @@ var PLATFORM_DATA = [
     ],
     "sensors": [
       "BLUE_SENSOR_2"
-    ]
+    ],
+    "type": "Unspecified"
   },
   {
     "platform_name": "blue_ship_3",
@@ -86,7 +88,8 @@ var PLATFORM_DATA = [
     "sensors": [
       "BLUE_SENSOR_1",
       "BLUE_SENSOR_2"
-    ]
+    ],
+    "type": "Unspecified"
   },
   {
     "platform_name": "blue_ship_4",
@@ -115,7 +118,8 @@ var PLATFORM_DATA = [
     ],
     "sensors": [
       "BLUE_SENSOR_1"
-    ]
+    ],
+    "type": "Unspecified"
   },
   {
     "platform_name": "blue_ship_5",
@@ -137,7 +141,8 @@ var PLATFORM_DATA = [
     ],
     "sensors": [
       "BLUE_SENSOR_1"
-    ]
+    ],
+    "type": "Unspecified"
   },
   {
     "platform_name": "blue_ship_6",
@@ -171,7 +176,8 @@ var PLATFORM_DATA = [
     "sensors": [
       "BLUE_SENSOR_2",
       "BLUE_SENSOR_1"
-    ]
+    ],
+    "type": "Unspecified"
   },
   {
     "platform_name": "blue_ship_7",
@@ -194,7 +200,8 @@ var PLATFORM_DATA = [
     "sensors": [
       "BLUE_SENSOR_2",
       "BLUE_SENSOR_1"
-    ]
+    ],
+    "type": "Unspecified"
   },
   {
     "platform_name": "blue_ship_8",
@@ -232,7 +239,8 @@ var PLATFORM_DATA = [
     "sensors": [
       "BLUE_SENSOR_2",
       "BLUE_SENSOR_1"
-    ]
+    ],
+    "type": "Unspecified"
   },
   {
     "platform_name": "blue_ship_9",
@@ -254,7 +262,8 @@ var PLATFORM_DATA = [
     "sensors": [
       "BLUE_SENSOR_1",
       "BLUE_SENSOR_2"
-    ]
+    ],
+    "type": "Unspecified"
   },
   {
     "platform_name": "blue_ship_10",
@@ -288,7 +297,8 @@ var PLATFORM_DATA = [
     "sensors": [
       "BLUE_SENSOR_2",
       "BLUE_SENSOR_1"
-    ]
+    ],
+    "type": "Unspecified"
   },
   {
     "platform_name": "red_ship_1",
@@ -315,7 +325,8 @@ var PLATFORM_DATA = [
     "sensors": [
       "RED_SENSOR_2",
       "RED_SENSOR_1"
-    ]
+    ],
+    "type": "Unspecified"
   },
   {
     "platform_name": "red_ship_2",
@@ -357,7 +368,8 @@ var PLATFORM_DATA = [
     "sensors": [
       "RED_SENSOR_1",
       "RED_SENSOR_2"
-    ]
+    ],
+    "type": "Unspecified"
   },
   {
     "platform_name": "red_ship_3",
@@ -407,7 +419,8 @@ var PLATFORM_DATA = [
     "sensors": [
       "RED_SENSOR_2",
       "RED_SENSOR_1"
-    ]
+    ],
+    "type": "Unspecified"
   },
   {
     "platform_name": "red_ship_4",
@@ -429,7 +442,8 @@ var PLATFORM_DATA = [
     ],
     "sensors": [
       "RED_SENSOR_2"
-    ]
+    ],
+    "type": "Unspecified"
   },
   {
     "platform_name": "red_ship_5",
@@ -480,7 +494,8 @@ var PLATFORM_DATA = [
     "sensors": [
       "RED_SENSOR_1",
       "RED_SENSOR_2"
-    ]
+    ],
+    "type": "Unspecified"
   },
   {
     "platform_name": "red_ship_6",
@@ -530,7 +545,8 @@ var PLATFORM_DATA = [
     ],
     "sensors": [
       "RED_SENSOR_1"
-    ]
+    ],
+    "type": "Unspecified"
   },
   {
     "platform_name": "red_ship_7",
@@ -559,7 +575,8 @@ var PLATFORM_DATA = [
     ],
     "sensors": [
       "RED_SENSOR_1"
-    ]
+    ],
+    "type": "Unspecified"
   },
   {
     "platform_name": "red_ship_8",
@@ -597,7 +614,8 @@ var PLATFORM_DATA = [
     ],
     "sensors": [
       "RED_SENSOR_1"
-    ]
+    ],
+    "type": "Unspecified"
   },
   {
     "platform_name": "red_ship_9",
@@ -643,7 +661,8 @@ var PLATFORM_DATA = [
     "sensors": [
       "RED_SENSOR_1",
       "RED_SENSOR_2"
-    ]
+    ],
+    "type": "Unspecified"
   },
   {
     "platform_name": "red_ship_10",
@@ -669,7 +688,8 @@ var PLATFORM_DATA = [
     "sensors": [
       "RED_SENSOR_1",
       "RED_SENSOR_2"
-    ]
+    ],
+    "type": "Unspecified"
   },
   {
     "platform_name": "red_ship_11",
@@ -692,7 +712,8 @@ var PLATFORM_DATA = [
     "sensors": [
       "RED_SENSOR_1",
       "RED_SENSOR_2"
-    ]
+    ],
+    "type": "Unspecified"
   },
   {
     "platform_name": "red_ship_12",
@@ -739,7 +760,8 @@ var PLATFORM_DATA = [
     "sensors": [
       "RED_SENSOR_1",
       "RED_SENSOR_2"
-    ]
+    ],
+    "type": "Unspecified"
   },
   {
     "platform_name": "red_ship_13",
@@ -768,7 +790,8 @@ var PLATFORM_DATA = [
     ],
     "sensors": [
       "RED_SENSOR_2"
-    ]
+    ],
+    "type": "Unspecified"
   },
   {
     "platform_name": "red_ship_14",
@@ -802,7 +825,8 @@ var PLATFORM_DATA = [
     ],
     "sensors": [
       "RED_SENSOR_1"
-    ]
+    ],
+    "type": "Unspecified"
   },
   {
     "platform_name": "red_ship_15",
@@ -829,7 +853,8 @@ var PLATFORM_DATA = [
     "sensors": [
       "RED_SENSOR_1",
       "RED_SENSOR_2"
-    ]
+    ],
+    "type": "Unspecified"
   },
   {
     "platform_name": "red_ship_16",
@@ -866,7 +891,8 @@ var PLATFORM_DATA = [
     ],
     "sensors": [
       "RED_SENSOR_1"
-    ]
+    ],
+    "type": "Unspecified"
   },
   {
     "platform_name": "red_ship_17",
@@ -897,7 +923,8 @@ var PLATFORM_DATA = [
     "sensors": [
       "RED_SENSOR_1",
       "RED_SENSOR_2"
-    ]
+    ],
+    "type": "Unspecified"
   },
   {
     "platform_name": "red_ship_18",
@@ -924,7 +951,8 @@ var PLATFORM_DATA = [
     "sensors": [
       "RED_SENSOR_1",
       "RED_SENSOR_2"
-    ]
+    ],
+    "type": "Unspecified"
   },
   {
     "platform_name": "red_ship_19",
@@ -974,7 +1002,8 @@ var PLATFORM_DATA = [
     "sensors": [
       "RED_SENSOR_1",
       "RED_SENSOR_2"
-    ]
+    ],
+    "type": "Unspecified"
   },
   {
     "platform_name": "red_ship_20",
@@ -1020,7 +1049,8 @@ var PLATFORM_DATA = [
     ],
     "sensors": [
       "RED_SENSOR_2"
-    ]
+    ],
+    "type": "Unspecified"
   },
   {
     "platform_name": "red_ship_21",
@@ -1061,7 +1091,8 @@ var PLATFORM_DATA = [
     ],
     "sensors": [
       "RED_SENSOR_2"
-    ]
+    ],
+    "type": "Unspecified"
   },
   {
     "platform_name": "red_ship_22",
@@ -1088,7 +1119,8 @@ var PLATFORM_DATA = [
     "sensors": [
       "RED_SENSOR_1",
       "RED_SENSOR_2"
-    ]
+    ],
+    "type": "Unspecified"
   },
   {
     "platform_name": "red_ship_23",
@@ -1134,7 +1166,8 @@ var PLATFORM_DATA = [
     ],
     "sensors": [
       "RED_SENSOR_1"
-    ]
+    ],
+    "type": "Unspecified"
   },
   {
     "platform_name": "red_ship_24",
@@ -1164,7 +1197,8 @@ var PLATFORM_DATA = [
     ],
     "sensors": [
       "RED_SENSOR_2"
-    ]
+    ],
+    "type": "Unspecified"
   },
   {
     "platform_name": "red_ship_25",
@@ -1198,7 +1232,8 @@ var PLATFORM_DATA = [
     ],
     "sensors": [
       "RED_SENSOR_2"
-    ]
+    ],
+    "type": "Unspecified"
   },
   {
     "platform_name": "red_ship_26",
@@ -1219,7 +1254,8 @@ var PLATFORM_DATA = [
     ],
     "sensors": [
       "RED_SENSOR_2"
-    ]
+    ],
+    "type": "Unspecified"
   },
   {
     "platform_name": "red_ship_27",
@@ -1246,7 +1282,8 @@ var PLATFORM_DATA = [
     "sensors": [
       "RED_SENSOR_1",
       "RED_SENSOR_2"
-    ]
+    ],
+    "type": "Unspecified"
   },
   {
     "platform_name": "red_ship_28",
@@ -1269,7 +1306,8 @@ var PLATFORM_DATA = [
     "sensors": [
       "RED_SENSOR_2",
       "RED_SENSOR_1"
-    ]
+    ],
+    "type": "Unspecified"
   },
   {
     "platform_name": "red_ship_29",
@@ -1303,7 +1341,8 @@ var PLATFORM_DATA = [
     "sensors": [
       "RED_SENSOR_2",
       "RED_SENSOR_1"
-    ]
+    ],
+    "type": "Unspecified"
   },
   {
     "platform_name": "red_ship_30",
@@ -1345,7 +1384,8 @@ var PLATFORM_DATA = [
     ],
     "sensors": [
       "RED_SENSOR_1"
-    ]
+    ],
+    "type": "Unspecified"
   },
   {
     "platform_name": "red_ship_31",
@@ -1366,7 +1406,8 @@ var PLATFORM_DATA = [
     ],
     "sensors": [
       "RED_SENSOR_2"
-    ]
+    ],
+    "type": "Unspecified"
   },
   {
     "platform_name": "red_ship_32",
@@ -1404,7 +1445,8 @@ var PLATFORM_DATA = [
     ],
     "sensors": [
       "RED_SENSOR_1"
-    ]
+    ],
+    "type": "Unspecified"
   },
   {
     "platform_name": "red_ship_33",
@@ -1439,7 +1481,8 @@ var PLATFORM_DATA = [
     "sensors": [
       "RED_SENSOR_2",
       "RED_SENSOR_1"
-    ]
+    ],
+    "type": "Unspecified"
   },
   {
     "platform_name": "red_ship_34",
@@ -1478,7 +1521,8 @@ var PLATFORM_DATA = [
     "sensors": [
       "RED_SENSOR_1",
       "RED_SENSOR_2"
-    ]
+    ],
+    "type": "Unspecified"
   },
   {
     "platform_name": "red_ship_35",
@@ -1507,7 +1551,8 @@ var PLATFORM_DATA = [
     ],
     "sensors": [
       "RED_SENSOR_2"
-    ]
+    ],
+    "type": "Unspecified"
   },
   {
     "platform_name": "red_ship_36",
@@ -1532,7 +1577,8 @@ var PLATFORM_DATA = [
     ],
     "sensors": [
       "RED_SENSOR_2"
-    ]
+    ],
+    "type": "Unspecified"
   },
   {
     "platform_name": "red_ship_37",
@@ -1558,7 +1604,8 @@ var PLATFORM_DATA = [
     "sensors": [
       "RED_SENSOR_1",
       "RED_SENSOR_2"
-    ]
+    ],
+    "type": "Unspecified"
   },
   {
     "platform_name": "red_ship_38",
@@ -1581,7 +1628,8 @@ var PLATFORM_DATA = [
     "sensors": [
       "RED_SENSOR_1",
       "RED_SENSOR_2"
-    ]
+    ],
+    "type": "Unspecified"
   },
   {
     "platform_name": "red_ship_39",
@@ -1631,7 +1679,8 @@ var PLATFORM_DATA = [
     ],
     "sensors": [
       "RED_SENSOR_1"
-    ]
+    ],
+    "type": "Unspecified"
   },
   {
     "platform_name": "red_ship_40",
@@ -1664,7 +1713,8 @@ var PLATFORM_DATA = [
     ],
     "sensors": [
       "RED_SENSOR_2"
-    ]
+    ],
+    "type": "Unspecified"
   },
   {
     "platform_name": "red_ship_41",
@@ -1697,7 +1747,8 @@ var PLATFORM_DATA = [
     ],
     "sensors": [
       "RED_SENSOR_1"
-    ]
+    ],
+    "type": "Unspecified"
   },
   {
     "platform_name": "red_ship_42",
@@ -1743,7 +1794,8 @@ var PLATFORM_DATA = [
     "sensors": [
       "RED_SENSOR_2",
       "RED_SENSOR_1"
-    ]
+    ],
+    "type": "Unspecified"
   },
   {
     "platform_name": "red_ship_43",
@@ -1773,7 +1825,8 @@ var PLATFORM_DATA = [
     ],
     "sensors": [
       "RED_SENSOR_2"
-    ]
+    ],
+    "type": "Unspecified"
   },
   {
     "platform_name": "red_ship_44",
@@ -1814,7 +1867,8 @@ var PLATFORM_DATA = [
     ],
     "sensors": [
       "RED_SENSOR_1"
-    ]
+    ],
+    "type": "Unspecified"
   },
   {
     "platform_name": "red_ship_45",
@@ -1845,7 +1899,8 @@ var PLATFORM_DATA = [
     "sensors": [
       "RED_SENSOR_1",
       "RED_SENSOR_2"
-    ]
+    ],
+    "type": "Unspecified"
   },
   {
     "platform_name": "red_ship_46",
@@ -1879,7 +1934,8 @@ var PLATFORM_DATA = [
     ],
     "sensors": [
       "RED_SENSOR_1"
-    ]
+    ],
+    "type": "Unspecified"
   },
   {
     "platform_name": "red_ship_47",
@@ -1930,7 +1986,8 @@ var PLATFORM_DATA = [
     "sensors": [
       "RED_SENSOR_1",
       "RED_SENSOR_2"
-    ]
+    ],
+    "type": "Unspecified"
   },
   {
     "platform_name": "red_ship_48",
@@ -1959,7 +2016,8 @@ var PLATFORM_DATA = [
     ],
     "sensors": [
       "RED_SENSOR_1"
-    ]
+    ],
+    "type": "Unspecified"
   },
   {
     "platform_name": "red_ship_49",
@@ -2002,7 +2060,8 @@ var PLATFORM_DATA = [
     "sensors": [
       "RED_SENSOR_1",
       "RED_SENSOR_2"
-    ]
+    ],
+    "type": "Unspecified"
   },
   {
     "platform_name": "red_ship_50",
@@ -2040,6 +2099,7 @@ var PLATFORM_DATA = [
     "sensors": [
       "RED_SENSOR_2",
       "RED_SENSOR_1"
-    ]
+    ],
+    "type": "Unspecified"
   }
 ];

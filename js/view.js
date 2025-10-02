@@ -153,11 +153,15 @@ var View = (function() {
             // Store the platform name on the marker for external reference (e.g., copy/paste)
             marker._platformName = platform.platform_name;
 
-            // Add tooltip to display the platform name on hover
-            marker.bindTooltip(platform.platform_name, 
-                { 
-                    permanent: false, 
-                    direction: "top" 
+            // Add tooltip to display the platform name (and type when available) on hover
+            var tooltipText = platform.platform_name;
+            if (platform.type && platform.type !== 'Unspecified') {
+                tooltipText += ' (' + platform.type + ')';
+            }
+            marker.bindTooltip(tooltipText,
+                {
+                    permanent: false,
+                    direction: "top"
                 });
             platformMarkers[platform.platform_name] = marker;
 
