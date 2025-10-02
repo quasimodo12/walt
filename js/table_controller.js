@@ -21,8 +21,8 @@
 var TableController = (function() {
     var dataTableInstance = null;
     var resizeTimer = null;
-    var BASE_FONT_SIZE = 14;
-    var BASE_HEADER_FONT_SIZE = 15;
+    var BASE_FONT_SIZE = 13;
+    var BASE_HEADER_FONT_SIZE = 14;
     var BASE_PADDING = 10;
     var MIN_SCALE = 0.5;
 

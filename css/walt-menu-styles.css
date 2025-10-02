@@ -13,8 +13,8 @@
 /* Platform Table Container                      */
 /* ============================================= */
 #platformTableContainer {
-    --table-font-size: 14px;
-    --table-header-font-size: 15px;
+    --table-font-size: 13px;
+    --table-header-font-size: 14px;
     --table-cell-padding: 10px;
     --table-line-height: 1.4;
     overflow: hidden;
