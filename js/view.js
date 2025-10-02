@@ -147,7 +147,8 @@ var View = (function() {
             // Create the marker with the custom icon and dragging disabled initially
             var marker = L.marker([platform.latitude, platform.longitude], {
                 icon: icon,
-                draggable: false
+                draggable: false,
+                bubblingMouseEvents: true
             }).addTo(map);
 
             // Store the platform name on the marker for external reference (e.g., copy/paste)
