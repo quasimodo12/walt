@@ -44,7 +44,7 @@ var RangeRingConfig = (function() {
         $('#rangeRingInfoDialog').dialog('open');
 
         // Initialize DataTable with searchable, sortable, and filterable features
-        $('#rangeRingTable').DataTable({
+        var rangeRingDataTable = $('#rangeRingTable').DataTable({
             columnDefs: [
                 { orderable: false, targets: 0 }, // Disable sorting for checkbox column
             ],
@@ -54,8 +54,8 @@ var RangeRingConfig = (function() {
         // Event listener for toggling checkboxes
         $('#rangeRingTable').on('change', '.range-toggle', function() {
             var $row = $(this).closest('tr');
-            var platformName = $row.data('platform');
-            var systemName = $row.data('system');
+            var platformName = $row.attr('data-platform');
+            var systemName = $row.attr('data-system');
             var isChecked = $(this).is(':checked');
             if (!platformName || !systemName) {
                 return;
@@ -67,9 +67,30 @@ var RangeRingConfig = (function() {
 
         // Event listener for toggling all checkboxes
         $('#toggleAllCheckboxes').on('click', function() {
-            var checkboxes = $('#rangeRingTable .range-toggle');
+            var rowsOnPage = rangeRingDataTable.rows({ page: 'current' }).nodes().to$();
+            var checkboxes = rowsOnPage.find('.range-toggle');
+
+            if (!checkboxes.length) {
+                return;
+            }
+
             var allChecked = checkboxes.length === checkboxes.filter(':checked').length;
-            checkboxes.prop('checked', !allChecked).trigger('change');
+            var targetState = !allChecked;
+
+            checkboxes.each(function() {
+                var $checkbox = $(this);
+                var $row = $checkbox.closest('tr');
+                var platformName = $row.attr('data-platform');
+                var systemName = $row.attr('data-system');
+
+                if (!platformName || !systemName) {
+                    return;
+                }
+
+                $checkbox.prop('checked', targetState);
+                RangeRingStorage.setRangeRing(platformName, systemName, { toggled: targetState ? 1 : 0 });
+            });
+
             RangeRingLogic.drawRangeRings();
         });
     }
