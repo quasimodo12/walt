@@ -113,48 +113,68 @@
   /* Button Container & Custom Buttons             */
   /* ============================================= */
   .button-container {
+    --button-gap: 12px;
+    --button-row-gap: 16px;
+    --button-min-width: clamp(110px, 24%, 260px);
+    --button-min-height: clamp(38px, 3.6vw, 70px);
+    --button-font-size: clamp(0.8rem, 0.75vw + 0.6rem, 1.25rem);
     display: flex;
     flex-direction: column;
-    gap: 15px; 
+    align-items: stretch;
+    gap: var(--button-row-gap);
     padding: 10px;
   }
-  
-  .side-by-side {
+
+  .button-container .button-row {
     display: flex;
-    gap: 10px; /* Space between individual buttons */
+    flex-wrap: wrap;
+    gap: var(--button-gap);
   }
-  
+
   .custom-button {
     background-color: #1b1d1b86;
     color: white;
-    padding: 10px 20px;
     border: none;
-    border-radius: 5px; 
+    border-radius: 5px;
     cursor: pointer;
-    font-size: 16px;
-    transition: background-color 0.3s ease, transform 0.2s ease; 
-    flex: 1; /* Make buttons take equal space within side-by-side */
+    font-size: var(--button-font-size);
+    line-height: 1.2;
+    padding: clamp(0.5rem, 0.35vw + 0.45rem, 0.8rem) clamp(0.85rem, 0.8vw + 0.65rem, 1.6rem);
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    flex: var(--button-col-span, 1) 1 var(--button-min-width);
+    min-height: var(--button-min-height);
     text-align: center;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    white-space: normal;
   }
-  
+
   .custom-button:hover {
     background-color: #bcc0bccb;
     transform: translateY(-2px); /* Slight lift on hover */
   }
-  
+
   .custom-button:active {
     background-color: #3e8e41;
-    transform: translateY(0); 
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); 
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   }
-  
-  @media (max-width: 600px) {
-    .side-by-side {
-      flex-direction: column;
+
+  @media (max-width: 750px) {
+    .button-container {
+      --button-gap: 10px;
+      --button-row-gap: 14px;
+      --button-min-width: clamp(100px, 32vw, 220px);
+      --button-font-size: clamp(0.78rem, 1vw + 0.52rem, 1.15rem);
     }
-    .custom-button {
-      width: 100%;
+  }
+
+  @media (max-width: 520px) {
+    .button-container {
+      --button-gap: 8px;
+      --button-row-gap: 12px;
+      --button-min-width: clamp(92px, 44vw, 200px);
+      --button-min-height: clamp(34px, 5.5vw, 60px);
+      --button-font-size: clamp(0.72rem, 1.1vw + 0.45rem, 1.05rem);
     }
   }
   
