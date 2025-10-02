@@ -188,8 +188,7 @@ var View = (function() {
                 if (event.originalEvent.ctrlKey) { // Access the native event for ctrlKey
                     if (platform) {
                         var platformName = platform.platform_name;
-                        var rangeRings = RangeRingStorage.getAllRangeRings();
-                        RangeRingLogic.drawRangeRingForPlatform(platformName, rangeRings, map);
+                        RangeRingLogic.drawRangeRingForPlatform(platformName);
                     }
                 }
             });

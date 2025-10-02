@@ -72,63 +72,38 @@ var RangeRingLogic = (function() {
         circle.addTo(map);
         rangeRingLayers.push(circle);
       });
+    updateRangeRingConfigCheckboxes();
   }
 
   // New function to draw a range ring around a specific platform by name
-  function drawRangeRingForPlatform(platformName, rangeRings, map) {  
-    // Get platform data from PlatformModel
-    var platformData = PlatformModel.getPlatformData();
-    var platformSideLookup = platformData.reduce(function(acc, platform) {
-      acc[platform.platform_name] = platform.side;
-      return acc;
-    }, {});
-  
-    // Filter range rings for the specified platform that are toggled
-    var matchingRangeRings = rangeRings
-      .filter(function(ring) {
-        return ring.platform_name === platformName;
-      })
-      .sort(function(a, b) {
-        return b.range_val - a.range_val;
-      });
-  
-    // Draw each matching range ring
-    matchingRangeRings.forEach(function(rangeRing) {
-      var side = platformSideLookup[rangeRing.platform_name];
-      var color = side === 'blue' ? 'blue' : (side === 'red' ? 'red' : 'gray');
-  
-      // Use L.circle (leaflet) to define the range ring circle
-      var circle = L.circle([rangeRing.latitude, rangeRing.longitude], {
-        radius: rangeRing.range_val,
-        color: color,
-        weight: 0.5,
-        opacity: rangeRingOpacity,
-        fillOpacity: 0.01
-      });
-  
-      var rangeValue = typeof rangeRing.range_val === 'number'
-        ? rangeRing.range_val
-        : parseFloat(rangeRing.range_val);
-      var formattedRange = isFinite(rangeValue)
-        ? rangeValue.toLocaleString()
-        : 'Unknown';
+  function drawRangeRingForPlatform(platformName) {
+    if (!platformName) {
+      return;
+    }
 
-      var tooltipContent = [
-        rangeRing.system_name || 'Unknown System',
-        rangeRing.platform_name || 'Unknown Platform',
-        formattedRange + ' m'
-      ].join('<br>');
+    var rangeRings = RangeRingStorage.getAllRangeRings();
+    if (!Array.isArray(rangeRings)) {
+      return;
+    }
 
-      circle.bindTooltip(tooltipContent, {
-        direction: 'top',
-        sticky: true,
-        className: 'range-ring-tooltip'
-      });
-
-      // Add the circle to the map and keep track of it
-      circle.addTo(map);
-      rangeRingLayers.push(circle);
+    var matchingRangeRings = rangeRings.filter(function(rangeRing) {
+      return rangeRing.platform_name === platformName;
     });
+
+    if (matchingRangeRings.length === 0) {
+      return;
+    }
+
+    var enableRings = matchingRangeRings.some(function(rangeRing) {
+      return rangeRing.toggled !== 1;
+    });
+    var newToggleValue = enableRings ? 1 : 0;
+
+    matchingRangeRings.forEach(function(rangeRing) {
+      rangeRing.toggled = newToggleValue;
+    });
+
+    drawRangeRings();
   }
   
 
@@ -149,14 +124,41 @@ var RangeRingLogic = (function() {
   }
 
   function updateRangeRingConfigCheckboxes() {
-    var checkboxes = document.querySelectorAll('#rangeRingTable .range-toggle');
-    if (!checkboxes || !checkboxes.length) {
+    var tableBody = document.querySelector('#rangeRingTable tbody');
+    if (!tableBody) {
       return;
     }
 
-    checkboxes.forEach(function(checkbox) {
-      checkbox.checked = false;
+    var rangeRings = RangeRingStorage.getAllRangeRings();
+    if (!Array.isArray(rangeRings) || rangeRings.length === 0) {
+      return;
+    }
+
+    var toggleLookup = rangeRings.reduce(function(accumulator, rangeRing) {
+      var key = createRangeRingKey(rangeRing.platform_name, rangeRing.system_name);
+      accumulator[key] = rangeRing.toggled === 1;
+      return accumulator;
+    }, {});
+
+    var rows = tableBody.querySelectorAll('tr[data-platform][data-system]');
+    rows.forEach(function(row) {
+      var platformName = row.getAttribute('data-platform');
+      var systemName = row.getAttribute('data-system');
+      var checkbox = row.querySelector('.range-toggle');
+
+      if (!checkbox) {
+        return;
+      }
+
+      var key = createRangeRingKey(platformName, systemName);
+      if (Object.prototype.hasOwnProperty.call(toggleLookup, key)) {
+        checkbox.checked = toggleLookup[key];
+      }
     });
+  }
+
+  function createRangeRingKey(platformName, systemName) {
+    return String(platformName) + '|' + String(systemName);
   }
 
   function setRangeRingOpacity(opacity) {
