@@ -142,6 +142,23 @@ var RangeRingLogic = (function() {
     rangeRingLayers = [];
   }
 
+  function clearAllRangeRings() {
+    RangeRingStorage.setAllRangeRingToggleStates(0);
+    clearRangeRings();
+    updateRangeRingConfigCheckboxes();
+  }
+
+  function updateRangeRingConfigCheckboxes() {
+    var checkboxes = document.querySelectorAll('#rangeRingTable .range-toggle');
+    if (!checkboxes || !checkboxes.length) {
+      return;
+    }
+
+    checkboxes.forEach(function(checkbox) {
+      checkbox.checked = false;
+    });
+  }
+
   function setRangeRingOpacity(opacity) {
     var parsed = parseFloat(opacity);
     if (!isFinite(parsed)) {
@@ -166,6 +183,7 @@ var RangeRingLogic = (function() {
     drawRangeRings: drawRangeRings,
     drawRangeRingForPlatform: drawRangeRingForPlatform,
     clearRangeRings: clearRangeRings,
+    clearAllRangeRings: clearAllRangeRings,
     setRangeRingOpacity: setRangeRingOpacity,
     getRangeRingOpacity: getRangeRingOpacity
   };
