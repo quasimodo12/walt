@@ -88,6 +88,14 @@ var RangeRingStorage = (function() {
         }
     }
 
+    function setAllRangeRingToggleStates(toggled) {
+        var normalized = toggled ? 1 : 0;
+
+        rangeRings.forEach(function(ring) {
+            ring.toggled = normalized;
+        });
+    }
+
     function exportData() {
         return JSON.stringify(rangeRings, null, 2);
     }
@@ -98,6 +106,7 @@ var RangeRingStorage = (function() {
         getRangeRing: getRangeRing,
         setRangeRing: setRangeRing,
         createRangeRing: createRangeRing,
+        setAllRangeRingToggleStates: setAllRangeRingToggleStates,
         exportData: exportData
     };
 })();

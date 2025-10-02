@@ -88,7 +88,7 @@ var View = (function() {
 
         // Add Clear Range Rings button functionality
         document.getElementById('clearRangeRingsButton').addEventListener('click', function() {
-            RangeRingLogic.clearRangeRings();
+            RangeRingLogic.clearAllRangeRings();
         });
 
         // Add Export Laydown button functionality
