@@ -80,12 +80,10 @@ var TableController = (function() {
                 var rowData = table.row(this).data();
                 var platform = PlatformModel.getPlatformData().find(function(p) {
                     return p.platform_name === rowData.platform_name;
-                });  
+                });
                 if (platform) {
                     var platformName = platform.platform_name;
-                    var rangeRings = RangeRingStorage.getAllRangeRings();
-                    var map = View.getMap();
-                    RangeRingLogic.drawRangeRingForPlatform(platformName, rangeRings, map);
+                    RangeRingLogic.drawRangeRingForPlatform(platformName);
                 }
             }
         });

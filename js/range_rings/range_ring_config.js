@@ -24,7 +24,7 @@ var RangeRingConfig = (function() {
                     </thead>
                     <tbody>
                         ${rangeRings.map((ring, index) => `
-                            <tr data-index="${index}">
+                            <tr data-index="${index}" data-platform="${ring.platform_name}" data-system="${ring.system_name}">
                                 <td><input type="checkbox" class="range-toggle" ${ring.toggled ? 'checked' : ''}></td>
                                 <td>${ring.platform_name}</td>
                                 <td>${ring.system_name}</td>
@@ -53,10 +53,15 @@ var RangeRingConfig = (function() {
 
         // Event listener for toggling checkboxes
         $('#rangeRingTable').on('change', '.range-toggle', function() {
-            var rowIndex = $(this).closest('tr').data('index');
+            var $row = $(this).closest('tr');
+            var platformName = $row.data('platform');
+            var systemName = $row.data('system');
             var isChecked = $(this).is(':checked');
+            if (!platformName || !systemName) {
+                return;
+            }
             // toggle the range ring enabled on or off
-            RangeRingStorage.setRangeRing(rangeRings[rowIndex].platform_name, rangeRings[rowIndex].system_name, { toggled: isChecked ? 1 : 0 });
+            RangeRingStorage.setRangeRing(platformName, systemName, { toggled: isChecked ? 1 : 0 });
             RangeRingLogic.drawRangeRings();
         });
 
