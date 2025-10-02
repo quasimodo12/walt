@@ -115,9 +115,9 @@
   .button-container {
     --button-gap: 12px;
     --button-row-gap: 16px;
-    --button-min-width: clamp(140px, 28%, 260px);
-    --button-min-height: clamp(44px, 4vw, 70px);
-    --button-font-size: clamp(0.9rem, 0.8vw + 0.7rem, 1.3rem);
+    --button-min-width: clamp(110px, 24%, 260px);
+    --button-min-height: clamp(38px, 3.6vw, 70px);
+    --button-font-size: clamp(0.8rem, 0.75vw + 0.6rem, 1.25rem);
     display: flex;
     flex-direction: column;
     align-items: stretch;
@@ -139,7 +139,7 @@
     cursor: pointer;
     font-size: var(--button-font-size);
     line-height: 1.2;
-    padding: clamp(0.6rem, 0.4vw + 0.5rem, 0.85rem) clamp(1rem, 0.9vw + 0.75rem, 1.6rem);
+    padding: clamp(0.5rem, 0.35vw + 0.45rem, 0.8rem) clamp(0.85rem, 0.8vw + 0.65rem, 1.6rem);
     transition: background-color 0.3s ease, transform 0.2s ease;
     flex: var(--button-col-span, 1) 1 var(--button-min-width);
     min-height: var(--button-min-height);
@@ -159,9 +159,22 @@
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   }
 
-  @media (max-width: 600px) {
+  @media (max-width: 750px) {
     .button-container {
-      --button-min-width: min(100%, 220px);
+      --button-gap: 10px;
+      --button-row-gap: 14px;
+      --button-min-width: clamp(100px, 32vw, 220px);
+      --button-font-size: clamp(0.78rem, 1vw + 0.52rem, 1.15rem);
+    }
+  }
+
+  @media (max-width: 520px) {
+    .button-container {
+      --button-gap: 8px;
+      --button-row-gap: 12px;
+      --button-min-width: clamp(92px, 44vw, 200px);
+      --button-min-height: clamp(34px, 5.5vw, 60px);
+      --button-font-size: clamp(0.72rem, 1.1vw + 0.45rem, 1.05rem);
     }
   }
   
