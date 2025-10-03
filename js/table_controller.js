@@ -24,7 +24,9 @@ var TableController = (function() {
     var BASE_FONT_SIZE = 13;
     var BASE_HEADER_FONT_SIZE = 14;
     var BASE_PADDING = 10;
-    var MIN_SCALE = 0.5;
+    var MIN_SCALE = 0.3;
+    var SCALE_EPSILON = 0.005;
+    var SCALE_ITERATIONS = 14;
 
     function calculateTableHeight() {
         var $container = $('#platformTableContainer');
@@ -54,7 +56,7 @@ var TableController = (function() {
             return;
         }
 
-        var fontSize = Math.max(10, Math.round(BASE_FONT_SIZE * scale * 10) / 10);
+        var fontSize = Math.max(8, Math.round(BASE_FONT_SIZE * scale * 10) / 10);
         var headerFontSize = Math.max(fontSize + 1, Math.round(BASE_HEADER_FONT_SIZE * scale * 10) / 10);
         var padding = Math.max(4, Math.round(BASE_PADDING * scale));
         var lineHeight = Math.max(1.1, (1.2 + (scale * 0.4)).toFixed(2));
@@ -67,9 +69,59 @@ var TableController = (function() {
         });
     }
 
+    function detectWrapping($tables) {
+        if (typeof window === 'undefined') {
+            return false;
+        }
+
+        var hasWrapping = false;
+
+        $tables.each(function() {
+            if (hasWrapping) {
+                return false;
+            }
+
+            var cells = this.querySelectorAll('thead th, tbody td, tbody th');
+            for (var i = 0; i < cells.length; i++) {
+                var cell = cells[i];
+                if (!cell) {
+                    continue;
+                }
+
+                var scrollWidth = cell.scrollWidth;
+                var clientWidth = cell.clientWidth;
+                if (scrollWidth - clientWidth > 1) {
+                    hasWrapping = true;
+                    break;
+                }
+
+                var computed = window.getComputedStyle(cell);
+                if (!computed) {
+                    continue;
+                }
+
+                var lineHeight = parseFloat(computed.lineHeight);
+                if (isNaN(lineHeight)) {
+                    lineHeight = parseFloat(computed.fontSize) * 1.2;
+                }
+
+                var paddingTop = parseFloat(computed.paddingTop) || 0;
+                var paddingBottom = parseFloat(computed.paddingBottom) || 0;
+                var expectedHeight = lineHeight + paddingTop + paddingBottom;
+                if (cell.scrollHeight - expectedHeight > 1.5) {
+                    hasWrapping = true;
+                    break;
+                }
+            }
+        });
+
+        return hasWrapping;
+    }
+
     function measureTableWidths() {
         var $container = $('#platformTableContainer');
         var $scrollBody = $container.find('.dataTables_scrollBody');
+        var $tables = $container.find('.dataTables_scrollBody table.dataTable, .dataTables_scrollHead table.dataTable');
         var $table = $scrollBody.find('table.dataTable').first();
 
         if (!$scrollBody.length || !$table.length) {
@@ -84,7 +136,8 @@ var TableController = (function() {
 
         return {
             containerWidth: containerWidth,
-            tableWidth: tableWidth
+            tableWidth: tableWidth,
+            hasWrapping: detectWrapping($tables)
         };
     }
 
@@ -94,32 +147,34 @@ var TableController = (function() {
         }
 
         setTableScale(1);
+        dataTableInstance.columns.adjust();
 
         var measurements = measureTableWidths();
         if (!measurements || !measurements.containerWidth) {
             return;
         }
 
-        if (measurements.tableWidth <= measurements.containerWidth) {
+        if (measurements.tableWidth <= measurements.containerWidth && !measurements.hasWrapping) {
             dataTableInstance.columns.adjust();
             return;
         }
 
         var lower = MIN_SCALE;
         var upper = 1;
-        var bestScale = lower;
+        var bestScale = null;
         var iterations = 0;
 
-        while (upper - lower > 0.01 && iterations < 10) {
+        while (upper - lower > SCALE_EPSILON && iterations < SCALE_ITERATIONS) {
             var mid = (lower + upper) / 2;
             setTableScale(mid);
+            dataTableInstance.columns.adjust();
             measurements = measureTableWidths();
 
             if (!measurements) {
                 break;
             }
 
-            if (measurements.tableWidth > measurements.containerWidth && mid > MIN_SCALE) {
+            if ((measurements.tableWidth > measurements.containerWidth || measurements.hasWrapping) && mid > MIN_SCALE) {
                 upper = mid;
             } else {
                 bestScale = mid;
@@ -129,8 +184,18 @@ var TableController = (function() {
             iterations++;
         }
 
+        if (bestScale === null) {
+            bestScale = MIN_SCALE;
+        }
+
         setTableScale(Math.max(MIN_SCALE, Math.min(1, bestScale)));
         dataTableInstance.columns.adjust();
+
+        measurements = measureTableWidths();
+        if (measurements && (measurements.tableWidth > measurements.containerWidth || measurements.hasWrapping)) {
+            setTableScale(MIN_SCALE);
+            dataTableInstance.columns.adjust();
+        }
     }
 
     function applyTableSizing() {

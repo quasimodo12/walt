@@ -109,6 +109,7 @@
     padding: var(--table-cell-padding);
     text-align: left;
     line-height: var(--table-line-height);
+    white-space: nowrap;
   }
 
   #platformTable thead th {
@@ -125,6 +126,7 @@
     font-size: var(--table-header-font-size);
     padding: var(--table-cell-padding);
     line-height: var(--table-line-height);
+    white-space: nowrap;
   }
 
   #platformTableContainer .dataTables_scrollBody table tbody td,
@@ -132,7 +134,7 @@
     font-size: var(--table-font-size);
     padding: var(--table-cell-padding);
     line-height: var(--table-line-height);
-    word-break: break-word;
+    white-space: nowrap;
   }
 
   #platformTableContainer .dataTables_scrollHead table,
