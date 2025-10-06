@@ -13,7 +13,11 @@
 /* Platform Table Container                      */
 /* ============================================= */
 #platformTableContainer {
-    overflow-y: auto;
+    --table-font-size: 13px;
+    --table-header-font-size: 14px;
+    --table-cell-padding: 10px;
+    --table-line-height: 1.4;
+    overflow: hidden;
     width: 35%;
     height: 100vh;
     float: right;
@@ -21,10 +25,46 @@
     flex-direction: column;
     padding: 20px;
     box-sizing: border-box;
-    border: 2px solid #ddd; 
+    border: 2px solid #ddd;
     background-color: #f9f9f9;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    gap: 16px;
   }
+
+#platformTableContainer .platform-table-header {
+    flex: 0 0 auto;
+}
+
+#platformTableContainer .dataTables_wrapper {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+#platformTableContainer .dataTables_filter,
+#platformTableContainer .dataTables_length {
+    flex: 0 0 auto;
+    margin-bottom: 8px;
+}
+
+#platformTableContainer .dataTables_scroll {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+#platformTableContainer .dataTables_scrollBody {
+    flex: 1 1 auto !important;
+    min-height: 0;
+}
+
+#platformTableContainer .dataTables_info,
+#platformTableContainer .dataTables_paginate {
+    flex: 0 0 auto;
+    margin-top: 8px;
+}
   
   /* ============================================= */
   /* Platform Table Header                         */
@@ -66,8 +106,42 @@
   
   #platformTable th,
   #platformTable td {
-    padding: 10px;
+    padding: var(--table-cell-padding);
     text-align: left;
+    line-height: var(--table-line-height);
+    white-space: nowrap;
+  }
+
+  #platformTable thead th {
+    font-size: var(--table-header-font-size);
+  }
+
+  #platformTable tbody td,
+  #platformTable tbody th {
+    font-size: var(--table-font-size);
+  }
+
+  #platformTableContainer .dataTables_scrollHead table thead th,
+  #platformTableContainer .dataTables_scrollBody table thead th {
+    font-size: var(--table-header-font-size);
+    padding: var(--table-cell-padding);
+    line-height: var(--table-line-height);
+    white-space: nowrap;
+  }
+
+  #platformTableContainer .dataTables_scrollBody table tbody td,
+  #platformTableContainer .dataTables_scrollBody table tbody th {
+    font-size: var(--table-font-size);
+    padding: var(--table-cell-padding);
+    line-height: var(--table-line-height);
+    white-space: nowrap;
+  }
+
+  #platformTableContainer .dataTables_scrollHead table,
+  #platformTableContainer .dataTables_scrollBody table {
+    width: auto !important;
+    min-width: 100%;
+    table-layout: auto;
   }
   
   /* ============================================= */
