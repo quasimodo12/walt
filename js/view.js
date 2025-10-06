@@ -8,42 +8,67 @@ var View = (function() {
 
     // Initialize the map with boxZoom disabled
     function initializeMap() {
-        map = L.map('map', {
-            center: [0, 0], // Set the initial center of the map
-            zoom: 2,        // Set the initial zoom level
-            minZoom: 2,     // Set the minimum zoom level
-            maxZoom: 22,    // Set the maximum zoom level
+        var settings = window.MapSettings || {};
+
+        var mapDefaults = {
+            center: [0, 0],
+            zoom: 2,
+            minZoom: 2,
+            maxZoom: 22,
             maxBounds: [
                 [-90, -180],
                 [90, 180]
             ],
             maxBoundsViscosity: 1.0,
-            boxZoom: false, // Disable the shift-click drag-to-zoom feature
+            boxZoom: false,
             zoomAnimation: true,
             fadeAnimation: true
-        }).setView([0, 0], 2);
+        };
 
-        L.tileLayer('tiles/{z}/{x}/{y}.png', {
-            maxNativeZoom: 2,
-            minZoom: 2,
-            maxZoom: 22,
-            noWrap: true, // Disable wrapping of tiles horizontally
-            updateWhenZooming: true,
-            keepBuffer: 8,
-            detectRetina: false
-        }).addTo(map);
+        var mapConfig = settings.map || {};
+        var mapOptions = Object.assign({}, mapDefaults, mapConfig);
+        var mapCenter = Array.isArray(mapConfig.center) ? mapConfig.center : mapDefaults.center;
+        var mapZoom = typeof mapConfig.zoom === 'number' ? mapConfig.zoom : mapDefaults.zoom;
+        mapOptions.center = mapCenter;
+        mapOptions.zoom = mapZoom;
+
+        map = L.map('map', mapOptions).setView(mapCenter, mapZoom);
+
+        var tileLayerDefaults = {
+            url: 'tiles/{z}/{x}/{y}.png',
+            options: {
+                maxNativeZoom: 2,
+                minZoom: 2,
+                maxZoom: 22,
+                noWrap: true,
+                updateWhenZooming: true,
+                keepBuffer: 8,
+                detectRetina: false
+            }
+        };
+
+        var tileLayerConfig = settings.tileLayer || {};
+        var tileLayerUrl = tileLayerConfig.url || tileLayerDefaults.url;
+        var tileLayerOptions = Object.assign({}, tileLayerDefaults.options, tileLayerConfig.options || {});
+
+        L.tileLayer(tileLayerUrl, tileLayerOptions).addTo(map);
 
         // Add the ruler to the map
-        var options = {
+        var rulerDefaults = {
             position: 'topleft',
             lengthUnit: {
                 label: 'Distance:',
-                factor: 0.539956803, // Convert from kilometers to nautical miles
+                factor: 0.539956803,
                 display: 'Nautical Miles',
-                decimal: 2,
-            },
+                decimal: 2
+            }
         };
-        L.control.ruler(options).addTo(map);
+
+        var rulerConfig = settings.ruler || {};
+        var rulerOptions = Object.assign({}, rulerDefaults, rulerConfig);
+        rulerOptions.lengthUnit = Object.assign({}, rulerDefaults.lengthUnit, rulerConfig.lengthUnit || {});
+
+        L.control.ruler(rulerOptions).addTo(map);
 
         // Initialize the dynamic map tools menu
         MapToolsMenu.init({ map: map });
