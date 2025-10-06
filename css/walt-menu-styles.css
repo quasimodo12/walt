@@ -32,7 +32,76 @@
   }
 
 #platformTableContainer .platform-table-header {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
     flex: 0 0 auto;
+}
+
+#platformTableContainer .platform-table-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+}
+
+#platformTableContainer .platform-table-toolbar-actions {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+#platformTableContainer .column-toggle-button {
+    padding: 6px 10px;
+    font-size: 0.85rem;
+    border: 1px solid #bbb;
+    border-radius: 4px;
+    background-color: #ffffff;
+    color: #333;
+    cursor: pointer;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+#platformTableContainer .column-toggle-button:hover,
+#platformTableContainer .column-toggle-button:focus {
+    background-color: #f2f2f2;
+    border-color: #888;
+    outline: none;
+}
+
+#platformTableContainer .column-toggle-menu {
+    position: absolute;
+    top: calc(100% + 4px);
+    right: 0;
+    display: none;
+    flex-direction: column;
+    min-width: 180px;
+    padding: 10px;
+    border: 1px solid #d0d0d0;
+    border-radius: 6px;
+    background-color: #ffffff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    z-index: 20;
+    gap: 6px;
+}
+
+#platformTableContainer .column-toggle-menu.is-open {
+    display: flex;
+}
+
+#platformTableContainer .column-toggle-option {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: var(--table-font-size);
+    color: #333;
+    cursor: pointer;
+}
+
+#platformTableContainer .column-toggle-option input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    margin: 0;
 }
 
 #platformTableContainer .dataTables_wrapper {
@@ -69,14 +138,15 @@
   /* ============================================= */
   /* Platform Table Header                         */
   /* ============================================= */
-  .platform-table-header {
+  .platform-table-title {
+    margin: 0;
     width: 100%;
-    text-align: center;
+    text-align: left;
     font-size: 28px;
-    font-weight: 700; 
+    font-weight: 700;
     color: #333;
-    background-color: #f0f0f0; 
-    padding: 5px 0; 
+    background-color: #f0f0f0;
+    padding: 5px 10px;
     border-bottom: 3px solid #1b1d1b86;
     border-radius: 0;
     box-shadow: none;
@@ -84,15 +154,22 @@
     letter-spacing: 1px;
     text-transform: uppercase;
   }
+
+  .platform-table-subtitle {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: #333;
+  }
   
   /* Responsive adjustments for platform header */
   @media (max-width: 600px) {
-    .platform-table-header {
+    .platform-table-title {
       font-size: 22px;
-      padding: 15px 0;
+      padding: 15px 10px;
     }
-    .platform-table-header::after {
-      width: 40px;
+    .platform-table-subtitle {
+      font-size: 16px;
     }
   }
   

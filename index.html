@@ -62,7 +62,30 @@
   <!------------------------------------------->
   <!-- Platform Table and Controls Container -->
   <div id="platformTableContainer">
-    <h2 class="platform-table-header">Warfighting Analysis Laydown Tool (WALT)</h2>
+    <div class="platform-table-header">
+      <h2 class="platform-table-title">Warfighting Analysis Laydown Tool (WALT)</h2>
+      <div class="platform-table-toolbar">
+        <h3 class="platform-table-subtitle">Platforms</h3>
+        <div class="platform-table-toolbar-actions">
+          <button
+            type="button"
+            id="columnToggleButton"
+            class="column-toggle-button"
+            aria-haspopup="true"
+            aria-expanded="false"
+            aria-controls="columnToggleMenu"
+          >
+            Columns
+          </button>
+          <div
+            id="columnToggleMenu"
+            class="column-toggle-menu"
+            role="menu"
+            aria-hidden="true"
+          ></div>
+        </div>
+      </div>
+    </div>
     <!-- Data Table -->
     <table id="platformTable" class="display"></table>
     <!-- Button Controls -->

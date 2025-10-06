@@ -27,6 +27,164 @@ var TableController = (function() {
     var MIN_SCALE = 0.3;
     var SCALE_EPSILON = 0.005;
     var SCALE_ITERATIONS = 14;
+    var columnDefinitions = [
+        { title: "Name", data: "platform_name" },
+        { title: "Side", data: "side" },
+        { title: "Group", data: "group" },
+        { title: "Category", data: "category" },
+        { title: "Type", data: "type" },
+        {
+            title: "Subgroup",
+            data: function(row) {
+                return row.subgroups && row.subgroups.length > 0 ? row.subgroups[0] : "";
+            }
+        },
+        {
+            title: "Lat",
+            data: function(row) {
+                var latitude = parseFloat(row.latitude);
+                return isNaN(latitude) ? "" : latitude.toFixed(3);
+            }
+        },
+        {
+            title: "Lon",
+            data: function(row) {
+                var longitude = parseFloat(row.longitude);
+                return isNaN(longitude) ? "" : longitude.toFixed(3);
+            }
+        },
+        { title: "Alt", data: "altitude" }
+    ];
+
+    function setColumnToggleMenuOpen(isOpen) {
+        var $button = $('#columnToggleButton');
+        var $menu = $('#columnToggleMenu');
+
+        if (!$button.length || !$menu.length) {
+            return;
+        }
+
+        if (isOpen) {
+            $menu.addClass('is-open').attr('aria-hidden', 'false');
+            $button.attr('aria-expanded', 'true');
+        } else {
+            $menu.removeClass('is-open').attr('aria-hidden', 'true');
+            $button.attr('aria-expanded', 'false');
+        }
+    }
+
+    function refreshColumnToggleMenuState() {
+        if (!dataTableInstance) {
+            return;
+        }
+
+        var $menu = $('#columnToggleMenu');
+        if (!$menu.length) {
+            return;
+        }
+
+        $menu.find('input[type="checkbox"]').each(function() {
+            var $checkbox = $(this);
+            var columnIndex = parseInt($checkbox.attr('data-column-index'), 10);
+
+            if (isNaN(columnIndex)) {
+                return;
+            }
+
+            var column = dataTableInstance.column(columnIndex);
+            $checkbox.prop('checked', column.visible());
+        });
+    }
+
+    function initializeColumnToggleMenu() {
+        if (!dataTableInstance) {
+            return;
+        }
+
+        var $button = $('#columnToggleButton');
+        var $menu = $('#columnToggleMenu');
+
+        if (!$button.length || !$menu.length) {
+            return;
+        }
+
+        $menu.empty();
+
+        columnDefinitions.forEach(function(columnDef, index) {
+            if (index === 0) {
+                return;
+            }
+
+            var columnId = 'column-toggle-' + index;
+            var column = dataTableInstance.column(index);
+            var $option = $('<label></label>', {
+                'class': 'column-toggle-option',
+                'for': columnId
+            });
+
+            var $checkbox = $('<input>', {
+                type: 'checkbox',
+                id: columnId,
+                'data-column-index': index
+            });
+
+            $checkbox.prop('checked', column.visible());
+
+            var $labelText = $('<span></span>').text(columnDef.title);
+
+            $option.append($checkbox, $labelText);
+            $menu.append($option);
+        });
+
+        $menu
+            .off('change.columnToggle')
+            .on('change.columnToggle', 'input[type="checkbox"]', function(event) {
+                event.stopPropagation();
+
+                var $checkbox = $(this);
+                var columnIndex = parseInt($checkbox.attr('data-column-index'), 10);
+                if (isNaN(columnIndex)) {
+                    return;
+                }
+
+                var column = dataTableInstance.column(columnIndex);
+                var shouldShow = $checkbox.is(':checked');
+                column.visible(shouldShow);
+                scheduleTableSizing();
+                refreshColumnToggleMenuState();
+            })
+            .off('click.columnToggle')
+            .on('click.columnToggle', function(event) {
+                event.stopPropagation();
+            });
+
+        $button
+            .off('click.columnToggle')
+            .on('click.columnToggle', function(event) {
+                event.preventDefault();
+                event.stopPropagation();
+
+                var isOpen = $('#columnToggleMenu').hasClass('is-open');
+                setColumnToggleMenuOpen(!isOpen);
+            });
+
+        $(document)
+            .off('click.columnToggle')
+            .on('click.columnToggle', function(event) {
+                if ($(event.target).closest('#columnToggleButton, #columnToggleMenu').length === 0) {
+                    setColumnToggleMenuOpen(false);
+                }
+            })
+            .off('keydown.columnToggle')
+            .on('keydown.columnToggle', function(event) {
+                if (event.key === 'Escape') {
+                    setColumnToggleMenuOpen(false);
+                }
+            });
+
+        refreshColumnToggleMenuState();
+        setColumnToggleMenuOpen(false);
+    }
 
     function calculateTableHeight() {
         var $container = $('#platformTableContainer');
@@ -249,34 +407,14 @@ var TableController = (function() {
         // Initialize table with DataTables library
         dataTableInstance = $('#platformTable').DataTable({
             data: tableData,
-            columns: [
-                { title: "Name", data: "platform_name" },
-                { title: "Side", data: "side" },
-                { title: "Group", data: "group" },
-                { title: "Category", data: "category" },
-                { title: "Type", data: "type" },
-                { title: "Subgroup", data: function(row) {
-                    return row.subgroups && row.subgroups.length > 0 ? row.subgroups[0] : "";
-                }},
-                {
-                    title: "Lat",
-                    data: function(row) {
-                        return parseFloat(row.latitude).toFixed(3);
-                    }
-                },
-                {
-                    title: "Lon",
-                    data: function(row) {
-                        return parseFloat(row.longitude).toFixed(3);
-                    }
-                },
-                { title: "Alt", data: "altitude" }
-            ],
+            columns: columnDefinitions,
             scrollY: calculateTableHeight(),
             scrollCollapse: true,
             paging: false,
             deferRender: true
         });
+
+        initializeColumnToggleMenu();
 
         registerResizeHandler();
 
@@ -336,6 +474,7 @@ var TableController = (function() {
         dataTableInstance.rows.add(platModel);                 // Add new data
         dataTableInstance.draw();                              // Redraw the table
         scheduleTableSizing();
+        refreshColumnToggleMenuState();
     }
 
     return {
