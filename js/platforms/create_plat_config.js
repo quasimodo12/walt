@@ -64,7 +64,7 @@ var CreatePlatConfig = (function () {
                 <table>
                     <tr>
                         <td><label for="platformName">Platform Name:</label></td>
-                        <td><input type="text" id="platformName" required></td>
+                        <td><input type="text" id="platformName" required maxlength="32"></td>
                     </tr>
                     <tr>
                         <td><label for="side">Side:</label></td>
@@ -76,15 +76,15 @@ var CreatePlatConfig = (function () {
                     </tr>
                     <tr>
                         <td><label for="group">Group:</label></td>
-                        <td><input type="text" id="group" required></td>
+                        <td><input type="text" id="group" required maxlength="32"></td>
                     </tr>
                     <tr>
                         <td><label for="category">Category:</label></td>
-                        <td><input type="text" id="category" required></td>
+                        <td><input type="text" id="category" required maxlength="32"></td>
                     </tr>
                     <tr>
                         <td><label for="type">Type:</label></td>
-                        <td><input type="text" id="type" required></td>
+                        <td><input type="text" id="type" required maxlength="32"></td>
                     </tr>
                     <tr>
                         <td><label for="latitude">Latitude:</label></td>

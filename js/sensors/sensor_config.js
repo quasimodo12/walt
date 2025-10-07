@@ -71,7 +71,7 @@ var SensorConfig = (function() {
         sensorData.forEach(function(sensor, index) {
             var sideOptions = buildSideOptions(sensor && sensor.side);
             content += '<tr>' +
-                '<td><input type="text" value="' + sensor.sensor_name + '" class="sensor-name" data-index="' + index + '" /></td>' +
+                '<td><input type="text" value="' + sensor.sensor_name + '" class="sensor-name" data-index="' + index + '" maxlength="32" /></td>' +
                 '<td><select class="sensor-side" data-index="' + index + '">' +
                 sideOptions +
                 '</select></td>' +
@@ -177,7 +177,7 @@ var SensorConfig = (function() {
         const dialogContent = `
             <div id="addSensorDialogContent">
                 <label for="newSensorName">Sensor Name:</label>
-                <input type="text" id="newSensorName" class="ui-widget-content ui-corner-all" style="width: 100%;" />
+                <input type="text" id="newSensorName" class="ui-widget-content ui-corner-all" style="width: 100%;" maxlength="32" />
                 <div style="margin-top: 10px; text-align: right;">
                     <button id="completeAddSensor">Complete</button>
                 </div>

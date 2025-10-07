@@ -115,7 +115,7 @@ class PieChartTable {
                         $dialog.append($searchDiv);
 
                         // Create the search input field
-                        const $searchInput = $('<input type="text" placeholder="Search..." style="width: 50%;">');
+                        const $searchInput = $('<input type="text" placeholder="Search..." style="width: 50%;" maxlength="32">');
                         $searchDiv.append($searchInput);
 
                         // Create the table container div

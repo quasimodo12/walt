@@ -125,25 +125,25 @@ var PlatformConfig = (function() {
                         <!-- Row 1: Name -->
                         <tr>
                             <td><label for="platformNameInput"><strong>Name:</strong></label></td>
-                            <td><input type="text" id="platformNameInput" value="${platform.platform_name}" class="full-width"></td>
+                            <td><input type="text" id="platformNameInput" value="${platform.platform_name}" class="full-width" maxlength="32"></td>
                         </tr>
                         
                         <!-- Row 2: Group -->
                         <tr>
                             <td><label for="platformGroupInput"><strong>Group:</strong></label></td>
-                            <td><input type="text" id="platformGroupInput" value="${platform.group}" class="full-width"></td>
+                            <td><input type="text" id="platformGroupInput" value="${platform.group}" class="full-width" maxlength="32"></td>
                         </tr>
 
                         <!-- Row 3: Category -->
                         <tr>
                             <td><label for="platformCategoryInput"><strong>Category:</strong></label></td>
-                            <td><input type="text" id="platformCategoryInput" value="${platform.category || ''}" class="full-width"></td>
+                            <td><input type="text" id="platformCategoryInput" value="${platform.category || ''}" class="full-width" maxlength="32"></td>
                         </tr>
 
                         <!-- Row 4: Type -->
                         <tr>
                             <td><label for="platformTypeInput"><strong>Type:</strong></label></td>
-                            <td><input type="text" id="platformTypeInput" value="${platform.type && platform.type !== 'Unspecified' ? platform.type : ''}" class="full-width"></td>
+                            <td><input type="text" id="platformTypeInput" value="${platform.type && platform.type !== 'Unspecified' ? platform.type : ''}" class="full-width" maxlength="32"></td>
                         </tr>
 
                         <!-- Row 5: Side -->
@@ -159,19 +159,19 @@ var PlatformConfig = (function() {
                         <!-- Row 6: Latitude -->
                         <tr>
                             <td><label for="platformLatitudeInput"><strong>Latitude:</strong></label></td>
-                            <td><input type="text" id="platformLatitudeInput" value="${platform.latitude}" class="full-width"></td>
+                            <td><input type="text" id="platformLatitudeInput" value="${platform.latitude}" class="full-width" maxlength="32"></td>
                         </tr>
 
                         <!-- Row 7: Longitude -->
                         <tr>
                             <td><label for="platformLongitudeInput"><strong>Longitude:</strong></label></td>
-                            <td><input type="text" id="platformLongitudeInput" value="${platform.longitude}" class="full-width"></td>
+                            <td><input type="text" id="platformLongitudeInput" value="${platform.longitude}" class="full-width" maxlength="32"></td>
                         </tr>
 
                         <!-- Row 8: Altitude -->
                         <tr>
                             <td><label for="platformAltitudeInput"><strong>Altitude:</strong></label></td>
-                            <td><input type="text" id="platformAltitudeInput" value="${platform.altitude}" class="full-width"></td>
+                            <td><input type="text" id="platformAltitudeInput" value="${platform.altitude}" class="full-width" maxlength="32"></td>
                         </tr>
                     </table>
                 </td>
@@ -498,7 +498,7 @@ var PlatformConfig = (function() {
             $('<div id="addSubgroupDialog"></div>').html(`
                 <div>
                     <label for="subgroupInput">Subgroup Name:</label>
-                    <input type="text" id="subgroupInput" value="">
+                    <input type="text" id="subgroupInput" value="" maxlength="32">
                 </div>
             `).dialog({
                 title: 'Add Subgroup',
