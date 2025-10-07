@@ -1,7 +1,7 @@
 // js/menu/main_menu_button_layout.js
 // Creates the dynamic main menu button container based on a configurable layout
 
-var MainMenuButtons = (function() {
+var MainMenuButtons = (function(global) {
   /**
    * Default layout for the main menu buttons. Each array entry represents a row,
    * and every object inside the row describes an individual button. To change
@@ -26,7 +26,23 @@ var MainMenuButtons = (function() {
     ]
   ];
 
-  const CONTAINER_ID = 'mainMenuButtonContainer';
+  const DEFAULT_CONTAINER_ID = 'mainMenuButtonContainer';
+
+  function isNonEmptyString(value) {
+    return typeof value === 'string' && value.trim().length > 0;
+  }
+
+  const overrides = global.MainMenuSettings || {};
+  const hasLayoutOverride = Array.isArray(overrides.layout);
+  const containerOverrideProvided = isNonEmptyString(overrides.containerId);
+  const containerId = containerOverrideProvided ? overrides.containerId : DEFAULT_CONTAINER_ID;
+  const autoRender = overrides.autoRender !== false;
+
+  let currentLayout = hasLayoutOverride ? overrides.layout : defaultLayout;
+
+  function cloneLayout(layout) {
+    return JSON.parse(JSON.stringify(layout));
+  }
 
   /**
    * Builds a single button element based on the provided configuration.
@@ -62,7 +78,7 @@ var MainMenuButtons = (function() {
    * @param {Array<Array<Object>>} layout
    */
   function render(layout) {
-    const container = document.getElementById(CONTAINER_ID);
+    const container = document.getElementById(containerId);
     if (!container) {
       return;
     }
@@ -81,16 +97,35 @@ var MainMenuButtons = (function() {
     });
   }
 
+  function resolveLayout(layout) {
+    if (Array.isArray(layout)) {
+      currentLayout = layout;
+      return layout;
+    }
+
+    if (Array.isArray(currentLayout)) {
+      return currentLayout;
+    }
+
+    currentLayout = defaultLayout;
+    return currentLayout;
+  }
+
+  const shouldAutoRender = autoRender && (!global.MainMenuSettings || hasLayoutOverride || containerOverrideProvided);
+
+  if (shouldAutoRender) {
+    render(resolveLayout());
+  }
+
   return {
     applyLayout: function(layout) {
-      render(Array.isArray(layout) ? layout : defaultLayout);
+      render(resolveLayout(layout));
     },
     getDefaultLayout: function() {
-      return JSON.parse(JSON.stringify(defaultLayout));
+      return cloneLayout(defaultLayout);
+    },
+    getConfiguredLayout: function() {
+      return cloneLayout(resolveLayout());
     }
   };
-})();
-
-// Render the default layout immediately so that other scripts can attach
-// event listeners to the generated buttons.
-MainMenuButtons.applyLayout();
+})(window);
