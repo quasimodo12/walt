@@ -39,6 +39,50 @@ loaded. Only the properties you provide will replace the defaults. For example:
 This pattern keeps scenario-specific map behavior in configuration while preserving the shared
 application logic in `js/view.js` and related modules.
 
+## Configuring the main menu layout
+
+The main menu buttons are rendered by `js/menu/main_menu_button_layout.js`. Scenarios can adjust
+the arrangement or target container by defining `window.MainMenuSettings` before that script is
+loaded. Only the supplied properties replace the defaults:
+
+```html
+<script>
+  window.MainMenuSettings = {
+    containerId: 'scenarioMenuContainer',
+    layout: [
+      [
+        { id: 'createPlatformButton', label: 'Add New Platform' },
+        { id: 'refreshDataButton', label: 'Refresh Data' }
+      ],
+      [
+        { id: 'openChartsButton', label: 'Display Results' }
+      ]
+    ]
+  };
+</script>
+<script src="js/menu/main_menu_button_layout.js"></script>
+```
+
+By default the module renders immediately using either the overridden layout or the built-in
+structure. To supply a layout later (for example, after fetching scenario data), set
+`autoRender: false` and invoke `MainMenuButtons.applyLayout(customLayout)` when ready:
+
+```html
+<script>
+  window.MainMenuSettings = {
+    autoRender: false
+  };
+</script>
+<script src="js/menu/main_menu_button_layout.js"></script>
+<script>
+  fetch('/scenario/menu-layout.json')
+    .then(function(response) { return response.json(); })
+    .then(function(customLayout) {
+      MainMenuButtons.applyLayout(customLayout);
+    });
+</script>
+```
+
 ## Configuring side definitions
 
 Global side metadata is defined in `js/config/side_config.js`. The file exposes a `SideConfig`
