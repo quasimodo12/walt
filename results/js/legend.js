@@ -35,16 +35,50 @@ function createLegend(divId, legendType, side) {
     var tbody = document.createElement('tbody');
 
     // Side-color-choice
-    var enemySideText = ''; 
-    var enemySideColor = '';
-    if (side === 'blue') {
-        enemySideText = 'Red';
-        enemySideColor = '#4d94ff';
+    function resolveSideLabel(sideId, fallback) {
+        if (typeof SideConfig !== 'undefined' && typeof SideConfig.getLabelForSide === 'function') {
+            var label = SideConfig.getLabelForSide(sideId);
+            if (label) {
+                return label;
+            }
+        }
+        if (sideId) {
+            return sideId.charAt(0).toUpperCase() + sideId.slice(1);
+        }
+        return fallback;
     }
-    else {
-        enemySideText = 'Blue'
-        enemySideColor = '#ff944d';
+
+    function resolveSideColor(sideId, fallback) {
+        if (typeof SideConfig !== 'undefined' && typeof SideConfig.getColorForSide === 'function') {
+            var color = SideConfig.getColorForSide(sideId);
+            if (color) {
+                return color;
+            }
+        }
+        return fallback;
     }
+
+    function resolveDefaultSide() {
+        if (typeof SideConfig !== 'undefined' && typeof SideConfig.getDefaultSide === 'function') {
+            var defaultSide = SideConfig.getDefaultSide();
+            if (defaultSide) {
+                return defaultSide;
+            }
+        }
+        return null;
+    }
+
+    var friendlySideId = side || resolveDefaultSide();
+    var enemySideId = null;
+    if (typeof SideConfig !== 'undefined' && typeof SideConfig.getDefaultOpponent === 'function') {
+        enemySideId = SideConfig.getDefaultOpponent(friendlySideId);
+        if (enemySideId === friendlySideId) {
+            enemySideId = null;
+        }
+    }
+
+    var enemySideText = resolveSideLabel(enemySideId, 'Enemy');
+    var enemySideColor = resolveSideColor(friendlySideId, '#4d94ff');
 
     if (legendType === 'Pie') {
         // Row 1: 'Side' Circle | "Percent of Platforms in WEZ"

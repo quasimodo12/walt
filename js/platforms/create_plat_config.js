@@ -1,8 +1,63 @@
 // create_plat_config.js
 var CreatePlatConfig = (function () {
 
+    function getConfiguredSides() {
+        if (typeof SideConfig !== 'undefined' && typeof SideConfig.getSides === 'function') {
+            var configuredSides = SideConfig.getSides();
+            if (Array.isArray(configuredSides) && configuredSides.length > 0) {
+                return configuredSides;
+            }
+        }
+        return [
+            { id: 'blue', label: 'Blue' },
+            { id: 'red', label: 'Red' }
+        ];
+    }
+
+    function getDefaultSideId() {
+        if (typeof SideConfig !== 'undefined' && typeof SideConfig.getDefaultSide === 'function') {
+            var defaultId = SideConfig.getDefaultSide();
+            if (defaultId) {
+                return defaultId;
+            }
+        }
+        var sides = getConfiguredSides();
+        return sides.length > 0 ? sides[0].id : '';
+    }
+
+    function getLabelForSide(sideId) {
+        if (typeof SideConfig !== 'undefined' && typeof SideConfig.getLabelForSide === 'function') {
+            var label = SideConfig.getLabelForSide(sideId);
+            if (label) {
+                return label;
+            }
+        }
+        return sideId || '';
+    }
+
+    function buildSideOptions(selectedSideId) {
+        var sides = getConfiguredSides();
+        var selectedId = selectedSideId || getDefaultSideId();
+        var hasSelected = false;
+
+        var optionsHtml = sides.map(function(side) {
+            var isSelected = side.id === selectedId;
+            if (isSelected) {
+                hasSelected = true;
+            }
+            return '<option value="' + side.id + '" ' + (isSelected ? 'selected' : '') + '>' + side.label + '</option>';
+        }).join('');
+
+        if (!hasSelected && selectedId) {
+            optionsHtml += '<option value="' + selectedId + '" selected>' + getLabelForSide(selectedId) + '</option>';
+        }
+
+        return optionsHtml;
+    }
+
     // Function to create the platform creation dialog
     function createPlatConfigDialog() {
+        var sideOptions = buildSideOptions();
         // HTML content for the dialog
         var content = `
             <div>
@@ -15,8 +70,7 @@ var CreatePlatConfig = (function () {
                         <td><label for="side">Side:</label></td>
                         <td>
                             <select id="side">
-                                <option value="blue">Blue</option>
-                                <option value="red">Red</option>
+                                ${sideOptions}
                             </select>
                         </td>
                     </tr>
@@ -72,7 +126,7 @@ var CreatePlatConfig = (function () {
         $('#createPlatformContent').off('click', '#createPlatformButton').on('click', '#createPlatformButton', function() {
             console.log('Create Platform button clicked');
             var platformName = ($('#platformName').val() || '').trim();
-            var side = $('#side').val();
+            var side = $('#side').val() || getDefaultSideId();
             var group = ($('#group').val() || '').trim();
             var category = ($('#category').val() || '').trim();
             var type = ($('#type').val() || '').trim();
@@ -93,7 +147,7 @@ var CreatePlatConfig = (function () {
 
             // Check if the new name already exists (excluding the current platform's name)
             var nameExists = platformData.some(function(existingPlatform) {
-                return existingPlatform.platform_name === newName && existingPlatform.platform_name !== platform.platform_name;
+                return existingPlatform.platform_name === newName;
             });
 
             if (nameExists) {

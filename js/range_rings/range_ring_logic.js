@@ -38,7 +38,14 @@ var RangeRingLogic = (function() {
       .forEach(function(rangeRing) {
         // Determine the side and corresponding color
         var side = platformSideLookup[rangeRing.platform_name];
-        var color = side === 'blue' ? 'blue' : (side === 'red' ? 'red' : 'gray');
+        var color = '#808080';
+        if (typeof SideConfig !== 'undefined' && typeof SideConfig.getColorForSide === 'function') {
+          color = SideConfig.getColorForSide(side);
+        } else if (side === 'blue') {
+          color = 'blue';
+        } else if (side === 'red') {
+          color = 'red';
+        }
 
         // Define the circle using Leaflet's L.circle function
         var circle = L.circle([rangeRing.latitude, rangeRing.longitude], {

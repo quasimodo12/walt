@@ -1,8 +1,59 @@
 // plat_config.js
 var PlatformConfig = (function() {
 
+    function getConfiguredSides() {
+        if (typeof SideConfig !== 'undefined' && typeof SideConfig.getSides === 'function') {
+            var configuredSides = SideConfig.getSides();
+            if (Array.isArray(configuredSides) && configuredSides.length > 0) {
+                return configuredSides;
+            }
+        }
+        return [
+            { id: 'blue', label: 'Blue' },
+            { id: 'red', label: 'Red' }
+        ];
+    }
+
+    function getDefaultSideId() {
+        if (typeof SideConfig !== 'undefined' && typeof SideConfig.getDefaultSide === 'function') {
+            return SideConfig.getDefaultSide();
+        }
+        return getConfiguredSides()[0].id;
+    }
+
+    function getLabelForSide(sideId) {
+        if (typeof SideConfig !== 'undefined' && typeof SideConfig.getLabelForSide === 'function') {
+            var label = SideConfig.getLabelForSide(sideId);
+            if (label) {
+                return label;
+            }
+        }
+        return sideId;
+    }
+
+    function buildSideOptions(selectedSideId) {
+        var sides = getConfiguredSides();
+        var selectedId = selectedSideId || getDefaultSideId();
+        var hasSelected = false;
+
+        var optionsHtml = sides.map(function(side) {
+            var isSelected = side.id === selectedId;
+            if (isSelected) {
+                hasSelected = true;
+            }
+            return '<option value="' + side.id + '" ' + (isSelected ? 'selected' : '') + '>' + side.label + '</option>';
+        }).join('');
+
+        if (!hasSelected && selectedId) {
+            optionsHtml += '<option value="' + selectedId + '" selected>' + getLabelForSide(selectedId) + '</option>';
+        }
+
+        return optionsHtml;
+    }
+
     // Function to create platform info dialog with inputs
     function createPlatformDialog(platform) {
+        var sideOptions = buildSideOptions(platform && platform.side);
         // Create the HTML content for the platform dialog
         var content = `
         <style>
@@ -100,8 +151,7 @@ var PlatformConfig = (function() {
                             <td><label for="platformSideInput"><strong>Side:</strong></label></td>
                             <td>
                                 <select id="platformSideInput" class="full-width">
-                                    <option value="blue" ${platform.side === 'blue' ? 'selected' : ''}>Blue</option>
-                                    <option value="red" ${platform.side === 'red' ? 'selected' : ''}>Red</option>
+                                    ${sideOptions}
                                 </select>
                             </td>
                         </tr>
