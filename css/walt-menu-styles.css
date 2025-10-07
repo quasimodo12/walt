@@ -18,6 +18,7 @@
     --menu-gap: 20px;
     --menu-header-gap: 10px;
     --menu-toolbar-gap: 14px;
+    --menu-column-width: calc(40% - (2 * var(--menu-margin, 0px)));
     --table-font-size: 13px;
     --table-header-font-size: 14px;
     --table-cell-padding: 10px;
@@ -25,10 +26,12 @@
     --table-min-height: 340px;
     --table-flex: 1 1 auto;
     overflow: hidden;
-    width: 35%;
+    width: var(--menu-column-width);
+    max-width: var(--menu-column-width);
     height: calc(100vh - (2 * var(--menu-margin, 0px)));
-    float: right;
+    max-height: calc(100vh - (2 * var(--menu-margin, 0px)));
     display: flex;
+    flex: 0 0 var(--menu-column-width);
     flex-direction: column;
     padding: var(--menu-padding);
     margin: var(--menu-margin);
