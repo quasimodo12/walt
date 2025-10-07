@@ -320,7 +320,12 @@ var View = (function() {
      * @returns {Array} - A new array where each element is a formatted string representing a platform.
      */
     function createCustomIcon(side) {
-        var iconUrl = (side === "blue") ? 'images/blue-plat.png' : 'images/red-plat.png';
+        var iconUrl = 'images/blue-plat.png';
+        if (typeof SideConfig !== 'undefined' && typeof SideConfig.getIconForSide === 'function') {
+            iconUrl = SideConfig.getIconForSide(side);
+        } else if (typeof side === 'string') {
+            iconUrl = side === 'red' ? 'images/red-plat.png' : 'images/blue-plat.png';
+        }
         return L.icon({
             iconUrl: iconUrl,
             iconSize: [24, 24], // Customize the size of the icon

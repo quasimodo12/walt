@@ -1,6 +1,60 @@
 // weapon_config.js
 var WeaponConfig = (function() {
 
+    function getConfiguredSides() {
+        if (typeof SideConfig !== 'undefined' && typeof SideConfig.getSides === 'function') {
+            var configuredSides = SideConfig.getSides();
+            if (Array.isArray(configuredSides) && configuredSides.length > 0) {
+                return configuredSides;
+            }
+        }
+        return [
+            { id: 'blue', label: 'Blue' },
+            { id: 'red', label: 'Red' }
+        ];
+    }
+
+    function getDefaultSideId() {
+        if (typeof SideConfig !== 'undefined' && typeof SideConfig.getDefaultSide === 'function') {
+            var defaultId = SideConfig.getDefaultSide();
+            if (defaultId) {
+                return defaultId;
+            }
+        }
+        var sides = getConfiguredSides();
+        return sides.length > 0 ? sides[0].id : '';
+    }
+
+    function getLabelForSide(sideId) {
+        if (typeof SideConfig !== 'undefined' && typeof SideConfig.getLabelForSide === 'function') {
+            var label = SideConfig.getLabelForSide(sideId);
+            if (label) {
+                return label;
+            }
+        }
+        return sideId || '';
+    }
+
+    function buildSideOptions(selectedSideId) {
+        var sides = getConfiguredSides();
+        var selectedId = selectedSideId || getDefaultSideId();
+        var hasSelected = false;
+
+        var optionsHtml = sides.map(function(side) {
+            var isSelected = side.id === selectedId;
+            if (isSelected) {
+                hasSelected = true;
+            }
+            return '<option value="' + side.id + '" ' + (isSelected ? 'selected' : '') + '>' + side.label + '</option>';
+        }).join('');
+
+        if (!hasSelected && selectedId) {
+            optionsHtml += '<option value="' + selectedId + '" selected>' + getLabelForSide(selectedId) + '</option>';
+        }
+
+        return optionsHtml;
+    }
+
     // Function to create platform info dialog with inputs
     function createWeaponConfigDialog() {
         var weaponData = WeaponStorage.getWeaponData();
@@ -15,11 +69,11 @@ var WeaponConfig = (function() {
 
         // Populate the table with weapon data
         weaponData.forEach(function(weapon, index) {
+            var sideOptions = buildSideOptions(weapon && weapon.side);
             content += '<tr>' +
                 '<td><input type="text" value="' + weapon.weapon_name + '" class="weapon-name" data-index="' + index + '" /></td>' +
                 '<td><select class="weapon-side" data-index="' + index + '">' +
-                '<option value="blue" ' + (weapon.side === 'blue' ? 'selected' : '') + '>Blue</option>' +
-                '<option value="red" ' + (weapon.side === 'red' ? 'selected' : '') + '>Red</option>' +
+                sideOptions +
                 '</select></td>' +
                 '<td><input type="number" value="' + weapon.weapon_range + '" class="weapon-range" data-index="' + index + '" /></td>' +
                 '<td><button class="delete-weapon" data-index="' + index + '">Delete</button></td>' +
@@ -59,7 +113,7 @@ var WeaponConfig = (function() {
         $(allRows).each(function() {
             var index = $(this).find('.weapon-name').data('index');
             var name = $(this).find('.weapon-name').val().trim();
-            var side = $(this).find('.weapon-side').val();
+            var side = $(this).find('.weapon-side').val() || getDefaultSideId();
             var range = parseInt($(this).find('.weapon-range').val(), 10);
         
             // Save old name for updating platformData
@@ -126,7 +180,7 @@ var WeaponConfig = (function() {
         } else if (isUniqueWeaponName(name)) {
             WeaponStorage.getWeaponData().push({
                 weapon_name: name,
-                side: side,
+                side: side || getDefaultSideId(),
                 weapon_range: maxRange
             });
         } else {
@@ -178,7 +232,7 @@ var WeaponConfig = (function() {
             }
     
             // Add weapon to storage with default values for side and range
-            addWeaponToStorage(weaponName, 'blue', 0);
+            addWeaponToStorage(weaponName, getDefaultSideId(), 0);
     
             // Close dialog and refresh the main weapon config dialog
             $('#addWeaponDialogContent').dialog('close');

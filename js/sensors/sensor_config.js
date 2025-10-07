@@ -1,6 +1,60 @@
 // Updated sensor_config.js
 var SensorConfig = (function() {
 
+    function getConfiguredSides() {
+        if (typeof SideConfig !== 'undefined' && typeof SideConfig.getSides === 'function') {
+            var configuredSides = SideConfig.getSides();
+            if (Array.isArray(configuredSides) && configuredSides.length > 0) {
+                return configuredSides;
+            }
+        }
+        return [
+            { id: 'blue', label: 'Blue' },
+            { id: 'red', label: 'Red' }
+        ];
+    }
+
+    function getDefaultSideId() {
+        if (typeof SideConfig !== 'undefined' && typeof SideConfig.getDefaultSide === 'function') {
+            var defaultId = SideConfig.getDefaultSide();
+            if (defaultId) {
+                return defaultId;
+            }
+        }
+        var sides = getConfiguredSides();
+        return sides.length > 0 ? sides[0].id : '';
+    }
+
+    function getLabelForSide(sideId) {
+        if (typeof SideConfig !== 'undefined' && typeof SideConfig.getLabelForSide === 'function') {
+            var label = SideConfig.getLabelForSide(sideId);
+            if (label) {
+                return label;
+            }
+        }
+        return sideId || '';
+    }
+
+    function buildSideOptions(selectedSideId) {
+        var sides = getConfiguredSides();
+        var selectedId = selectedSideId || getDefaultSideId();
+        var hasSelected = false;
+
+        var optionsHtml = sides.map(function(side) {
+            var isSelected = side.id === selectedId;
+            if (isSelected) {
+                hasSelected = true;
+            }
+            return '<option value="' + side.id + '" ' + (isSelected ? 'selected' : '') + '>' + side.label + '</option>';
+        }).join('');
+
+        if (!hasSelected && selectedId) {
+            optionsHtml += '<option value="' + selectedId + '" selected>' + getLabelForSide(selectedId) + '</option>';
+        }
+
+        return optionsHtml;
+    }
+
     // Function to create platform info dialog with inputs
     function createSensorConfigDialog() {
         var sensorData = SensorStorage.getSensorData();
@@ -15,11 +69,11 @@ var SensorConfig = (function() {
 
         // Populate the table with sensor data
         sensorData.forEach(function(sensor, index) {
+            var sideOptions = buildSideOptions(sensor && sensor.side);
             content += '<tr>' +
                 '<td><input type="text" value="' + sensor.sensor_name + '" class="sensor-name" data-index="' + index + '" /></td>' +
                 '<td><select class="sensor-side" data-index="' + index + '">' +
-                '<option value="blue" ' + (sensor.side === 'blue' ? 'selected' : '') + '>Blue</option>' +
-                '<option value="red" ' + (sensor.side === 'red' ? 'selected' : '') + '>Red</option>' +
+                sideOptions +
                 '</select></td>' +
                 '<td><input type="number" value="' + sensor.sensor_range + '" class="sensor-range" data-index="' + index + '" /></td>' +
                 '<td><button class="delete-sensor" data-index="' + index + '">Delete</button></td>' +
@@ -59,7 +113,7 @@ var SensorConfig = (function() {
         $(allRows).each(function() {
             var index = $(this).find('.sensor-name').data('index');
             var name = $(this).find('.sensor-name').val().trim();
-            var side = $(this).find('.sensor-side').val();
+            var side = $(this).find('.sensor-side').val() || getDefaultSideId();
             var range = parseInt($(this).find('.sensor-range').val(), 10);
         
             // Save old name for updating platformData
@@ -157,7 +211,7 @@ var SensorConfig = (function() {
                 return;
             }
 
-            addSensorToStorage(sensorName, 'blue', 0);
+            addSensorToStorage(sensorName, getDefaultSideId(), 0);
             $('#addSensorDialogContent').dialog('close');
             createSensorConfigDialog();
         });
@@ -169,7 +223,7 @@ var SensorConfig = (function() {
         } else if (isUniqueSensorName(name)) {
             SensorStorage.getSensorData().push({
                 sensor_name: name,
-                side: side,
+                side: side || getDefaultSideId(),
                 sensor_range: maxRange
             });
         } else {

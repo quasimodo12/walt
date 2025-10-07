@@ -14,6 +14,29 @@
  * @param {string} wName - weapon name to count
  * @returns {number}
  */
+function getSideColor(sideId, fallbackColor) {
+    if (typeof SideConfig !== 'undefined' && typeof SideConfig.getColorForSide === 'function') {
+        const color = SideConfig.getColorForSide(sideId);
+        if (color) {
+            return color;
+        }
+    }
+    return fallbackColor;
+}
+
+function getSideLabelOrFallback(sideId, fallbackLabel) {
+    if (typeof SideConfig !== 'undefined' && typeof SideConfig.getLabelForSide === 'function') {
+        const label = SideConfig.getLabelForSide(sideId);
+        if (label) {
+            return label;
+        }
+    }
+    if (sideId) {
+        return capitalize(sideId);
+    }
+    return fallbackLabel || '';
+}
+
 function getTotalWeaponQuantity(pData, pNames, wName) {
     console.log("results.js >>> getTotalWeaponQuantity() entered");
     let totalQuantity = 0;
@@ -195,7 +218,9 @@ function processItems(itemList, itemType) {
             console.log(`Percentage of enemies in range for ${itemType} ${itemName} in group ${group}: ${percentageInRange}%`);
             console.log(`Percentage of enemies out of range for ${itemType} ${itemName} in group ${group}: ${percentageOutOfRange}%`);
 
-            const selectedColor = selectedSide === 'blue' ? '#36A2EB' : selectedSide === 'red' ? '#ff944d' : null;
+            const selectedColor = getSideColor(selectedSide, '#36A2EB');
+            const enemySideLabel = getSideLabelOrFallback(enemySide, 'Enemy');
+            const friendlyColor = getSideColor(selectedSide, '#4d94ff');
 
             const chartTypeDropdown = document.getElementById("chart-type");
             const selectedChartType = chartTypeDropdown.value;
@@ -253,22 +278,17 @@ function processItems(itemList, itemType) {
                     quantityBarPriority = 2;
                 }
 
-                if (selectedSide === 'blue') {
-                    wezBarColor = '#4d94ff';
-                }
-                else {
-                    wezBarColor = '#ff944d';
-                }
+                wezBarColor = friendlyColor;
 
                 const newBars = [
                     {
-                        barLabel: `${capitalize(enemySide)} Platforms in Group`,
+                        barLabel: `${enemySideLabel} Platforms in Group`,
                         barValue: numPlats,
                         barColor: '#a6a6a6',
                         barPriority: numPlatsBarPriority
                     },
                     {
-                        barLabel: `${capitalize(enemySide)} Platforms in WEZ`,
+                        barLabel: `${enemySideLabel} Platforms in WEZ`,
                         barValue: wez,
                         barColor: wezBarColor,
                         barPriority: wezBarPriority

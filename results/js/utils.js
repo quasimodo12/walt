@@ -28,14 +28,42 @@ function arraysEqual(arr1, arr2) {
  * @param {string[]} newOptions
  */
 function populateDropdown(selectElement, newOptions) {
+    const normalized = (Array.isArray(newOptions) ? newOptions : []).map(option => {
+        if (typeof option === 'string') {
+            return { value: option, label: option };
+        }
+        if (option && typeof option === 'object') {
+            const value = typeof option.value === 'string' && option.value
+                ? option.value
+                : (typeof option.id === 'string' ? option.id : '');
+            if (!value) {
+                return null;
+            }
+            const label = typeof option.label === 'string' && option.label
+                ? option.label
+                : (typeof option.text === 'string' && option.text ? option.text : value);
+            return { value, label };
+        }
+        return null;
+    }).filter(Boolean);
+
+    const desiredValues = normalized.map(opt => opt.value);
     const currentOptions = Array.from(selectElement.options).map(opt => opt.value);
-    if (!arraysEqual(currentOptions, newOptions)) {
+
+    if (!arraysEqual(currentOptions, desiredValues)) {
         selectElement.innerHTML = '';
-        newOptions.forEach(value => {
-            const option = document.createElement('option');
-            option.value = value;
-            option.text = value;
-            selectElement.add(option);
+        normalized.forEach(opt => {
+            const optionElement = document.createElement('option');
+            optionElement.value = opt.value;
+            optionElement.text = opt.label;
+            selectElement.add(optionElement);
+        });
+    } else {
+        normalized.forEach((opt, index) => {
+            const existingOption = selectElement.options[index];
+            if (existingOption && existingOption.text !== opt.label) {
+                existingOption.text = opt.label;
+            }
         });
     }
 }
