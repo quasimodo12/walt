@@ -71,7 +71,7 @@ var WeaponConfig = (function() {
         weaponData.forEach(function(weapon, index) {
             var sideOptions = buildSideOptions(weapon && weapon.side);
             content += '<tr>' +
-                '<td><input type="text" value="' + weapon.weapon_name + '" class="weapon-name" data-index="' + index + '" /></td>' +
+                '<td><input type="text" value="' + weapon.weapon_name + '" class="weapon-name" data-index="' + index + '" maxlength="32" /></td>' +
                 '<td><select class="weapon-side" data-index="' + index + '">' +
                 sideOptions +
                 '</select></td>' +
@@ -193,7 +193,7 @@ var WeaponConfig = (function() {
         const dialogContent = `
             <div id="addWeaponDialogContent">
                 <label for="newWeaponName">Weapon Name:</label>
-                <input type="text" id="newWeaponName" class="ui-widget-content ui-corner-all" style="width: 100%;" />
+                <input type="text" id="newWeaponName" class="ui-widget-content ui-corner-all" style="width: 100%;" maxlength="32" />
                 <div style="margin-top: 10px; text-align: right;">
                     <button id="completeAddWeapon">Complete</button>
                 </div>

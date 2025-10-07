@@ -138,8 +138,8 @@ var LabelController = (function(LabelStorage) {
         // This 
         var dialogHtml = `
             <form id="addLabelForm">
-                <label for="labelText">Label Text (max 24 chars):</label><br>
-                <input type="text" id="labelText" name="labelText" maxlength="24" required><br><br>
+                <label for="labelText">Label Text (max 32 chars):</label><br>
+                <input type="text" id="labelText" name="labelText" maxlength="32" required><br><br>
                 <label for="fontSize">Font Size (px):</label><br>
                 <input type="number" id="fontSize" name="fontSize" min="10" max="32" value="12" required><br><br>
                 <label for="color">Color:</label><br>
