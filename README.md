@@ -83,6 +83,37 @@ structure. To supply a layout later (for example, after fetching scenario data),
 </script>
 ```
 
+### Adjusting menu spacing from a single configuration file
+
+The overall spacing between the platform table, its header, and the main menu button container is
+driven by CSS custom properties managed through `js/config/main_menu_layout.js`.
+
+Edit `window.MainMenuLayoutSettings` to change padding, flex sizing, and vertical limits without
+digging through stylesheets:
+
+```html
+<script>
+  window.MainMenuLayoutSettings = {
+    container: { padding: '16px', gap: '12px' },
+    table: { minHeight: '60vh' },
+    buttons: { maxHeight: '22vh', padding: '4px 12px' }
+  };
+</script>
+<script src="js/config/main_menu_layout.js"></script>
+<script src="js/menu/main_menu_layout_manager.js"></script>
+```
+
+The `MainMenuLayout` helper (exposed globally) also provides runtime methods for more advanced
+scenarios:
+
+```javascript
+MainMenuLayout.update({ buttons: { maxHeight: '30vh' } });
+console.log(MainMenuLayout.getSettings());
+```
+
+Any properties omitted from the configuration fall back to the defaults baked into
+`main_menu_layout_manager.js`.
+
 ## Configuring side definitions
 
 Global side metadata is defined in `js/config/side_config.js`. The file exposes a `SideConfig`

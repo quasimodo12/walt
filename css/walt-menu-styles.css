@@ -12,6 +12,18 @@
 /* ============================================= */
 /* Platform Table Container                      */
 /* ============================================= */
+:root {
+    --main-menu-container-padding: 20px;
+    --main-menu-container-gap: 16px;
+    --main-menu-table-flex: 1 1 auto;
+    --main-menu-table-min-height: 52vh;
+    --main-menu-button-flex: 0 0 auto;
+    --main-menu-button-max-height: 28vh;
+    --main-menu-button-padding: 8px 12px;
+    --main-menu-button-gap: 10px;
+    --main-menu-button-row-gap: 12px;
+  }
+
 #platformTableContainer {
     --table-font-size: 13px;
     --table-header-font-size: 14px;
@@ -23,12 +35,12 @@
     float: right;
     display: flex;
     flex-direction: column;
-    padding: 20px;
+    padding: var(--main-menu-container-padding, 20px);
     box-sizing: border-box;
     border: 2px solid #ddd;
     background-color: #f9f9f9;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    gap: 16px;
+    gap: var(--main-menu-container-gap, 16px);
   }
 
 #platformTableContainer .platform-table-header {
@@ -105,10 +117,10 @@
 }
 
 #platformTableContainer .dataTables_wrapper {
-    flex: 1 1 auto;
+    flex: var(--main-menu-table-flex, 1 1 auto);
     display: flex;
     flex-direction: column;
-    min-height: 0;
+    min-height: var(--main-menu-table-min-height, 0);
 }
 
 #platformTableContainer .dataTables_filter,
@@ -264,8 +276,8 @@
   /* Button Container & Custom Buttons             */
   /* ============================================= */
   .button-container {
-    --button-gap: 12px;
-    --button-row-gap: 16px;
+    --button-gap: var(--main-menu-button-gap, 10px);
+    --button-row-gap: var(--main-menu-button-row-gap, 12px);
     --button-min-width: clamp(110px, 24%, 260px);
     --button-min-height: clamp(38px, 3.6vw, 70px);
     --button-font-size: clamp(0.8rem, 0.75vw + 0.6rem, 1.25rem);
@@ -273,7 +285,10 @@
     flex-direction: column;
     align-items: stretch;
     gap: var(--button-row-gap);
-    padding: 10px;
+    padding: var(--main-menu-button-padding, 8px 12px);
+    flex: var(--main-menu-button-flex, 0 0 auto);
+    max-height: var(--main-menu-button-max-height, none);
+    overflow-y: auto;
   }
 
   .button-container .button-row {
