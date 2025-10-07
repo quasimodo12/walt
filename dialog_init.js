@@ -31,6 +31,22 @@ $(function () {
   });
 
   $(function () {
+    // Initialize Weapon Lethality Dialog
+    $("#weaponLethalityDialog").dialog({
+      modal: true,
+      autoOpen: false,
+      draggable: true,
+      resizable: true,
+      width: 700,
+      position: {
+        my: "center",
+        at: "center+0+150",
+        of: window
+      }
+    });
+  });
+
+  $(function () {
     // Initialize Sensor Info Dialog
     $("#sensorInfoDialog").dialog({
       modal: true,

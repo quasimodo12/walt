@@ -126,6 +126,10 @@ var View = (function() {
             WeaponConfig.createWeaponConfigDialog();
         });
 
+        document.getElementById('weaponLethalityButton').addEventListener('click', function() {
+            WeaponLethalityConfig.createWeaponLethalityDialog();
+        });
+
         // Add Sensor Configuration button functionality
         document.getElementById('sensorsButton').addEventListener('click', function() {
             SensorConfig.createSensorConfigDialog();
