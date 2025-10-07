@@ -45,51 +45,53 @@
   <!------------------------------------->
   <!------------ Map Objects ------------>
   <!------------------------------------->
-  <!-- Map Container -->
-  <div id="map">
-    <!-- Clear Markers Button (clears selection of markers from the map) -->
-    <button id="clearSelectedButton">
-      Clear Markers
-    </button>
-    <!-- Clear Range Rings Button -->
-    <button id="clearRangeRingsButton">
-      Clear Range Rings
-    </button>
-  </div>
+  <div id="waltAppLayout">
+    <!-- Map Container -->
+    <div id="map">
+      <!-- Clear Markers Button (clears selection of markers from the map) -->
+      <button id="clearSelectedButton">
+        Clear Markers
+      </button>
+      <!-- Clear Range Rings Button -->
+      <button id="clearRangeRingsButton">
+        Clear Range Rings
+      </button>
+    </div>
 
-  <!------------------------------------------->
-  <!------------ WALT Menu Objects ------------>
-  <!------------------------------------------->
-  <!-- Platform Table and Controls Container -->
-  <div id="platformTableContainer">
-    <div class="platform-table-header">
-      <h2 class="platform-table-title">Warfighting Analysis Laydown Tool (WALT)</h2>
-      <div class="platform-table-toolbar">
-        <h3 class="platform-table-subtitle">Platforms</h3>
-        <div class="platform-table-toolbar-actions">
-          <button
-            type="button"
-            id="columnToggleButton"
-            class="column-toggle-button"
-            aria-haspopup="true"
-            aria-expanded="false"
-            aria-controls="columnToggleMenu"
-          >
-            Columns
-          </button>
-          <div
-            id="columnToggleMenu"
-            class="column-toggle-menu"
-            role="menu"
-            aria-hidden="true"
-          ></div>
+    <!------------------------------------------->
+    <!------------ WALT Menu Objects ------------>
+    <!------------------------------------------->
+    <!-- Platform Table and Controls Container -->
+    <div id="platformTableContainer">
+      <div class="platform-table-header">
+        <h2 class="platform-table-title">Warfighting Analysis Laydown Tool (WALT)</h2>
+        <div class="platform-table-toolbar">
+          <h3 class="platform-table-subtitle">Platforms</h3>
+          <div class="platform-table-toolbar-actions">
+            <button
+              type="button"
+              id="columnToggleButton"
+              class="column-toggle-button"
+              aria-haspopup="true"
+              aria-expanded="false"
+              aria-controls="columnToggleMenu"
+            >
+              Columns
+            </button>
+            <div
+              id="columnToggleMenu"
+              class="column-toggle-menu"
+              role="menu"
+              aria-hidden="true"
+            ></div>
+          </div>
         </div>
       </div>
+      <!-- Data Table -->
+      <table id="platformTable" class="display"></table>
+      <!-- Button Controls -->
+      <div class="button-container" id="mainMenuButtonContainer"></div>
     </div>
-    <!-- Data Table -->
-    <table id="platformTable" class="display"></table>
-    <!-- Button Controls -->
-    <div class="button-container" id="mainMenuButtonContainer"></div>
   </div>
 
   <!-------------------------------------------------------->
@@ -139,6 +141,7 @@
   <script src="js/labels/label_storage.js"></script>
   <script src="js/export_laydown.js"></script>
   <script src="js/map_tools/map_tools_menu.js"></script>
+  <script src="js/menu/main_menu_layout_config.js"></script>
   <script src="js/menu/main_menu_button_layout.js"></script>
   <script src="js/config/side_config.js"></script>
   <script src="js/config/map_settings.js"></script>
