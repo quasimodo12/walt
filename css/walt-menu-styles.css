@@ -13,28 +13,36 @@
 /* Platform Table Container                      */
 /* ============================================= */
 #platformTableContainer {
+    --menu-padding: 24px;
+    --menu-margin: 12px;
+    --menu-gap: 20px;
+    --menu-header-gap: 10px;
+    --menu-toolbar-gap: 14px;
     --table-font-size: 13px;
     --table-header-font-size: 14px;
     --table-cell-padding: 10px;
     --table-line-height: 1.4;
+    --table-min-height: 340px;
+    --table-flex: 1 1 auto;
     overflow: hidden;
     width: 35%;
-    height: 100vh;
+    height: calc(100vh - (2 * var(--menu-margin, 0px)));
     float: right;
     display: flex;
     flex-direction: column;
-    padding: 20px;
+    padding: var(--menu-padding);
+    margin: var(--menu-margin);
     box-sizing: border-box;
     border: 2px solid #ddd;
     background-color: #f9f9f9;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    gap: 16px;
+    gap: var(--menu-gap);
   }
 
 #platformTableContainer .platform-table-header {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: var(--menu-header-gap, 8px);
     flex: 0 0 auto;
 }
 
@@ -42,7 +50,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: 12px;
+    gap: var(--menu-toolbar-gap, 12px);
 }
 
 #platformTableContainer .platform-table-toolbar-actions {
@@ -105,10 +113,10 @@
 }
 
 #platformTableContainer .dataTables_wrapper {
-    flex: 1 1 auto;
+    flex: var(--table-flex, 1 1 auto);
     display: flex;
     flex-direction: column;
-    min-height: 0;
+    min-height: var(--table-min-height, 0);
 }
 
 #platformTableContainer .dataTables_filter,
@@ -264,16 +272,23 @@
   /* Button Container & Custom Buttons             */
   /* ============================================= */
   .button-container {
-    --button-gap: 12px;
-    --button-row-gap: 16px;
-    --button-min-width: clamp(110px, 24%, 260px);
-    --button-min-height: clamp(38px, 3.6vw, 70px);
-    --button-font-size: clamp(0.8rem, 0.75vw + 0.6rem, 1.25rem);
+    --button-gap: 10px;
+    --button-row-gap: 14px;
+    --button-min-width: clamp(120px, 22%, 240px);
+    --button-min-height: clamp(36px, 2.8vw, 58px);
+    --button-font-size: clamp(0.78rem, 0.55vw + 0.6rem, 1.05rem);
+    --button-padding-block: clamp(0.45rem, 0.28vw + 0.35rem, 0.65rem);
+    --button-padding-inline: clamp(0.75rem, 0.65vw + 0.5rem, 1.35rem);
+    --button-container-padding: 12px;
+    --button-container-max-height: 28vh;
     display: flex;
     flex-direction: column;
     align-items: stretch;
     gap: var(--button-row-gap);
-    padding: 10px;
+    padding: var(--button-container-padding);
+    max-height: var(--button-container-max-height);
+    overflow-y: auto;
+    flex: 0 0 auto;
   }
 
   .button-container .button-row {
@@ -290,7 +305,7 @@
     cursor: pointer;
     font-size: var(--button-font-size);
     line-height: 1.2;
-    padding: clamp(0.5rem, 0.35vw + 0.45rem, 0.8rem) clamp(0.85rem, 0.8vw + 0.65rem, 1.6rem);
+    padding: var(--button-padding-block) var(--button-padding-inline);
     transition: background-color 0.3s ease, transform 0.2s ease;
     flex: var(--button-col-span, 1) 1 var(--button-min-width);
     min-height: var(--button-min-height);
@@ -312,20 +327,22 @@
 
   @media (max-width: 750px) {
     .button-container {
-      --button-gap: 10px;
-      --button-row-gap: 14px;
-      --button-min-width: clamp(100px, 32vw, 220px);
-      --button-font-size: clamp(0.78rem, 1vw + 0.52rem, 1.15rem);
+      --button-gap: 8px;
+      --button-row-gap: 12px;
+      --button-min-width: clamp(110px, 30vw, 220px);
+      --button-font-size: clamp(0.76rem, 0.85vw + 0.5rem, 1.05rem);
+      --button-container-max-height: 32vh;
     }
   }
 
   @media (max-width: 520px) {
     .button-container {
-      --button-gap: 8px;
-      --button-row-gap: 12px;
+      --button-gap: 6px;
+      --button-row-gap: 10px;
       --button-min-width: clamp(92px, 44vw, 200px);
-      --button-min-height: clamp(34px, 5.5vw, 60px);
-      --button-font-size: clamp(0.72rem, 1.1vw + 0.45rem, 1.05rem);
+      --button-min-height: clamp(32px, 5vw, 54px);
+      --button-font-size: clamp(0.7rem, 1vw + 0.45rem, 0.98rem);
+      --button-container-max-height: 36vh;
     }
   }
   

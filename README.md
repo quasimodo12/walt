@@ -83,6 +83,39 @@ structure. To supply a layout later (for example, after fetching scenario data),
 </script>
 ```
 
+### Adjusting main menu spacing
+
+Spacing, padding, and sizing rules for the main menu live in
+`js/menu/main_menu_layout_config.js`. The module exposes a set of CSS custom properties on the menu
+container so that developers can quickly tweak the table-to-button ratio without editing the
+stylesheet. Define `window.MainMenuLayoutSettings` (or provide `layoutConfig` inside
+`window.MainMenuSettings`) before the script is loaded to override the defaults:
+
+```html
+<script>
+  window.MainMenuLayoutSettings = {
+    config: {
+      container: {
+        padding: '18px',
+        margin: '8px'
+      },
+      table: {
+        minHeight: '300px'
+      },
+      buttons: {
+        maxHeight: '24vh',
+        fontSize: 'clamp(0.72rem, 0.5vw + 0.55rem, 0.98rem)'
+      }
+    }
+  };
+</script>
+<script src="js/menu/main_menu_layout_config.js"></script>
+```
+
+Call `MainMenuLayout.apply(customConfig)` at runtime to adjust the spacing after the page has
+loaded. Only the properties you specify are changed, so it is easy to keep scenario-specific
+spacing overrides small.
+
 ## Configuring side definitions
 
 Global side metadata is defined in `js/config/side_config.js`. The file exposes a `SideConfig`
