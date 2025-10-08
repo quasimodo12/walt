@@ -63,17 +63,45 @@ var WeaponLethalityConfig = (function() {
         return optionsHtml;
     }
 
+    function findFirstAvailablePair(weapons, platformTypes) {
+        var selection = {
+            weapon: weapons[0] || '',
+            platformType: platformTypes[0] || ''
+        };
+
+        for (var w = 0; w < weapons.length; w++) {
+            for (var p = 0; p < platformTypes.length; p++) {
+                if (!WeaponLethalityStorage.pairingExists(weapons[w], platformTypes[p])) {
+                    selection.weapon = weapons[w];
+                    selection.platformType = platformTypes[p];
+                    return selection;
+                }
+            }
+        }
+
+        return selection;
+    }
+
+    function updateAddButtonState() {
+        var $dialog = $(dialogSelector);
+        var weapon = $dialog.find('#newLethalityWeapon').val();
+        var platformType = $dialog.find('#newLethalityPlatformType').val();
+        var disableAdd = !weapon || !platformType || WeaponLethalityStorage.pairingExists(weapon, platformType);
+        $dialog.find('#addWeaponLethalityPairing').prop('disabled', disableAdd);
+    }
+
     function renderAddControls() {
         var weapons = getWeaponNames();
         var platformTypes = getPlatformTypes();
         var $dialog = $(dialogSelector);
 
-        $dialog.find('#newLethalityWeapon').html(buildOptions(weapons, weapons[0] || ''));
-        $dialog.find('#newLethalityPlatformType').html(buildOptions(platformTypes, platformTypes[0] || ''));
+        var defaults = findFirstAvailablePair(weapons, platformTypes);
+
+        $dialog.find('#newLethalityWeapon').html(buildOptions(weapons, defaults.weapon));
+        $dialog.find('#newLethalityPlatformType').html(buildOptions(platformTypes, defaults.platformType));
         $dialog.find('#newLethalityQuantity').val(1);
 
-        var disableAdd = weapons.length === 0 || platformTypes.length === 0;
-        $dialog.find('#addWeaponLethalityPairing').prop('disabled', disableAdd);
+        updateAddButtonState();
     }
 
     function renderTable() {
@@ -160,6 +188,9 @@ var WeaponLethalityConfig = (function() {
             '    </thead>',
             '    <tbody></tbody>',
             '  </table>',
+            '  <div class="weapon-lethality-footer">',
+            '    <button type="button" id="confirmWeaponLethalityUpdate">Update</button>',
+            '  </div>',
             '</div>'
         ].join('');
 
@@ -189,21 +220,17 @@ var WeaponLethalityConfig = (function() {
                 return;
             }
 
-            var lethalityData = WeaponLethalityStorage.getLethalityData();
-            var exists = lethalityData.some(function(entry) {
-                return entry.weapon === weapon && entry.platformType === platformType;
-            });
-
-            if (exists) {
-                alert('This weapon and platform type pairing already exists.');
-                return;
-            }
-
-            WeaponLethalityStorage.addPairing({
+            var wasAdded = WeaponLethalityStorage.addPairing({
                 weapon: weapon,
                 platformType: platformType,
                 quantity: quantityValue
             });
+
+            if (!wasAdded) {
+                alert('This weapon and platform type pairing already exists.');
+                updateAddButtonState();
+                return;
+            }
 
             renderTable();
             renderAddControls();
@@ -212,13 +239,35 @@ var WeaponLethalityConfig = (function() {
         $dialog.off('change', '.lethality-weapon-select').on('change', '.lethality-weapon-select', function() {
             var $row = $(this).closest('tr');
             var index = parseInt($row.data('index'), 10);
-            WeaponLethalityStorage.updatePairing(index, { weapon: $(this).val() });
+            var lethalityData = WeaponLethalityStorage.getLethalityData();
+            var previousWeapon = lethalityData[index] ? lethalityData[index].weapon : '';
+            var newWeapon = $(this).val();
+            var updated = WeaponLethalityStorage.updatePairing(index, { weapon: newWeapon });
+
+            if (!updated) {
+                alert('This weapon and platform type pairing already exists.');
+                $(this).val(previousWeapon);
+                return;
+            }
+
+            updateAddButtonState();
         });
 
         $dialog.off('change', '.lethality-platform-type-select').on('change', '.lethality-platform-type-select', function() {
             var $row = $(this).closest('tr');
             var index = parseInt($row.data('index'), 10);
-            WeaponLethalityStorage.updatePairing(index, { platformType: $(this).val() });
+            var lethalityData = WeaponLethalityStorage.getLethalityData();
+            var previousType = lethalityData[index] ? lethalityData[index].platformType : '';
+            var newType = $(this).val();
+            var updated = WeaponLethalityStorage.updatePairing(index, { platformType: newType });
+
+            if (!updated) {
+                alert('This weapon and platform type pairing already exists.');
+                $(this).val(previousType);
+                return;
+            }
+
+            updateAddButtonState();
         });
 
         $dialog.off('input change', '.lethality-quantity-input').on('input change', '.lethality-quantity-input', function() {
@@ -240,6 +289,17 @@ var WeaponLethalityConfig = (function() {
             WeaponLethalityStorage.removePairing(index);
             renderTable();
             renderAddControls();
+        });
+
+        $dialog.off('change', '#newLethalityWeapon, #newLethalityPlatformType').on('change', '#newLethalityWeapon, #newLethalityPlatformType', function() {
+            updateAddButtonState();
+        });
+
+        $dialog.off('click', '#confirmWeaponLethalityUpdate').on('click', '#confirmWeaponLethalityUpdate', function() {
+            var confirmation = window.confirm('Are you sure you want to apply your changes to the weapon lethality table?');
+            if (confirmation) {
+                alert('Weapon lethality data updated successfully.');
+            }
         });
     }
 

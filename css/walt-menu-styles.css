@@ -453,3 +453,23 @@
 .weapon-lethality-table .lethality-delete-button:hover {
     background-color: #b91c1c;
 }
+
+.weapon-lethality-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+}
+
+.weapon-lethality-footer button {
+    padding: 8px 16px;
+    background-color: #10b981;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.weapon-lethality-footer button:hover {
+    background-color: #059669;
+}

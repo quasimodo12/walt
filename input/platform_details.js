@@ -35,7 +35,7 @@ var PLATFORM_DATA = [
     "sensors": [
       "BLUE_SENSOR_2"
     ],
-    "type": "Unspecified"
+    "type": "Destroyer"
   },
   {
     "platform_name": "blue_ship_2",
@@ -57,7 +57,7 @@ var PLATFORM_DATA = [
     "sensors": [
       "BLUE_SENSOR_2"
     ],
-    "type": "Unspecified"
+    "type": "Frigate"
   },
   {
     "platform_name": "blue_ship_3",
@@ -89,7 +89,7 @@ var PLATFORM_DATA = [
       "BLUE_SENSOR_1",
       "BLUE_SENSOR_2"
     ],
-    "type": "Unspecified"
+    "type": "Cruiser"
   },
   {
     "platform_name": "blue_ship_4",
@@ -119,7 +119,7 @@ var PLATFORM_DATA = [
     "sensors": [
       "BLUE_SENSOR_1"
     ],
-    "type": "Unspecified"
+    "type": "Carrier"
   },
   {
     "platform_name": "blue_ship_5",
@@ -142,7 +142,7 @@ var PLATFORM_DATA = [
     "sensors": [
       "BLUE_SENSOR_1"
     ],
-    "type": "Unspecified"
+    "type": "Submarine"
   },
   {
     "platform_name": "blue_ship_6",
@@ -177,7 +177,7 @@ var PLATFORM_DATA = [
       "BLUE_SENSOR_2",
       "BLUE_SENSOR_1"
     ],
-    "type": "Unspecified"
+    "type": "Patrol Craft"
   },
   {
     "platform_name": "blue_ship_7",
@@ -201,7 +201,7 @@ var PLATFORM_DATA = [
       "BLUE_SENSOR_2",
       "BLUE_SENSOR_1"
     ],
-    "type": "Unspecified"
+    "type": "Missile Boat"
   },
   {
     "platform_name": "blue_ship_8",
@@ -240,7 +240,7 @@ var PLATFORM_DATA = [
       "BLUE_SENSOR_2",
       "BLUE_SENSOR_1"
     ],
-    "type": "Unspecified"
+    "type": "Support Vessel"
   },
   {
     "platform_name": "blue_ship_9",
@@ -263,7 +263,7 @@ var PLATFORM_DATA = [
       "BLUE_SENSOR_1",
       "BLUE_SENSOR_2"
     ],
-    "type": "Unspecified"
+    "type": "Logistics Ship"
   },
   {
     "platform_name": "blue_ship_10",
@@ -298,7 +298,7 @@ var PLATFORM_DATA = [
       "BLUE_SENSOR_2",
       "BLUE_SENSOR_1"
     ],
-    "type": "Unspecified"
+    "type": "Amphibious Assault"
   },
   {
     "platform_name": "red_ship_1",
@@ -326,7 +326,7 @@ var PLATFORM_DATA = [
       "RED_SENSOR_2",
       "RED_SENSOR_1"
     ],
-    "type": "Unspecified"
+    "type": "Coastal Defense"
   },
   {
     "platform_name": "red_ship_2",
@@ -369,7 +369,7 @@ var PLATFORM_DATA = [
       "RED_SENSOR_1",
       "RED_SENSOR_2"
     ],
-    "type": "Unspecified"
+    "type": "Fast Attack Craft"
   },
   {
     "platform_name": "red_ship_3",
@@ -420,7 +420,7 @@ var PLATFORM_DATA = [
       "RED_SENSOR_2",
       "RED_SENSOR_1"
     ],
-    "type": "Unspecified"
+    "type": "Mine Layer"
   },
   {
     "platform_name": "red_ship_4",
@@ -443,7 +443,7 @@ var PLATFORM_DATA = [
     "sensors": [
       "RED_SENSOR_2"
     ],
-    "type": "Unspecified"
+    "type": "Mine Sweeper"
   },
   {
     "platform_name": "red_ship_5",
@@ -495,7 +495,7 @@ var PLATFORM_DATA = [
       "RED_SENSOR_1",
       "RED_SENSOR_2"
     ],
-    "type": "Unspecified"
+    "type": "Command Ship"
   },
   {
     "platform_name": "red_ship_6",
@@ -546,7 +546,7 @@ var PLATFORM_DATA = [
     "sensors": [
       "RED_SENSOR_1"
     ],
-    "type": "Unspecified"
+    "type": "Recon Vessel"
   },
   {
     "platform_name": "red_ship_7",
@@ -576,7 +576,7 @@ var PLATFORM_DATA = [
     "sensors": [
       "RED_SENSOR_1"
     ],
-    "type": "Unspecified"
+    "type": "Patrol Boat"
   },
   {
     "platform_name": "red_ship_8",
@@ -615,7 +615,7 @@ var PLATFORM_DATA = [
     "sensors": [
       "RED_SENSOR_1"
     ],
-    "type": "Unspecified"
+    "type": "Littoral Combatant"
   },
   {
     "platform_name": "red_ship_9",
@@ -662,7 +662,7 @@ var PLATFORM_DATA = [
       "RED_SENSOR_1",
       "RED_SENSOR_2"
     ],
-    "type": "Unspecified"
+    "type": "Escort"
   },
   {
     "platform_name": "red_ship_10",
@@ -689,7 +689,7 @@ var PLATFORM_DATA = [
       "RED_SENSOR_1",
       "RED_SENSOR_2"
     ],
-    "type": "Unspecified"
+    "type": "Supply Ship"
   },
   {
     "platform_name": "red_ship_11",
