@@ -1,0 +1,22 @@
+var WEAPON_LETHALITY_DATA = [
+  { "weapon": "BLUE_WEAPON_1", "platformType": "Unspecified", "quantity": 2 },
+  { "weapon": "BLUE_WEAPON_2", "platformType": "Unspecified", "quantity": 4 },
+  { "weapon": "BLUE_WEAPON_3", "platformType": "Unspecified", "quantity": 6 },
+  { "weapon": "BLUE_WEAPON_4", "platformType": "Unspecified", "quantity": 3 },
+  { "weapon": "BLUE_WEAPON_5", "platformType": "Unspecified", "quantity": 5 },
+  { "weapon": "RED_WEAPON_1", "platformType": "Unspecified", "quantity": 7 },
+  { "weapon": "RED_WEAPON_2", "platformType": "Unspecified", "quantity": 9 },
+  { "weapon": "RED_WEAPON_3", "platformType": "Unspecified", "quantity": 4 },
+  { "weapon": "RED_WEAPON_4", "platformType": "Unspecified", "quantity": 2 },
+  { "weapon": "RED_WEAPON_5", "platformType": "Unspecified", "quantity": 8 },
+  { "weapon": "RED_WEAPON_6", "platformType": "Unspecified", "quantity": 1 },
+  { "weapon": "RED_WEAPON_7", "platformType": "Unspecified", "quantity": 5 },
+  { "weapon": "RED_WEAPON_8", "platformType": "Unspecified", "quantity": 6 },
+  { "weapon": "BLUE_WEAPON_1", "platformType": "Unspecified", "quantity": 10 },
+  { "weapon": "BLUE_WEAPON_2", "platformType": "Unspecified", "quantity": 12 },
+  { "weapon": "BLUE_WEAPON_3", "platformType": "Unspecified", "quantity": 14 },
+  { "weapon": "BLUE_WEAPON_4", "platformType": "Unspecified", "quantity": 16 },
+  { "weapon": "BLUE_WEAPON_5", "platformType": "Unspecified", "quantity": 18 },
+  { "weapon": "RED_WEAPON_1", "platformType": "Unspecified", "quantity": 11 },
+  { "weapon": "RED_WEAPON_2", "platformType": "Unspecified", "quantity": 13 }
+];
