@@ -201,7 +201,7 @@ var PLATFORM_DATA = [
       "BLUE_SENSOR_2",
       "BLUE_SENSOR_1"
     ],
-    "type": "Missile Boat"
+    "type": "BLUE_DDG_1"
   },
   {
     "platform_name": "blue_ship_8",
@@ -443,7 +443,7 @@ var PLATFORM_DATA = [
     "sensors": [
       "RED_SENSOR_2"
     ],
-    "type": "Mine Sweeper"
+    "type": "RED_DDG_TYPE_1"
   },
   {
     "platform_name": "red_ship_5",
