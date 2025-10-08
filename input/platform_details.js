@@ -35,7 +35,7 @@ var PLATFORM_DATA = [
     "sensors": [
       "BLUE_SENSOR_2"
     ],
-    "type": "Destroyer"
+    "type": "BLUE_DDG_1"
   },
   {
     "platform_name": "blue_ship_2",
@@ -57,7 +57,7 @@ var PLATFORM_DATA = [
     "sensors": [
       "BLUE_SENSOR_2"
     ],
-    "type": "Frigate"
+    "type": "BLUE_DDG_1"
   },
   {
     "platform_name": "blue_ship_3",
@@ -89,7 +89,7 @@ var PLATFORM_DATA = [
       "BLUE_SENSOR_1",
       "BLUE_SENSOR_2"
     ],
-    "type": "Cruiser"
+    "type": "BLUE_DDG_1"
   },
   {
     "platform_name": "blue_ship_4",
@@ -119,7 +119,7 @@ var PLATFORM_DATA = [
     "sensors": [
       "BLUE_SENSOR_1"
     ],
-    "type": "Carrier"
+    "type": "BLUE_DDG_1"
   },
   {
     "platform_name": "blue_ship_5",
@@ -142,7 +142,7 @@ var PLATFORM_DATA = [
     "sensors": [
       "BLUE_SENSOR_1"
     ],
-    "type": "Submarine"
+    "type": "BLUE_DDG_1"
   },
   {
     "platform_name": "blue_ship_6",
@@ -177,7 +177,7 @@ var PLATFORM_DATA = [
       "BLUE_SENSOR_2",
       "BLUE_SENSOR_1"
     ],
-    "type": "Patrol Craft"
+    "type": "BLUE_DDG_1"
   },
   {
     "platform_name": "blue_ship_7",
@@ -240,7 +240,7 @@ var PLATFORM_DATA = [
       "BLUE_SENSOR_2",
       "BLUE_SENSOR_1"
     ],
-    "type": "Support Vessel"
+    "type": "BLUE_DDG_1"
   },
   {
     "platform_name": "blue_ship_9",
@@ -263,7 +263,7 @@ var PLATFORM_DATA = [
       "BLUE_SENSOR_1",
       "BLUE_SENSOR_2"
     ],
-    "type": "Logistics Ship"
+    "type": "BLUE_DDG_1"
   },
   {
     "platform_name": "blue_ship_10",
@@ -298,7 +298,7 @@ var PLATFORM_DATA = [
       "BLUE_SENSOR_2",
       "BLUE_SENSOR_1"
     ],
-    "type": "Amphibious Assault"
+    "type": "BLUE_DDG_1"
   },
   {
     "platform_name": "red_ship_1",
@@ -326,7 +326,7 @@ var PLATFORM_DATA = [
       "RED_SENSOR_2",
       "RED_SENSOR_1"
     ],
-    "type": "Coastal Defense"
+    "type": "RED_DDG_TYPE_1"
   },
   {
     "platform_name": "red_ship_2",
@@ -369,7 +369,7 @@ var PLATFORM_DATA = [
       "RED_SENSOR_1",
       "RED_SENSOR_2"
     ],
-    "type": "Fast Attack Craft"
+    "type": "RED_DDG_TYPE_1"
   },
   {
     "platform_name": "red_ship_3",
@@ -420,7 +420,7 @@ var PLATFORM_DATA = [
       "RED_SENSOR_2",
       "RED_SENSOR_1"
     ],
-    "type": "Mine Layer"
+    "type": "RED_DDG_TYPE_1"
   },
   {
     "platform_name": "red_ship_4",
@@ -495,7 +495,7 @@ var PLATFORM_DATA = [
       "RED_SENSOR_1",
       "RED_SENSOR_2"
     ],
-    "type": "Command Ship"
+    "type": "RED_DDG_TYPE_1"
   },
   {
     "platform_name": "red_ship_6",
@@ -546,7 +546,7 @@ var PLATFORM_DATA = [
     "sensors": [
       "RED_SENSOR_1"
     ],
-    "type": "Recon Vessel"
+    "type": "RED_DDG_TYPE_2"
   },
   {
     "platform_name": "red_ship_7",
@@ -576,7 +576,7 @@ var PLATFORM_DATA = [
     "sensors": [
       "RED_SENSOR_1"
     ],
-    "type": "Patrol Boat"
+    "type": "RED_DDG_TYPE_1"
   },
   {
     "platform_name": "red_ship_8",
@@ -615,7 +615,7 @@ var PLATFORM_DATA = [
     "sensors": [
       "RED_SENSOR_1"
     ],
-    "type": "Littoral Combatant"
+    "type": "RED_DDG_TYPE_2"
   },
   {
     "platform_name": "red_ship_9",
@@ -662,7 +662,7 @@ var PLATFORM_DATA = [
       "RED_SENSOR_1",
       "RED_SENSOR_2"
     ],
-    "type": "Escort"
+    "type": "RED_DDG_TYPE_2"
   },
   {
     "platform_name": "red_ship_10",
@@ -689,7 +689,7 @@ var PLATFORM_DATA = [
       "RED_SENSOR_1",
       "RED_SENSOR_2"
     ],
-    "type": "Supply Ship"
+    "type": "RED_DDG_TYPE_2"
   },
   {
     "platform_name": "red_ship_11",
@@ -713,7 +713,7 @@ var PLATFORM_DATA = [
       "RED_SENSOR_1",
       "RED_SENSOR_2"
     ],
-    "type": "Unspecified"
+    "type": "RED_DDG_TYPE_2"
   },
   {
     "platform_name": "red_ship_12",
@@ -761,7 +761,7 @@ var PLATFORM_DATA = [
       "RED_SENSOR_1",
       "RED_SENSOR_2"
     ],
-    "type": "Unspecified"
+    "type": "RED_DDG_TYPE_3"
   },
   {
     "platform_name": "red_ship_13",
@@ -791,7 +791,7 @@ var PLATFORM_DATA = [
     "sensors": [
       "RED_SENSOR_2"
     ],
-    "type": "Unspecified"
+    "type": "RED_DDG_TYPE_3"
   },
   {
     "platform_name": "red_ship_14",
@@ -826,7 +826,7 @@ var PLATFORM_DATA = [
     "sensors": [
       "RED_SENSOR_1"
     ],
-    "type": "Unspecified"
+    "type": "RED_DDG_TYPE_3"
   },
   {
     "platform_name": "red_ship_15",
@@ -854,1252 +854,6 @@ var PLATFORM_DATA = [
       "RED_SENSOR_1",
       "RED_SENSOR_2"
     ],
-    "type": "Unspecified"
-  },
-  {
-    "platform_name": "red_ship_16",
-    "side": "red",
-    "group": "red_group_2",
-    "subgroups": [
-      "subgroup_1"
-    ],
-    "latitude": "47.803786",
-    "longitude": "-87.373004",
-    "altitude": "0",
-    "category": "surface",
-    "weapons": [
-      {
-        "name": "RED_WEAPON_4",
-        "quantity": 15
-      },
-      {
-        "name": "RED_WEAPON_8",
-        "quantity": 7
-      },
-      {
-        "name": "RED_WEAPON_7",
-        "quantity": 4
-      },
-      {
-        "name": "RED_WEAPON_5",
-        "quantity": 13
-      },
-      {
-        "name": "RED_WEAPON_6",
-        "quantity": 19
-      }
-    ],
-    "sensors": [
-      "RED_SENSOR_1"
-    ],
-    "type": "Unspecified"
-  },
-  {
-    "platform_name": "red_ship_17",
-    "side": "red",
-    "group": "red_group_2",
-    "subgroups": [
-      "subgroup_1",
-      "subgroup_2"
-    ],
-    "latitude": "48.277259",
-    "longitude": "-87.840039",
-    "altitude": "0",
-    "category": "surface",
-    "weapons": [
-      {
-        "name": "RED_WEAPON_1",
-        "quantity": 18
-      },
-      {
-        "name": "RED_WEAPON_7",
-        "quantity": 2
-      },
-      {
-        "name": "RED_WEAPON_8",
-        "quantity": 14
-      }
-    ],
-    "sensors": [
-      "RED_SENSOR_1",
-      "RED_SENSOR_2"
-    ],
-    "type": "Unspecified"
-  },
-  {
-    "platform_name": "red_ship_18",
-    "side": "red",
-    "group": "red_group_3",
-    "subgroups": [
-      "subgroup_2",
-      "subgroup_1"
-    ],
-    "latitude": "48.371924",
-    "longitude": "-85.026977",
-    "altitude": "0",
-    "category": "surface",
-    "weapons": [
-      {
-        "name": "RED_WEAPON_5",
-        "quantity": 14
-      },
-      {
-        "name": "RED_WEAPON_2",
-        "quantity": 19
-      }
-    ],
-    "sensors": [
-      "RED_SENSOR_1",
-      "RED_SENSOR_2"
-    ],
-    "type": "Unspecified"
-  },
-  {
-    "platform_name": "red_ship_19",
-    "side": "red",
-    "group": "red_group_1",
-    "subgroups": [
-      "subgroup_2"
-    ],
-    "latitude": "48.296374",
-    "longitude": "-86.950445",
-    "altitude": "0",
-    "category": "surface",
-    "weapons": [
-      {
-        "name": "RED_WEAPON_5",
-        "quantity": 14
-      },
-      {
-        "name": "RED_WEAPON_8",
-        "quantity": 10
-      },
-      {
-        "name": "RED_WEAPON_1",
-        "quantity": 8
-      },
-      {
-        "name": "RED_WEAPON_2",
-        "quantity": 11
-      },
-      {
-        "name": "RED_WEAPON_7",
-        "quantity": 16
-      },
-      {
-        "name": "RED_WEAPON_6",
-        "quantity": 19
-      },
-      {
-        "name": "RED_WEAPON_3",
-        "quantity": 8
-      },
-      {
-        "name": "RED_WEAPON_4",
-        "quantity": 10
-      }
-    ],
-    "sensors": [
-      "RED_SENSOR_1",
-      "RED_SENSOR_2"
-    ],
-    "type": "Unspecified"
-  },
-  {
-    "platform_name": "red_ship_20",
-    "side": "red",
-    "group": "red_group_3",
-    "subgroups": [
-      "subgroup_1",
-      "subgroup_2"
-    ],
-    "latitude": "47.346776",
-    "longitude": "-86.101964",
-    "altitude": "0",
-    "category": "surface",
-    "weapons": [
-      {
-        "name": "RED_WEAPON_1",
-        "quantity": 7
-      },
-      {
-        "name": "RED_WEAPON_6",
-        "quantity": 13
-      },
-      {
-        "name": "RED_WEAPON_4",
-        "quantity": 18
-      },
-      {
-        "name": "RED_WEAPON_3",
-        "quantity": 1
-      },
-      {
-        "name": "RED_WEAPON_7",
-        "quantity": 1
-      },
-      {
-        "name": "RED_WEAPON_5",
-        "quantity": 4
-      },
-      {
-        "name": "RED_WEAPON_8",
-        "quantity": 9
-      }
-    ],
-    "sensors": [
-      "RED_SENSOR_2"
-    ],
-    "type": "Unspecified"
-  },
-  {
-    "platform_name": "red_ship_21",
-    "side": "red",
-    "group": "red_group_2",
-    "subgroups": [
-      "subgroup_2"
-    ],
-    "latitude": "46.926121",
-    "longitude": "-87.100660",
-    "altitude": "0",
-    "category": "surface",
-    "weapons": [
-      {
-        "name": "RED_WEAPON_6",
-        "quantity": 11
-      },
-      {
-        "name": "RED_WEAPON_7",
-        "quantity": 19
-      },
-      {
-        "name": "RED_WEAPON_1",
-        "quantity": 11
-      },
-      {
-        "name": "RED_WEAPON_4",
-        "quantity": 4
-      },
-      {
-        "name": "RED_WEAPON_3",
-        "quantity": 7
-      },
-      {
-        "name": "RED_WEAPON_8",
-        "quantity": 8
-      }
-    ],
-    "sensors": [
-      "RED_SENSOR_2"
-    ],
-    "type": "Unspecified"
-  },
-  {
-    "platform_name": "red_ship_22",
-    "side": "red",
-    "group": "red_group_3",
-    "subgroups": [
-      "subgroup_1",
-      "subgroup_2"
-    ],
-    "latitude": "47.362485",
-    "longitude": "-86.289011",
-    "altitude": "0",
-    "category": "surface",
-    "weapons": [
-      {
-        "name": "RED_WEAPON_8",
-        "quantity": 19
-      },
-      {
-        "name": "RED_WEAPON_4",
-        "quantity": 17
-      }
-    ],
-    "sensors": [
-      "RED_SENSOR_1",
-      "RED_SENSOR_2"
-    ],
-    "type": "Unspecified"
-  },
-  {
-    "platform_name": "red_ship_23",
-    "side": "red",
-    "group": "red_group_3",
-    "subgroups": [
-      "subgroup_2",
-      "subgroup_1"
-    ],
-    "latitude": "47.269101",
-    "longitude": "-86.200257",
-    "altitude": "0",
-    "category": "surface",
-    "weapons": [
-      {
-        "name": "RED_WEAPON_7",
-        "quantity": 16
-      },
-      {
-        "name": "RED_WEAPON_6",
-        "quantity": 1
-      },
-      {
-        "name": "RED_WEAPON_8",
-        "quantity": 15
-      },
-      {
-        "name": "RED_WEAPON_4",
-        "quantity": 6
-      },
-      {
-        "name": "RED_WEAPON_3",
-        "quantity": 12
-      },
-      {
-        "name": "RED_WEAPON_1",
-        "quantity": 17
-      },
-      {
-        "name": "RED_WEAPON_2",
-        "quantity": 10
-      }
-    ],
-    "sensors": [
-      "RED_SENSOR_1"
-    ],
-    "type": "Unspecified"
-  },
-  {
-    "platform_name": "red_ship_24",
-    "side": "red",
-    "group": "red_group_3",
-    "subgroups": [
-      "subgroup_1",
-      "subgroup_2"
-    ],
-    "latitude": "47.404845",
-    "longitude": "-86.128471",
-    "altitude": "0",
-    "category": "surface",
-    "weapons": [
-      {
-        "name": "RED_WEAPON_4",
-        "quantity": 11
-      },
-      {
-        "name": "RED_WEAPON_1",
-        "quantity": 17
-      },
-      {
-        "name": "RED_WEAPON_2",
-        "quantity": 11
-      }
-    ],
-    "sensors": [
-      "RED_SENSOR_2"
-    ],
-    "type": "Unspecified"
-  },
-  {
-    "platform_name": "red_ship_25",
-    "side": "red",
-    "group": "red_group_2",
-    "subgroups": [
-      "subgroup_2",
-      "subgroup_1"
-    ],
-    "latitude": "47.319395",
-    "longitude": "-85.308560",
-    "altitude": "0",
-    "category": "surface",
-    "weapons": [
-      {
-        "name": "RED_WEAPON_1",
-        "quantity": 6
-      },
-      {
-        "name": "RED_WEAPON_8",
-        "quantity": 8
-      },
-      {
-        "name": "RED_WEAPON_5",
-        "quantity": 4
-      },
-      {
-        "name": "RED_WEAPON_3",
-        "quantity": 8
-      }
-    ],
-    "sensors": [
-      "RED_SENSOR_2"
-    ],
-    "type": "Unspecified"
-  },
-  {
-    "platform_name": "red_ship_26",
-    "side": "red",
-    "group": "red_group_2",
-    "subgroups": [
-      "subgroup_2"
-    ],
-    "latitude": "47.984087",
-    "longitude": "-87.604515",
-    "altitude": "0",
-    "category": "surface",
-    "weapons": [
-      {
-        "name": "RED_WEAPON_6",
-        "quantity": 6
-      }
-    ],
-    "sensors": [
-      "RED_SENSOR_2"
-    ],
-    "type": "Unspecified"
-  },
-  {
-    "platform_name": "red_ship_27",
-    "side": "red",
-    "group": "red_group_3",
-    "subgroups": [
-      "subgroup_1",
-      "subgroup_2"
-    ],
-    "latitude": "46.870264",
-    "longitude": "-85.106601",
-    "altitude": "0",
-    "category": "surface",
-    "weapons": [
-      {
-        "name": "RED_WEAPON_4",
-        "quantity": 14
-      },
-      {
-        "name": "RED_WEAPON_8",
-        "quantity": 20
-      }
-    ],
-    "sensors": [
-      "RED_SENSOR_1",
-      "RED_SENSOR_2"
-    ],
-    "type": "Unspecified"
-  },
-  {
-    "platform_name": "red_ship_28",
-    "side": "red",
-    "group": "red_group_1",
-    "subgroups": [
-      "subgroup_1",
-      "subgroup_2"
-    ],
-    "latitude": "48.120910",
-    "longitude": "-85.091688",
-    "altitude": "0",
-    "category": "surface",
-    "weapons": [
-      {
-        "name": "RED_WEAPON_3",
-        "quantity": 11
-      }
-    ],
-    "sensors": [
-      "RED_SENSOR_2",
-      "RED_SENSOR_1"
-    ],
-    "type": "Unspecified"
-  },
-  {
-    "platform_name": "red_ship_29",
-    "side": "red",
-    "group": "red_group_1",
-    "subgroups": [
-      "subgroup_1"
-    ],
-    "latitude": "47.773631",
-    "longitude": "-88.013731",
-    "altitude": "0",
-    "category": "surface",
-    "weapons": [
-      {
-        "name": "RED_WEAPON_1",
-        "quantity": 18
-      },
-      {
-        "name": "RED_WEAPON_3",
-        "quantity": 4
-      },
-      {
-        "name": "RED_WEAPON_7",
-        "quantity": 17
-      },
-      {
-        "name": "RED_WEAPON_2",
-        "quantity": 5
-      }
-    ],
-    "sensors": [
-      "RED_SENSOR_2",
-      "RED_SENSOR_1"
-    ],
-    "type": "Unspecified"
-  },
-  {
-    "platform_name": "red_ship_30",
-    "side": "red",
-    "group": "red_group_2",
-    "subgroups": [
-      "subgroup_2",
-      "subgroup_1"
-    ],
-    "latitude": "46.326242",
-    "longitude": "-87.942711",
-    "altitude": "0",
-    "category": "surface",
-    "weapons": [
-      {
-        "name": "RED_WEAPON_2",
-        "quantity": 17
-      },
-      {
-        "name": "RED_WEAPON_6",
-        "quantity": 6
-      },
-      {
-        "name": "RED_WEAPON_8",
-        "quantity": 6
-      },
-      {
-        "name": "RED_WEAPON_3",
-        "quantity": 13
-      },
-      {
-        "name": "RED_WEAPON_7",
-        "quantity": 17
-      },
-      {
-        "name": "RED_WEAPON_4",
-        "quantity": 13
-      }
-    ],
-    "sensors": [
-      "RED_SENSOR_1"
-    ],
-    "type": "Unspecified"
-  },
-  {
-    "platform_name": "red_ship_31",
-    "side": "red",
-    "group": "red_group_1",
-    "subgroups": [
-      "subgroup_2"
-    ],
-    "latitude": "45.940371",
-    "longitude": "-84.433894",
-    "altitude": "0",
-    "category": "surface",
-    "weapons": [
-      {
-        "name": "RED_WEAPON_7",
-        "quantity": 18
-      }
-    ],
-    "sensors": [
-      "RED_SENSOR_2"
-    ],
-    "type": "Unspecified"
-  },
-  {
-    "platform_name": "red_ship_32",
-    "side": "red",
-    "group": "red_group_2",
-    "subgroups": [
-      "subgroup_2",
-      "subgroup_1"
-    ],
-    "latitude": "47.710436",
-    "longitude": "-87.392281",
-    "altitude": "0",
-    "category": "surface",
-    "weapons": [
-      {
-        "name": "RED_WEAPON_6",
-        "quantity": 1
-      },
-      {
-        "name": "RED_WEAPON_8",
-        "quantity": 9
-      },
-      {
-        "name": "RED_WEAPON_5",
-        "quantity": 1
-      },
-      {
-        "name": "RED_WEAPON_7",
-        "quantity": 14
-      },
-      {
-        "name": "RED_WEAPON_4",
-        "quantity": 9
-      }
-    ],
-    "sensors": [
-      "RED_SENSOR_1"
-    ],
-    "type": "Unspecified"
-  },
-  {
-    "platform_name": "red_ship_33",
-    "side": "red",
-    "group": "red_group_3",
-    "subgroups": [
-      "subgroup_2",
-      "subgroup_1"
-    ],
-    "latitude": "47.624758",
-    "longitude": "-86.549491",
-    "altitude": "0",
-    "category": "surface",
-    "weapons": [
-      {
-        "name": "RED_WEAPON_3",
-        "quantity": 2
-      },
-      {
-        "name": "RED_WEAPON_1",
-        "quantity": 12
-      },
-      {
-        "name": "RED_WEAPON_8",
-        "quantity": 17
-      },
-      {
-        "name": "RED_WEAPON_5",
-        "quantity": 3
-      }
-    ],
-    "sensors": [
-      "RED_SENSOR_2",
-      "RED_SENSOR_1"
-    ],
-    "type": "Unspecified"
-  },
-  {
-    "platform_name": "red_ship_34",
-    "side": "red",
-    "group": "red_group_1",
-    "subgroups": [
-      "subgroup_1",
-      "subgroup_2"
-    ],
-    "latitude": "46.367148",
-    "longitude": "-86.829189",
-    "altitude": "0",
-    "category": "surface",
-    "weapons": [
-      {
-        "name": "RED_WEAPON_8",
-        "quantity": 18
-      },
-      {
-        "name": "RED_WEAPON_1",
-        "quantity": 1
-      },
-      {
-        "name": "RED_WEAPON_2",
-        "quantity": 4
-      },
-      {
-        "name": "RED_WEAPON_7",
-        "quantity": 2
-      },
-      {
-        "name": "RED_WEAPON_5",
-        "quantity": 10
-      }
-    ],
-    "sensors": [
-      "RED_SENSOR_1",
-      "RED_SENSOR_2"
-    ],
-    "type": "Unspecified"
-  },
-  {
-    "platform_name": "red_ship_35",
-    "side": "red",
-    "group": "red_group_1",
-    "subgroups": [
-      "subgroup_2"
-    ],
-    "latitude": "47.315011",
-    "longitude": "-85.192142",
-    "altitude": "0",
-    "category": "surface",
-    "weapons": [
-      {
-        "name": "RED_WEAPON_7",
-        "quantity": 17
-      },
-      {
-        "name": "RED_WEAPON_3",
-        "quantity": 15
-      },
-      {
-        "name": "RED_WEAPON_4",
-        "quantity": 5
-      }
-    ],
-    "sensors": [
-      "RED_SENSOR_2"
-    ],
-    "type": "Unspecified"
-  },
-  {
-    "platform_name": "red_ship_36",
-    "side": "red",
-    "group": "red_group_1",
-    "subgroups": [
-      "subgroup_2"
-    ],
-    "latitude": "46.525502",
-    "longitude": "-85.677204",
-    "altitude": "0",
-    "category": "surface",
-    "weapons": [
-      {
-        "name": "RED_WEAPON_6",
-        "quantity": 6
-      },
-      {
-        "name": "RED_WEAPON_3",
-        "quantity": 1
-      }
-    ],
-    "sensors": [
-      "RED_SENSOR_2"
-    ],
-    "type": "Unspecified"
-  },
-  {
-    "platform_name": "red_ship_37",
-    "side": "red",
-    "group": "red_group_1",
-    "subgroups": [
-      "subgroup_1"
-    ],
-    "latitude": "47.012242",
-    "longitude": "-86.198965",
-    "altitude": "0",
-    "category": "surface",
-    "weapons": [
-      {
-        "name": "RED_WEAPON_6",
-        "quantity": 11
-      },
-      {
-        "name": "RED_WEAPON_3",
-        "quantity": 7
-      }
-    ],
-    "sensors": [
-      "RED_SENSOR_1",
-      "RED_SENSOR_2"
-    ],
-    "type": "Unspecified"
-  },
-  {
-    "platform_name": "red_ship_38",
-    "side": "red",
-    "group": "red_group_3",
-    "subgroups": [
-      "subgroup_1",
-      "subgroup_2"
-    ],
-    "latitude": "46.838549",
-    "longitude": "-84.934663",
-    "altitude": "0",
-    "category": "surface",
-    "weapons": [
-      {
-        "name": "RED_WEAPON_7",
-        "quantity": 14
-      }
-    ],
-    "sensors": [
-      "RED_SENSOR_1",
-      "RED_SENSOR_2"
-    ],
-    "type": "Unspecified"
-  },
-  {
-    "platform_name": "red_ship_39",
-    "side": "red",
-    "group": "red_group_3",
-    "subgroups": [
-      "subgroup_2",
-      "subgroup_1"
-    ],
-    "latitude": "46.529709",
-    "longitude": "-85.536815",
-    "altitude": "0",
-    "category": "surface",
-    "weapons": [
-      {
-        "name": "RED_WEAPON_8",
-        "quantity": 18
-      },
-      {
-        "name": "RED_WEAPON_2",
-        "quantity": 7
-      },
-      {
-        "name": "RED_WEAPON_1",
-        "quantity": 18
-      },
-      {
-        "name": "RED_WEAPON_3",
-        "quantity": 15
-      },
-      {
-        "name": "RED_WEAPON_4",
-        "quantity": 12
-      },
-      {
-        "name": "RED_WEAPON_5",
-        "quantity": 17
-      },
-      {
-        "name": "RED_WEAPON_7",
-        "quantity": 10
-      },
-      {
-        "name": "RED_WEAPON_6",
-        "quantity": 3
-      }
-    ],
-    "sensors": [
-      "RED_SENSOR_1"
-    ],
-    "type": "Unspecified"
-  },
-  {
-    "platform_name": "red_ship_40",
-    "side": "red",
-    "group": "red_group_2",
-    "subgroups": [
-      "subgroup_1"
-    ],
-    "latitude": "48.026143",
-    "longitude": "-85.705211",
-    "altitude": "0",
-    "category": "surface",
-    "weapons": [
-      {
-        "name": "RED_WEAPON_6",
-        "quantity": 13
-      },
-      {
-        "name": "RED_WEAPON_7",
-        "quantity": 15
-      },
-      {
-        "name": "RED_WEAPON_4",
-        "quantity": 8
-      },
-      {
-        "name": "RED_WEAPON_2",
-        "quantity": 2
-      }
-    ],
-    "sensors": [
-      "RED_SENSOR_2"
-    ],
-    "type": "Unspecified"
-  },
-  {
-    "platform_name": "red_ship_41",
-    "side": "red",
-    "group": "red_group_3",
-    "subgroups": [
-      "subgroup_2"
-    ],
-    "latitude": "47.757432",
-    "longitude": "-84.923534",
-    "altitude": "0",
-    "category": "surface",
-    "weapons": [
-      {
-        "name": "RED_WEAPON_3",
-        "quantity": 15
-      },
-      {
-        "name": "RED_WEAPON_5",
-        "quantity": 18
-      },
-      {
-        "name": "RED_WEAPON_2",
-        "quantity": 12
-      },
-      {
-        "name": "RED_WEAPON_4",
-        "quantity": 1
-      }
-    ],
-    "sensors": [
-      "RED_SENSOR_1"
-    ],
-    "type": "Unspecified"
-  },
-  {
-    "platform_name": "red_ship_42",
-    "side": "red",
-    "group": "red_group_3",
-    "subgroups": [
-      "subgroup_1"
-    ],
-    "latitude": "46.363218",
-    "longitude": "-86.148794",
-    "altitude": "0",
-    "category": "surface",
-    "weapons": [
-      {
-        "name": "RED_WEAPON_8",
-        "quantity": 5
-      },
-      {
-        "name": "RED_WEAPON_5",
-        "quantity": 3
-      },
-      {
-        "name": "RED_WEAPON_6",
-        "quantity": 17
-      },
-      {
-        "name": "RED_WEAPON_1",
-        "quantity": 17
-      },
-      {
-        "name": "RED_WEAPON_7",
-        "quantity": 2
-      },
-      {
-        "name": "RED_WEAPON_2",
-        "quantity": 1
-      },
-      {
-        "name": "RED_WEAPON_3",
-        "quantity": 3
-      }
-    ],
-    "sensors": [
-      "RED_SENSOR_2",
-      "RED_SENSOR_1"
-    ],
-    "type": "Unspecified"
-  },
-  {
-    "platform_name": "red_ship_43",
-    "side": "red",
-    "group": "red_group_1",
-    "subgroups": [
-      "subgroup_1",
-      "subgroup_2"
-    ],
-    "latitude": "45.917957",
-    "longitude": "-86.072090",
-    "altitude": "0",
-    "category": "surface",
-    "weapons": [
-      {
-        "name": "RED_WEAPON_3",
-        "quantity": 15
-      },
-      {
-        "name": "RED_WEAPON_6",
-        "quantity": 15
-      },
-      {
-        "name": "RED_WEAPON_4",
-        "quantity": 7
-      }
-    ],
-    "sensors": [
-      "RED_SENSOR_2"
-    ],
-    "type": "Unspecified"
-  },
-  {
-    "platform_name": "red_ship_44",
-    "side": "red",
-    "group": "red_group_3",
-    "subgroups": [
-      "subgroup_1"
-    ],
-    "latitude": "46.382075",
-    "longitude": "-84.668619",
-    "altitude": "0",
-    "category": "surface",
-    "weapons": [
-      {
-        "name": "RED_WEAPON_4",
-        "quantity": 8
-      },
-      {
-        "name": "RED_WEAPON_2",
-        "quantity": 12
-      },
-      {
-        "name": "RED_WEAPON_7",
-        "quantity": 4
-      },
-      {
-        "name": "RED_WEAPON_3",
-        "quantity": 19
-      },
-      {
-        "name": "RED_WEAPON_6",
-        "quantity": 15
-      },
-      {
-        "name": "RED_WEAPON_1",
-        "quantity": 18
-      }
-    ],
-    "sensors": [
-      "RED_SENSOR_1"
-    ],
-    "type": "Unspecified"
-  },
-  {
-    "platform_name": "red_ship_45",
-    "side": "red",
-    "group": "red_group_1",
-    "subgroups": [
-      "subgroup_2",
-      "subgroup_1"
-    ],
-    "latitude": "47.052186",
-    "longitude": "-84.910201",
-    "altitude": "0",
-    "category": "surface",
-    "weapons": [
-      {
-        "name": "RED_WEAPON_5",
-        "quantity": 4
-      },
-      {
-        "name": "RED_WEAPON_8",
-        "quantity": 20
-      },
-      {
-        "name": "RED_WEAPON_2",
-        "quantity": 18
-      }
-    ],
-    "sensors": [
-      "RED_SENSOR_1",
-      "RED_SENSOR_2"
-    ],
-    "type": "Unspecified"
-  },
-  {
-    "platform_name": "red_ship_46",
-    "side": "red",
-    "group": "red_group_1",
-    "subgroups": [
-      "subgroup_2",
-      "subgroup_1"
-    ],
-    "latitude": "46.620682",
-    "longitude": "-84.831932",
-    "altitude": "0",
-    "category": "surface",
-    "weapons": [
-      {
-        "name": "RED_WEAPON_6",
-        "quantity": 14
-      },
-      {
-        "name": "RED_WEAPON_5",
-        "quantity": 8
-      },
-      {
-        "name": "RED_WEAPON_3",
-        "quantity": 5
-      },
-      {
-        "name": "RED_WEAPON_4",
-        "quantity": 3
-      }
-    ],
-    "sensors": [
-      "RED_SENSOR_1"
-    ],
-    "type": "Unspecified"
-  },
-  {
-    "platform_name": "red_ship_47",
-    "side": "red",
-    "group": "red_group_2",
-    "subgroups": [
-      "subgroup_2",
-      "subgroup_1"
-    ],
-    "latitude": "48.214541",
-    "longitude": "-87.715406",
-    "altitude": "0",
-    "category": "surface",
-    "weapons": [
-      {
-        "name": "RED_WEAPON_2",
-        "quantity": 5
-      },
-      {
-        "name": "RED_WEAPON_1",
-        "quantity": 16
-      },
-      {
-        "name": "RED_WEAPON_8",
-        "quantity": 11
-      },
-      {
-        "name": "RED_WEAPON_6",
-        "quantity": 12
-      },
-      {
-        "name": "RED_WEAPON_4",
-        "quantity": 12
-      },
-      {
-        "name": "RED_WEAPON_3",
-        "quantity": 11
-      },
-      {
-        "name": "RED_WEAPON_7",
-        "quantity": 12
-      },
-      {
-        "name": "RED_WEAPON_5",
-        "quantity": 19
-      }
-    ],
-    "sensors": [
-      "RED_SENSOR_1",
-      "RED_SENSOR_2"
-    ],
-    "type": "Unspecified"
-  },
-  {
-    "platform_name": "red_ship_48",
-    "side": "red",
-    "group": "red_group_1",
-    "subgroups": [
-      "subgroup_1"
-    ],
-    "latitude": "47.628405",
-    "longitude": "-86.589723",
-    "altitude": "0",
-    "category": "surface",
-    "weapons": [
-      {
-        "name": "RED_WEAPON_4",
-        "quantity": 2
-      },
-      {
-        "name": "RED_WEAPON_2",
-        "quantity": 19
-      },
-      {
-        "name": "RED_WEAPON_8",
-        "quantity": 5
-      }
-    ],
-    "sensors": [
-      "RED_SENSOR_1"
-    ],
-    "type": "Unspecified"
-  },
-  {
-    "platform_name": "red_ship_49",
-    "side": "red",
-    "group": "red_group_3",
-    "subgroups": [
-      "subgroup_2",
-      "subgroup_1"
-    ],
-    "latitude": "47.019947",
-    "longitude": "-87.650001",
-    "altitude": "0",
-    "category": "surface",
-    "weapons": [
-      {
-        "name": "RED_WEAPON_5",
-        "quantity": 2
-      },
-      {
-        "name": "RED_WEAPON_4",
-        "quantity": 17
-      },
-      {
-        "name": "RED_WEAPON_8",
-        "quantity": 3
-      },
-      {
-        "name": "RED_WEAPON_2",
-        "quantity": 5
-      },
-      {
-        "name": "RED_WEAPON_3",
-        "quantity": 20
-      },
-      {
-        "name": "RED_WEAPON_1",
-        "quantity": 20
-      }
-    ],
-    "sensors": [
-      "RED_SENSOR_1",
-      "RED_SENSOR_2"
-    ],
-    "type": "Unspecified"
-  },
-  {
-    "platform_name": "red_ship_50",
-    "side": "red",
-    "group": "red_group_3",
-    "subgroups": [
-      "subgroup_2"
-    ],
-    "latitude": "47.415293",
-    "longitude": "-87.110955",
-    "altitude": "0",
-    "category": "surface",
-    "weapons": [
-      {
-        "name": "RED_WEAPON_8",
-        "quantity": 19
-      },
-      {
-        "name": "RED_WEAPON_4",
-        "quantity": 8
-      },
-      {
-        "name": "RED_WEAPON_3",
-        "quantity": 12
-      },
-      {
-        "name": "RED_WEAPON_1",
-        "quantity": 10
-      },
-      {
-        "name": "RED_WEAPON_6",
-        "quantity": 9
-      }
-    ],
-    "sensors": [
-      "RED_SENSOR_2",
-      "RED_SENSOR_1"
-    ],
-    "type": "Unspecified"
+    "type": "RED_DDG_TYPE_3"
   }
 ];
