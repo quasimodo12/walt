@@ -157,6 +157,11 @@ var View = (function() {
         // Add an event listener to the 'Display Results' button
         document.getElementById('refreshDataButton').addEventListener('click', updateAll);
 
+        // Navigate to the Missions page when requested
+        document.getElementById('missionsButton').addEventListener('click', function () {
+            window.location.href = 'missions.html';
+        });
+
     }
 
     // Render platforms from platform details
