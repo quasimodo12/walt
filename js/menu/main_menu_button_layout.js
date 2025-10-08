@@ -15,7 +15,8 @@ var MainMenuButtons = (function(global) {
     [
       { id: 'rangeRingsButton', label: 'Range Rings' },
       { id: 'weaponsButton', label: 'Weapons' },
-      { id: 'sensorsButton', label: 'Sensors' }
+      { id: 'sensorsButton', label: 'Sensors' },
+      { id: 'weaponLethalityButton', label: 'Weapon Lethality' }
     ],
     [
       { id: 'openChartsButton', label: 'Display Results' },

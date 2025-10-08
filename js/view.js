@@ -131,6 +131,11 @@ var View = (function() {
             SensorConfig.createSensorConfigDialog();
         });
 
+        // Add Weapon Lethality button functionality
+        document.getElementById('weaponLethalityButton').addEventListener('click', function() {
+            WeaponLethalityConfig.openDialog();
+        });
+
         // Add Range Ring Configuration button functionality
         document.getElementById('rangeRingsButton').addEventListener('click', function() {
             RangeRingConfig.createRangeRingConfigDialog();
