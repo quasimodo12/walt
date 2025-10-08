@@ -1,22 +1,22 @@
 var WEAPON_LETHALITY_DATA = [
-  { "weapon": "BLUE_WEAPON_1", "platformType": "Destroyer", "quantity": 2 },
-  { "weapon": "BLUE_WEAPON_2", "platformType": "Frigate", "quantity": 4 },
-  { "weapon": "BLUE_WEAPON_3", "platformType": "Cruiser", "quantity": 6 },
-  { "weapon": "BLUE_WEAPON_4", "platformType": "Carrier", "quantity": 3 },
-  { "weapon": "BLUE_WEAPON_5", "platformType": "Submarine", "quantity": 5 },
-  { "weapon": "RED_WEAPON_1", "platformType": "Patrol Craft", "quantity": 7 },
-  { "weapon": "RED_WEAPON_2", "platformType": "Missile Boat", "quantity": 9 },
-  { "weapon": "RED_WEAPON_3", "platformType": "Support Vessel", "quantity": 4 },
-  { "weapon": "RED_WEAPON_4", "platformType": "Logistics Ship", "quantity": 2 },
-  { "weapon": "RED_WEAPON_5", "platformType": "Amphibious Assault", "quantity": 8 },
-  { "weapon": "RED_WEAPON_6", "platformType": "Coastal Defense", "quantity": 1 },
-  { "weapon": "RED_WEAPON_7", "platformType": "Fast Attack Craft", "quantity": 5 },
-  { "weapon": "RED_WEAPON_8", "platformType": "Mine Layer", "quantity": 6 },
-  { "weapon": "BLUE_WEAPON_1", "platformType": "Mine Sweeper", "quantity": 10 },
-  { "weapon": "BLUE_WEAPON_2", "platformType": "Command Ship", "quantity": 12 },
-  { "weapon": "BLUE_WEAPON_3", "platformType": "Recon Vessel", "quantity": 14 },
-  { "weapon": "BLUE_WEAPON_4", "platformType": "Patrol Boat", "quantity": 16 },
-  { "weapon": "BLUE_WEAPON_5", "platformType": "Littoral Combatant", "quantity": 18 },
-  { "weapon": "RED_WEAPON_1", "platformType": "Escort", "quantity": 11 },
-  { "weapon": "RED_WEAPON_2", "platformType": "Supply Ship", "quantity": 13 }
+  {
+    "weapon": "BLUE_WEAPON_1",
+    "platformType": "Destroyer",
+    "quantity": 2
+  },
+  {
+    "weapon": "BLUE_WEAPON_2",
+    "platformType": "Frigate",
+    "quantity": 4
+  },
+  {
+    "weapon": "BLUE_WEAPON_3",
+    "platformType": "Cruiser",
+    "quantity": 6
+  },
+  {
+    "weapon": "BLUE_WEAPON_4",
+    "platformType": "Carrier",
+    "quantity": 3
+  }
 ];
