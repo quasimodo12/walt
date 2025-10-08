@@ -19,6 +19,7 @@ document.addEventListener('contextmenu', function(event) { // Disable right clic
 PlatformModel.loadInitialData(PLATFORM_DATA); // Store platform data from platform_details.js
 DistanceStorage.initializeDistanceData(); // Catalogue the distances between every platform in the scenario using PlatformModel
 WeaponStorage.loadInitialData(WEAPON_DATA); // Store weapon data from weapon_details.js
+WeaponLethalityStorage.loadInitialData(WEAPON_LETHALITY_DATA); // Store weapon lethality data from weapon_lethality_details.js
 SensorStorage.loadInitialData(SENSOR_DATA); // Store sensor data from sensor_details.js
 LabelStorage.loadInitialData(LABEL_DATA); // Store label data from labels.js
 RangeRingStorage.init(); // Use platform data and weapon range data to catalogue all of the range rings that exist

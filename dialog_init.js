@@ -22,7 +22,23 @@ $(function () {
       draggable: true,
       resizable: true,
       width: 700,
-      position: { 
+      position: {
+        my: "center",
+        at: "center+0+150",
+        of: window
+      }
+    });
+  });
+
+  $(function () {
+    // Initialize Weapon Lethality Dialog
+    $("#weaponLethalityDialog").dialog({
+      modal: true,
+      autoOpen: false,
+      draggable: true,
+      resizable: true,
+      width: 800,
+      position: {
         my: "center",
         at: "center+0+150",
         of: window
