@@ -23,6 +23,9 @@ var MainMenuButtons = (function(global) {
       { id: 'refreshDataButton', label: 'Refresh Data' }
     ],
     [
+      { id: 'missionsButton', label: 'Missions' }
+    ],
+    [
       { id: 'exportLaydownButton', label: 'Export Laydown' }
     ]
   ];
