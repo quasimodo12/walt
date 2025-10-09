@@ -1,7 +1,7 @@
 // distance_storage.js
 
 // Uses the custom GroundRange module from GroundRange.js to calculate the distance
-// between two points. 
+// between two points.
 
 var DistanceStorage = (function() {
 
@@ -17,7 +17,7 @@ var DistanceStorage = (function() {
         );
     }
 
-    // Helper function to calculate the distance between two lat lon points 
+    // Helper function to calculate the distance between two lat lon points
     // using AFSIM's ground range calculation formulas
     function calculateGroundRangeAFSIM(lat1, lon1, lat2, lon2) {
         let pointA = [lat1 * Math.PI/180, lon1 * Math.PI/180, 0];
@@ -78,11 +78,6 @@ var DistanceStorage = (function() {
     // Create a proxy to intercept access to the IIFE
     return new Proxy(originalObject, {
         get(target, prop) {
-            console.log(`DistanceStorage IIFE accessed: ${prop}`);
-            // // Send data to new window
-            // console.log("distance_storage.js >>> sending distanceData to new window");
-            // View.sendDataToNewWindow({type: 'distanceData', data: distanceData});
-            //;
             return target[prop];
         }
     });
