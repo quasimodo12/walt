@@ -57,6 +57,17 @@ $(function () {
     });
   });
 
+
+  $(function () {
+    // Initialize Range Ring Style Dialog
+    $("#rangeRingStyleDialog").dialog({
+      modal: true,
+      autoOpen: false,
+      draggable: true,
+      resizable: true,
+      width: 760
+    });
+  });
   $(function () {
     // Initialize Weapon Lethality Dialog
     $("#weaponLethalityDialog").dialog({

@@ -39,6 +39,7 @@
   <link rel="stylesheet" href="css/weapon-lethality-styles.css">
   <link rel="stylesheet" href="css/map-tools.css">
   <link rel="stylesheet" href="js/labels/label-styles.css">
+  <link rel="stylesheet" href="css/range-ring-style-editor.css">
 </head>
 
 <body>
@@ -131,6 +132,7 @@
   <script src="input/weapon_lethality_details.js"></script>
   <script src="input/sensor_details.js"></script>
   <script src="input/labels.js"></script>
+  <script src="input/range_ring_style_templates.js"></script>
 
   <!-------------------------------------------------------------------------->
   <!------------ Storage, Configuration, and Logic Scripts ------------>
@@ -156,6 +158,7 @@
   <script src="js/range_rings/range_ring_logic.js"></script>
   <script src="js/range_rings/range_ring_opacity_tool.js"></script>
   <script src="js/range_rings/range_ring_config.js"></script>
+  <script src="js/range_rings/range_ring_style_editor.js"></script>
 
   <!-- Label Scripts -->
   <script src="js/labels/label_controller.js"></script>
@@ -205,6 +208,11 @@
   <!-- Range Ring Info Dialog -->
   <div id="rangeRingInfoDialog" title="Range Ring Configuration">
     <p id="rangeRingInfoContent"></p>
+  </div>
+
+  <!-- Range Ring Style Dialog -->
+  <div id="rangeRingStyleDialog" title="Edit Range Ring Style">
+    <div id="rangeRingStyleContent"></div>
   </div>
 
   <!-- Create Platform Dialog -->
