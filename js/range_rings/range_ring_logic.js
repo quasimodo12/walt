@@ -1,68 +1,34 @@
 var RangeRingLogic = (function() {
-
-  // Array to keep track of range ring layers added to the map
   var rangeRingLayers = [];
 
-  var DEFAULT_RING_OPACITY = 0.2;
-  var rangeRingOpacity = DEFAULT_RING_OPACITY;
-
-  // Function to draw range rings on the map
   function drawRangeRings() {
-
     var map = View.getMap();
     var rangeRings = RangeRingStorage.getAllRangeRings();
 
-    // Remove any existing range rings from the map
-    rangeRingLayers.forEach(function(layer) {
-      map.removeLayer(layer);
-    });
-    rangeRingLayers = []; // Clear the array of layers
+    rangeRingLayers.forEach(function(layer) { map.removeLayer(layer); });
+    rangeRingLayers = [];
 
-    // Get platform data from PlatformModel
     var platformData = PlatformModel.getPlatformData();
-
-    // Create a lookup for platform side by platform name
     var platformSideLookup = platformData.reduce(function(acc, platform) {
       acc[platform.platform_name] = platform.side;
       return acc;
     }, {});
 
-    // Iterate through each range ring in the array
     rangeRings
-      .filter(function(rangeRing) {
-        return rangeRing.toggled === 1;
-      })
-      .sort(function(a, b) {
-        return b.range_val - a.range_val;
-      })
+      .filter(function(rangeRing) { return rangeRing.toggled === 1; })
+      .sort(function(a, b) { return b.range_val - a.range_val; })
       .forEach(function(rangeRing) {
-        // Determine the side and corresponding color
-        var side = platformSideLookup[rangeRing.platform_name];
-        var color = '#808080';
-        if (typeof SideConfig !== 'undefined' && typeof SideConfig.getColorForSide === 'function') {
-          color = SideConfig.getColorForSide(side);
-        } else if (side === 'blue') {
-          color = 'blue';
-        } else if (side === 'red') {
-          color = 'red';
-        }
-
-        // Define the circle using Leaflet's L.circle function
+        var style = getRangeRingStyle(rangeRing, platformSideLookup[rangeRing.platform_name]);
         var circle = L.circle([rangeRing.latitude, rangeRing.longitude], {
-          radius: rangeRing.range_val, // radius in meters
-          color: color,
-          weight: 0.5,
-          opacity: rangeRingOpacity, // Set the line opacity here
-          fillOpacity: 0.01 // Inner fill opacity
+          radius: rangeRing.range_val,
+          color: style.color,
+          weight: style.lineWidth,
+          opacity: style.opacity,
+          fillOpacity: 0.01
         });
 
-        var rangeValue = typeof rangeRing.range_val === 'number'
-          ? rangeRing.range_val
-          : parseFloat(rangeRing.range_val);
-        var formattedRange = isFinite(rangeValue)
-          ? rangeValue.toLocaleString()
-          : 'Unknown';
-
+        var rangeValue = typeof rangeRing.range_val === 'number' ? rangeRing.range_val : parseFloat(rangeRing.range_val);
+        var formattedRange = isFinite(rangeValue) ? rangeValue.toLocaleString() : 'Unknown';
         var tooltipContent = [
           rangeRing.system_name || 'Unknown System',
           rangeRing.platform_name || 'Unknown Platform',
@@ -75,52 +41,33 @@ var RangeRingLogic = (function() {
           className: 'range-ring-tooltip'
         });
 
-        // Add the circle to the map and keep track of it
         circle.addTo(map);
         rangeRingLayers.push(circle);
       });
+
     updateRangeRingConfigCheckboxes();
   }
 
-  // New function to draw a range ring around a specific platform by name
   function drawRangeRingForPlatform(platformName) {
-    if (!platformName) {
-      return;
-    }
-
+    if (!platformName) { return; }
     var rangeRings = RangeRingStorage.getAllRangeRings();
-    if (!Array.isArray(rangeRings)) {
-      return;
-    }
+    if (!Array.isArray(rangeRings)) { return; }
 
     var matchingRangeRings = rangeRings.filter(function(rangeRing) {
       return rangeRing.platform_name === platformName;
     });
+    if (!matchingRangeRings.length) { return; }
 
-    if (matchingRangeRings.length === 0) {
-      return;
-    }
-
-    var enableRings = matchingRangeRings.some(function(rangeRing) {
-      return rangeRing.toggled !== 1;
-    });
+    var enableRings = matchingRangeRings.some(function(rangeRing) { return rangeRing.toggled !== 1; });
     var newToggleValue = enableRings ? 1 : 0;
-
-    matchingRangeRings.forEach(function(rangeRing) {
-      rangeRing.toggled = newToggleValue;
-    });
+    matchingRangeRings.forEach(function(rangeRing) { rangeRing.toggled = newToggleValue; });
 
     drawRangeRings();
   }
-  
 
-  // Clear the range rings from the map
   function clearRangeRings() {
     var map = View.getMap();
-    // Clear existing range rings
-    rangeRingLayers.forEach(function(layer) {
-      map.removeLayer(layer);
-    });
+    rangeRingLayers.forEach(function(layer) { map.removeLayer(layer); });
     rangeRingLayers = [];
   }
 
@@ -132,32 +79,21 @@ var RangeRingLogic = (function() {
 
   function updateRangeRingConfigCheckboxes() {
     var tableBody = document.querySelector('#rangeRingTable tbody');
-    if (!tableBody) {
-      return;
-    }
+    if (!tableBody) { return; }
 
     var rangeRings = RangeRingStorage.getAllRangeRings();
-    if (!Array.isArray(rangeRings) || rangeRings.length === 0) {
-      return;
-    }
+    if (!Array.isArray(rangeRings) || !rangeRings.length) { return; }
 
     var toggleLookup = rangeRings.reduce(function(accumulator, rangeRing) {
-      var key = createRangeRingKey(rangeRing.platform_name, rangeRing.system_name);
-      accumulator[key] = rangeRing.toggled === 1;
+      accumulator[createRangeRingKey(rangeRing.platform_name, rangeRing.system_name)] = rangeRing.toggled === 1;
       return accumulator;
     }, {});
 
     var rows = tableBody.querySelectorAll('tr[data-platform][data-system]');
     rows.forEach(function(row) {
-      var platformName = row.getAttribute('data-platform');
-      var systemName = row.getAttribute('data-system');
       var checkbox = row.querySelector('.range-toggle');
-
-      if (!checkbox) {
-        return;
-      }
-
-      var key = createRangeRingKey(platformName, systemName);
+      if (!checkbox) { return; }
+      var key = createRangeRingKey(row.getAttribute('data-platform'), row.getAttribute('data-system'));
       if (Object.prototype.hasOwnProperty.call(toggleLookup, key)) {
         checkbox.checked = toggleLookup[key];
       }
@@ -168,33 +104,63 @@ var RangeRingLogic = (function() {
     return String(platformName) + '|' + String(systemName);
   }
 
-  function setRangeRingOpacity(opacity) {
-    var parsed = parseFloat(opacity);
-    if (!isFinite(parsed)) {
-      return;
+  function getRangeRingStyle(rangeRing, side) {
+    var fallbackColor = '#808080';
+    if (typeof SideConfig !== 'undefined' && typeof SideConfig.getColorForSide === 'function') {
+      fallbackColor = SideConfig.getColorForSide(side) || fallbackColor;
+    } else if (side === 'blue') {
+      fallbackColor = 'blue';
+    } else if (side === 'red') {
+      fallbackColor = 'red';
     }
 
-    // Clamp value between 0 and 1
-    parsed = Math.max(0, Math.min(1, parsed));
-    rangeRingOpacity = parsed;
+    var style = rangeRing.style || {};
+    return {
+      color: style.color || fallbackColor,
+      lineWidth: isFinite(style.lineWidth) ? style.lineWidth : 2,
+      opacity: isFinite(style.opacity) ? style.opacity : 0.35
+    };
+  }
 
-    rangeRingLayers.forEach(function(layer) {
-      layer.setStyle({ opacity: rangeRingOpacity });
+  function applyStyleToToggledRangeRings(template) {
+    var rangeRings = RangeRingStorage.getAllRangeRings();
+    if (!Array.isArray(rangeRings)) { return; }
+
+    rangeRings.forEach(function(ring) {
+      if (ring.toggled === 1) {
+        ring.style = { color: template.color, lineWidth: template.lineWidth, opacity: template.opacity };
+      }
     });
+
+    drawRangeRings();
+  }
+
+  function setRangeRingOpacity(opacity) {
+    var parsed = parseFloat(opacity);
+    if (!isFinite(parsed)) { return; }
+    parsed = Math.max(0, Math.min(1, parsed));
+
+    RangeRingStorage.getAllRangeRings().forEach(function(ring) {
+      ring.style = ring.style || {};
+      ring.style.opacity = parsed;
+    });
+
+    drawRangeRings();
   }
 
   function getRangeRingOpacity() {
-    return rangeRingOpacity;
+    var first = RangeRingStorage.getAllRangeRings()[0];
+    var style = first && first.style ? first.style : {};
+    return isFinite(style.opacity) ? style.opacity : 0.35;
   }
 
-  // Return public functions
   return {
     drawRangeRings: drawRangeRings,
     drawRangeRingForPlatform: drawRangeRingForPlatform,
     clearRangeRings: clearRangeRings,
     clearAllRangeRings: clearAllRangeRings,
+    applyStyleToToggledRangeRings: applyStyleToToggledRangeRings,
     setRangeRingOpacity: setRangeRingOpacity,
     getRangeRingOpacity: getRangeRingOpacity
   };
-
 })();

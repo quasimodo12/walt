@@ -1,0 +1,12 @@
+.range-ring-style-editor { font-family: Arial, sans-serif; }
+.rr-style-title { text-align: center; margin: 0 0 14px; }
+.rr-style-body { display: flex; gap: 16px; }
+.rr-style-left, .rr-style-right { width: 50%; }
+.rr-style-field-row { display: flex; align-items: center; justify-content: space-between; margin-top: 10px; gap: 10px; }
+.rr-style-field-row input { flex: 1; max-width: 180px; }
+.rr-template-select-row { display: flex; gap: 8px; align-items: center; }
+#rrTemplateSelect { flex: 1; }
+#rrCopyTemplatesButton { width: 34px; height: 34px; cursor: pointer; }
+.rr-add-template-button { display: block; margin: 14px auto 0; }
+.rr-preview-box { border: 1px solid #888; border-radius: 6px; height: 260px; display: flex; align-items: center; justify-content: center; background: #fafafa; }
+.rr-style-footer { margin-top: 16px; text-align: center; }

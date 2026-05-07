@@ -1,15 +1,13 @@
 // range_ring_config.js
 var RangeRingConfig = (function() {
 
-    // Function to create the range ring configuration dialog
     function createRangeRingConfigDialog() {
-        // Grab all the range rings 
         var rangeRings = RangeRingStorage.getAllRangeRings();
 
-        // HTML content for the dialog
         var content = `
             <div>
                 <button id="toggleAllCheckboxes">Toggle All</button>
+                <button id="editRangeRingStyleButton">Edit Style</button>
                 <table id="rangeRingTable" class="display">
                     <thead>
                         <tr>
@@ -39,19 +37,16 @@ var RangeRingConfig = (function() {
             </div>
         `;
 
-        // Display the range ring configuration content
         $('#rangeRingInfoContent').html(content);
         $('#rangeRingInfoDialog').dialog('open');
 
-        // Initialize DataTable with searchable, sortable, and filterable features
         var rangeRingDataTable = $('#rangeRingTable').DataTable({
             columnDefs: [
-                { orderable: false, targets: 0 }, // Disable sorting for checkbox column
+                { orderable: false, targets: 0 },
             ],
-            pageLength: 10  // Set the default number of entries per page
+            pageLength: 10
         });
 
-        // Event listener for toggling checkboxes
         $('#rangeRingTable').on('change', '.range-toggle', function() {
             var $row = $(this).closest('tr');
             var platformName = $row.attr('data-platform');
@@ -60,12 +55,10 @@ var RangeRingConfig = (function() {
             if (!platformName || !systemName) {
                 return;
             }
-            // toggle the range ring enabled on or off
             RangeRingStorage.setRangeRing(platformName, systemName, { toggled: isChecked ? 1 : 0 });
             RangeRingLogic.drawRangeRings();
         });
 
-        // Event listener for toggling all checkboxes
         $('#toggleAllCheckboxes').on('click', function() {
             var rowsOnPage = rangeRingDataTable.rows({ page: 'current' }).nodes().to$();
             var checkboxes = rowsOnPage.find('.range-toggle');
@@ -92,6 +85,10 @@ var RangeRingConfig = (function() {
             });
 
             RangeRingLogic.drawRangeRings();
+        });
+
+        $('#editRangeRingStyleButton').on('click', function() {
+            RangeRingStyleEditor.createEditStyleDialog();
         });
     }
 
