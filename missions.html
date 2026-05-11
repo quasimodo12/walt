@@ -4,31 +4,88 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>WALT Missions</title>
-
-  <!-- External Libraries -->
-  <link rel="stylesheet" href="libs/jquery/jquery-ui.css">
-
-  <!-- Custom Stylesheets -->
   <link rel="stylesheet" href="missions/css/missions.css">
 </head>
 <body>
   <header class="missions-header">
     <h1>Missions</h1>
-    <p class="missions-subtitle">This page is ready for mission planning features.</p>
+    <p class="missions-subtitle">Generate best valid missions under required filter constraints.</p>
   </header>
 
-  <main id="missions-root" class="missions-content" aria-live="polite">
-    <section class="missions-placeholder">
-      <h2>Placeholder</h2>
-      <p>Use <code>missions/js/missions.js</code> for behavior and <code>missions/css/missions.css</code> for styling.</p>
+  <main id="missions-root" class="missions-content">
+    <section class="panel required">
+      <h2>Required Filters</h2>
+      <div class="grid3">
+        <label>Blue shooters
+          <select id="filter-blue-shooters" multiple></select>
+        </label>
+        <label>Red targets
+          <select id="filter-red-targets" multiple></select>
+        </label>
+        <label>Blue weapons
+          <select id="filter-blue-weapons" multiple></select>
+        </label>
+      </div>
+      <p id="validation-message" class="validation"></p>
+    </section>
+
+    <section class="panel">
+      <h2>Optional Filters</h2>
+      <div class="grid3">
+        <label>Offensive platform types <select id="filter-offensive-types" multiple></select></label>
+        <label>Target platform types <select id="filter-target-types" multiple></select></label>
+        <label>Min destroyed platforms <input id="filter-min-kills" type="number" min="0"></label>
+        <label>Max destroyed platforms <input id="filter-max-kills" type="number" min="0"></label>
+        <label>Mission must include weapon <select id="filter-include-weapon"></select></label>
+        <label>Mission must not include weapon <select id="filter-exclude-weapon"></select></label>
+      </div>
+    </section>
+
+    <section class="panel">
+      <button id="advanced-toggle" type="button">Advanced Generation Settings</button>
+      <div id="advanced-panel" class="hidden">
+        <div class="grid3">
+          <label>Max missions to return <input id="advanced-max-missions" type="number" value="25" min="1"></label>
+          <label>Max candidate engagements <input id="advanced-max-engagements" type="number" value="500" min="1"></label>
+          <label>Max search depth <input id="advanced-max-depth" type="number" value="8" min="1"></label>
+          <label>Max kills per mission <input id="advanced-max-kills" type="number" value="8" min="1"></label>
+          <label>Max contributing platforms <input id="advanced-max-contrib-platforms" type="number" value="3" min="1"></label>
+          <label>Max contributing weapons <input id="advanced-max-contrib-weapons" type="number" value="3" min="1"></label>
+          <label>Overkill tolerance <input id="advanced-overkill-tolerance" type="number" step="0.05" value="0.35" min="0"></label>
+          <label>Debug verbosity <select id="advanced-log-verbosity"><option>normal</option><option>high</option></select></label>
+          <label><input id="advanced-include-mixed" type="checkbox" checked> Include mixed-weapon engagements</label>
+          <label><input id="advanced-allow-multi-platform" type="checkbox" checked> Allow multi-platform engagements</label>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel actions"><button id="generate-missions-btn" type="button">Generate Missions</button></section>
+
+    <section class="panel">
+      <h2>Generated Missions JSON</h2>
+      <textarea id="missions-json-output" rows="14" readonly></textarea>
+    </section>
+
+    <section class="panel">
+      <h2>Mission Generation Log</h2>
+      <textarea id="mission-log-output" rows="14" readonly></textarea>
     </section>
   </main>
 
-  <!-- External Scripts -->
-  <script src="libs/jquery/jquery.min.js"></script>
-  <script src="libs/jquery/jquery-ui.js"></script>
-
-  <!-- Page Scripts -->
+  <script src="libs/geolib/geolib.js"></script>
+  <script src="libs/generalized_ground_range/GroundRange.js"></script>
+  <script src="input/platform_details.js"></script>
+  <script src="input/weapon_details.js"></script>
+  <script src="input/weapon_lethality_details.js"></script>
+  <script src="js/platforms/platform_model.js"></script>
+  <script src="js/weapons/weapon_storage.js"></script>
+  <script src="js/weapon_lethality/weapon_lethality_storage.js"></script>
+  <script src="js/distance_storage.js"></script>
+  <script>
+    PlatformModel.loadInitialData(PLATFORM_DATA);
+    WeaponStorage.loadInitialData(WEAPON_DATA);
+    WeaponLethalityStorage.loadInitialData(WEAPON_LETHALITY_DATA);
+  </script>
   <script src="missions/js/missions.js"></script>
 </body>
 </html>
