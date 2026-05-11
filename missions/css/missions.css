@@ -1,49 +1,11 @@
-body {
-  margin: 0;
-  font-family: Arial, Helvetica, sans-serif;
-  background-color: #ffffff;
-  color: #1f2933;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
-
-.missions-header {
-  padding: 1.5rem 1rem;
-  border-bottom: 1px solid #d9e1f1;
-}
-
-.missions-header h1 {
-  margin: 0;
-  font-size: 1.75rem;
-}
-
-.missions-subtitle {
-  margin: 0.5rem 0 0;
-  color: #4c596c;
-  font-size: 1rem;
-}
-
-.missions-content {
-  flex: 1;
-  padding: 2rem 1rem;
-}
-
-.missions-placeholder {
-  max-width: 640px;
-  margin: 0 auto;
-  padding: 1.5rem;
-  border: 1px dashed #c8d2e4;
-  border-radius: 6px;
-  background-color: #ffffff;
-}
-
-.missions-placeholder h2 {
-  margin-top: 0;
-  font-size: 1.25rem;
-}
-
-.missions-placeholder p {
-  margin-bottom: 0;
-  line-height: 1.5;
-}
+body { font-family: Arial, sans-serif; margin: 0; background: #f5f7fb; }
+.missions-header { display:flex; justify-content:space-between; align-items:center; padding:12px 16px; background:#0d2a4d; color:#fff; }
+#backToMainButton { padding:8px 12px; }
+.missions-content { padding: 12px; display:grid; gap:12px; }
+.panel { background:#fff; border:1px solid #d7deea; border-radius:6px; padding:10px; }
+.filters { display:grid; grid-template-columns: repeat(auto-fit,minmax(240px,1fr)); gap:10px; }
+.field label { display:block; font-size:12px; font-weight:bold; margin-bottom:4px; }
+.field input, .field select { width:100%; }
+.actions { display:flex; gap:8px; align-items:center; }
+textarea { width:100%; min-height:260px; font-family: monospace; }
+.kv { font-size: 12px; color:#2f3f5a; }
