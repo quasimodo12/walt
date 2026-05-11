@@ -159,7 +159,7 @@ var View = (function() {
 
         // Navigate to the Missions page when requested
         document.getElementById('missionsButton').addEventListener('click', function () {
-            window.location.href = 'missions.html';
+            window.open('missions.html', '_blank', 'noopener');
         });
 
     }
