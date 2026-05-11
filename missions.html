@@ -14,19 +14,27 @@
 <body>
   <header class="missions-header">
     <h1>Missions</h1>
-    <p class="missions-subtitle">This page is ready for mission planning features.</p>
+    <p class="missions-subtitle">Generate and inspect constrained missions.</p>
   </header>
 
   <main id="missions-root" class="missions-content" aria-live="polite">
-    <section class="missions-placeholder">
-      <h2>Placeholder</h2>
-      <p>Use <code>missions/js/missions.js</code> for behavior and <code>missions/css/missions.css</code> for styling.</p>
-    </section>
+    
   </main>
 
   <!-- External Scripts -->
   <script src="libs/jquery/jquery.min.js"></script>
   <script src="libs/jquery/jquery-ui.js"></script>
+
+
+  <script src="libs/geo/geolib.min.js"></script>
+  <script src="libs/custom/GroundRange.js"></script>
+  <script src="input/platform_details.js"></script>
+  <script src="input/weapon_details.js"></script>
+  <script src="input/weapon_lethality_details.js"></script>
+  <script src="js/platforms/platform_model.js"></script>
+  <script src="js/weapons/weapon_storage.js"></script>
+  <script src="js/weapon_lethality/weapon_lethality_storage.js"></script>
+  <script src="js/distance_storage.js"></script>
 
   <!-- Page Scripts -->
   <script src="missions/js/missions.js"></script>
