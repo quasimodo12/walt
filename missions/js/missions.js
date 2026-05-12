@@ -56,7 +56,16 @@
   function getRedPlatforms(data) { return getPlatformsBySide(data, 'red'); }
   function getAllWeapons(data) { return data.weapons; }
   function getLoadoutQuantitiesForPlatform(platform) {
-    return (platform && platform.weapons && typeof platform.weapons === 'object') ? platform.weapons : {};
+    if (!platform || !platform.weapons) return {};
+    if (Array.isArray(platform.weapons)) {
+      var normalized = {};
+      platform.weapons.forEach(function (entry) {
+        if (!entry || !entry.name) return;
+        normalized[entry.name] = parseInt(entry.quantity, 10) || 0;
+      });
+      return normalized;
+    }
+    return (typeof platform.weapons === 'object') ? platform.weapons : {};
   }
   function getWeaponsAvailableToSelectedBlueShooters(selectedShooterNames, bluePlatforms, allWeapons) {
     var selectedSet = new Set(selectedShooterNames);
@@ -80,7 +89,10 @@
     });
   }
   function getWeaponRangeData(weapon) {
-    return weapon && weapon.max_range !== undefined ? weapon.max_range : null;
+    if (!weapon) return null;
+    if (weapon.weapon_range !== undefined) return weapon.weapon_range;
+    if (weapon.max_range !== undefined) return weapon.max_range;
+    return null;
   }
   function getWeaponLethalityData(data) { return data.lethality; }
   function getPlatformToPlatformDistanceData(data) { return data.distances; }
@@ -168,6 +180,10 @@
     var app = getAppContext();
     var data = collectDataSources(app);
 
+    if ((!data.platforms.length || !data.weapons.length) && app.View && typeof app.View.updateAll === 'function') {
+      try { app.View.updateAll(); } catch (e) { console.warn('Unable to call opener View.updateAll()', e); }
+    }
+
     var state = {
       filters: {
         blueShooters: [],
@@ -201,6 +217,9 @@
     function render() {
       var options = buildFilterOptionLists(data, state.filters.blueShooters);
       var diagnostics = [];
+      if (app === window) {
+        diagnostics.push('Warning: Missions page has no opener context; open it from the main app menu to access live scenario data.');
+      }
       diagnostics.push('Total platforms found: ' + getAllPlatforms(data).length);
       diagnostics.push('Blue platforms found: ' + getBluePlatforms(data).length);
       diagnostics.push('Red platforms found: ' + getRedPlatforms(data).length);
