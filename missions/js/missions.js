@@ -175,8 +175,9 @@
     };
   }
 
-  document.addEventListener('DOMContentLoaded', function () {
+  function initializeMissionsPage() {
     var root = document.getElementById('missions-root');
+    if (!root) { return; }
     var app = getAppContext();
     var data = collectDataSources(app);
 
@@ -337,5 +338,11 @@
     }
 
     render();
-  });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeMissionsPage);
+  } else {
+    initializeMissionsPage();
+  }
 })();
