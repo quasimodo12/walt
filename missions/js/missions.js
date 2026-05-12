@@ -184,6 +184,17 @@
       try { app.View.updateAll(); } catch (e) { console.warn('Unable to call opener View.updateAll()', e); }
     }
 
+    window.addEventListener('message', function(event) {
+      if (!event.data || event.data.type !== 'missionsData' || !event.data.data) return;
+      data = {
+        platforms: Array.isArray(event.data.data.platformData) ? event.data.data.platformData : [],
+        weapons: Array.isArray(event.data.data.weaponData) ? event.data.data.weaponData : [],
+        lethality: Array.isArray(event.data.data.lethalityData) ? event.data.data.lethalityData : [],
+        distances: (event.data.data.distanceData && typeof event.data.data.distanceData === 'object') ? event.data.data.distanceData : {}
+      };
+      render();
+    });
+
     var state = {
       filters: {
         blueShooters: [],
@@ -217,8 +228,8 @@
     function render() {
       var options = buildFilterOptionLists(data, state.filters.blueShooters);
       var diagnostics = [];
-      if (app === window) {
-        diagnostics.push('Warning: Missions page has no opener context; open it from the main app menu to access live scenario data.');
+      if (app === window && !data.platforms.length && !data.weapons.length) {
+        diagnostics.push('Warning: Missions page has no opener context or did not receive data message; open it from the main app menu or click Refresh Data.');
       }
       diagnostics.push('Total platforms found: ' + getAllPlatforms(data).length);
       diagnostics.push('Blue platforms found: ' + getBluePlatforms(data).length);
