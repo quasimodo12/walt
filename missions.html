@@ -42,14 +42,25 @@
         return out;
       }
       function getDataFromOpener() {
-        var app = window.opener && !window.opener.closed ? window.opener : null;
+        var app = null;
+        try {
+          if (window.opener) {
+            app = window.opener;
+          }
+        } catch (err) {
+          app = null;
+        }
         if (!app) return null;
-        return {
-          platforms: app.PlatformModel && app.PlatformModel.getPlatformData ? arr(app.PlatformModel.getPlatformData()) : [],
-          weapons: app.WeaponStorage && app.WeaponStorage.getWeaponData ? arr(app.WeaponStorage.getWeaponData()) : [],
-          lethality: app.WeaponLethalityStorage && app.WeaponLethalityStorage.getLethalityData ? arr(app.WeaponLethalityStorage.getLethalityData()) : [],
-          distances: app.DistanceStorage && app.DistanceStorage.getAllDistanceData ? (app.DistanceStorage.getAllDistanceData() || {}) : {}
-        };
+        try {
+          return {
+            platforms: app.PlatformModel && app.PlatformModel.getPlatformData ? arr(app.PlatformModel.getPlatformData()) : [],
+            weapons: app.WeaponStorage && app.WeaponStorage.getWeaponData ? arr(app.WeaponStorage.getWeaponData()) : [],
+            lethality: app.WeaponLethalityStorage && app.WeaponLethalityStorage.getLethalityData ? arr(app.WeaponLethalityStorage.getLethalityData()) : [],
+            distances: app.DistanceStorage && app.DistanceStorage.getAllDistanceData ? (app.DistanceStorage.getAllDistanceData() || {}) : {}
+          };
+        } catch (err2) {
+          return null;
+        }
       }
       function parseBlueWeaponNames(bluePlatforms) {
         var names = {};
@@ -64,16 +75,56 @@
         return Object.keys(names).sort();
       }
 
-      var data = getDataFromOpener() || { platforms: [], weapons: [], lethality: [], distances: {} };
-      var bluePlatforms = data.platforms.filter(function (p) { return side(p.side) === 'blue'; });
-      var redPlatforms = data.platforms.filter(function (p) { return side(p.side) === 'red'; });
-      var blueShooters = bluePlatforms.map(function (p) { return p.platform_name; }).sort();
-      var redTargets = redPlatforms.map(function (p) { return p.platform_name; }).sort();
-      var blueWeapons = parseBlueWeaponNames(bluePlatforms);
+      var data = { platforms: [], weapons: [], lethality: [], distances: {} };
 
-      document.getElementById('blueShooters').innerHTML = optionHtml(blueShooters);
-      document.getElementById('redTargets').innerHTML = optionHtml(redTargets);
-      document.getElementById('blueWeapons').innerHTML = optionHtml(blueWeapons);
+      function renderFromData() {
+        var bluePlatforms = data.platforms.filter(function (p) { return side(p.side) === 'blue'; });
+        var redPlatforms = data.platforms.filter(function (p) { return side(p.side) === 'red'; });
+        var blueShooters = bluePlatforms.map(function (p) { return p.platform_name; }).sort();
+        var redTargets = redPlatforms.map(function (p) { return p.platform_name; }).sort();
+        var blueWeapons = parseBlueWeaponNames(bluePlatforms);
+
+        document.getElementById('blueShooters').innerHTML = optionHtml(blueShooters);
+        document.getElementById('redTargets').innerHTML = optionHtml(redTargets);
+        document.getElementById('blueWeapons').innerHTML = optionHtml(blueWeapons);
+
+        var diagnostic = [
+          'Total platforms found: ' + data.platforms.length,
+          'Blue platforms found: ' + bluePlatforms.length,
+          'Red platforms found: ' + redPlatforms.length,
+          'Total weapons found: ' + data.weapons.length,
+          'Blue weapons/loadout weapons found: ' + blueWeapons.length,
+          'Lethality records found: ' + data.lethality.length,
+          'Distance records found: ' + Object.keys(data.distances || {}).length,
+          'Opener context available: ' + (!!window.opener)
+        ];
+        if (!window.opener) diagnostic.push('No opener context found. Open Missions from the main menu.');
+        document.getElementById('diagnosticLog').textContent = diagnostic.join('\n');
+      }
+
+      var openerData = getDataFromOpener();
+      if (openerData) {
+        data = openerData;
+        renderFromData();
+      }
+
+      window.addEventListener('message', function (event) {
+        var payload = event && event.data;
+        if (!payload || payload.type !== 'missionsData' || !payload.data) return;
+        data = {
+          platforms: arr(payload.data.platformData),
+          weapons: arr(payload.data.weaponData),
+          lethality: arr(payload.data.lethalityData),
+          distances: payload.data.distanceData || {}
+        };
+        renderFromData();
+        refreshJsonAndValidation();
+      });
+
+      if (!openerData) {
+        renderFromData();
+      }
+
 
       function refreshJsonAndValidation() {
         var filters = {
@@ -85,24 +136,10 @@
         if (!filters.blueShooters.length) errors.push('Select at least one Blue shooter before generating missions.');
         if (!filters.redTargets.length) errors.push('Select at least one Red target before generating missions.');
         if (!filters.blueWeapons.length) errors.push('Select at least one Blue weapon before generating missions.');
-
         document.getElementById('validationErrors').innerHTML = errors.join('<br>');
         document.getElementById('generateMissionsButton').disabled = errors.length > 0;
         document.getElementById('inputJson').textContent = JSON.stringify({ selectedFilters: filters }, null, 2);
       }
-
-      var diagnostic = [
-        'Total platforms found: ' + data.platforms.length,
-        'Blue platforms found: ' + bluePlatforms.length,
-        'Red platforms found: ' + redPlatforms.length,
-        'Total weapons found: ' + data.weapons.length,
-        'Blue weapons/loadout weapons found: ' + blueWeapons.length,
-        'Lethality records found: ' + data.lethality.length,
-        'Distance records found: ' + Object.keys(data.distances || {}).length,
-        'Opener context available: ' + (!!window.opener)
-      ];
-      if (!window.opener) diagnostic.push('No opener context found. Open Missions from the main menu.');
-      document.getElementById('diagnosticLog').textContent = diagnostic.join('\n');
 
       document.getElementById('blueShooters').addEventListener('change', refreshJsonAndValidation);
       document.getElementById('redTargets').addEventListener('change', refreshJsonAndValidation);
