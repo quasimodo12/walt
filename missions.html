@@ -12,7 +12,31 @@
     <p class="missions-subtitle">Mission generation foundation with real scenario data, validation, and diagnostics.</p>
   </header>
 
-  <main id="missions-root" class="missions-content" aria-live="polite"></main>
+  <main id="missions-root" class="missions-content" aria-live="polite">
+    <section class="missions-card">
+      <h2>Mission Filters</h2>
+      <div class="filters-grid">
+        <label>Blue shooters*<select id="blueShooters" multiple size="8"></select></label>
+        <label>Red targets*<select id="redTargets" multiple size="8"></select></label>
+        <label>Blue weapons*<select id="blueWeapons" multiple size="8"></select></label>
+        <label>Offensive platform types<select id="offensiveTypes" multiple size="6"></select></label>
+        <label>Target platform types<select id="targetTypes" multiple size="6"></select></label>
+      </div>
+      <details>
+        <summary>Advanced Generation Settings</summary>
+        <div class="advanced-grid">
+          <label>Max missions<input id="maxMissions" type="number" min="1" value="250"></label>
+          <label>Max candidate engagements<input id="maxCandidateEngagements" type="number" min="1" value="20000"></label>
+          <label>Max search depth<input id="maxSearchDepth" type="number" min="1" value="6"></label>
+          <label>Include mixed weapon engagements<input id="includeMixedWeaponEngagements" type="checkbox" checked></label>
+        </div>
+      </details>
+      <div id="validationErrors" class="validation"></div>
+      <button id="generateMissionsButton" type="button">Generate Missions</button>
+    </section>
+    <section class="missions-card"><h2>Mission Input / Filter JSON</h2><pre id="inputJson">Waiting for Missions script initialization...</pre></section>
+    <section class="missions-card"><h2>Mission Data Diagnostic Log</h2><pre id="diagnosticLog">Waiting for Missions script initialization...</pre></section>
+  </main>
 
   <script src="missions/js/missions.js"></script>
 </body>
