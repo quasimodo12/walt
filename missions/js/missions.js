@@ -10,8 +10,12 @@
   }
 
   function getAppContext() {
-    if (window.opener && !window.opener.closed) {
-      return window.opener;
+    try {
+      if (window.opener && !window.opener.closed) {
+        return window.opener;
+      }
+    } catch (err) {
+      console.warn('Missions opener access failed; falling back to local window context.', err);
     }
     return window;
   }
@@ -178,7 +182,13 @@
   function initializeMissionsPage() {
     var root = document.getElementById('missions-root');
     if (!root) { return; }
-    var app = getAppContext();
+    var app;
+    try {
+      app = getAppContext();
+    } catch (err) {
+      app = window;
+      root.innerHTML = '<section class="missions-card"><h2>Missions initialization error</h2><pre>' + String(err) + '</pre></section>';
+    }
     var data = collectDataSources(app);
 
     if ((!data.platforms.length || !data.weapons.length) && app.View && typeof app.View.updateAll === 'function') {
