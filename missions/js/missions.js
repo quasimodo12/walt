@@ -9,6 +9,17 @@
     return JSON.stringify(obj, null, 2);
   }
 
+  function uniqueStrings(values) {
+    var seen = {};
+    var out = [];
+    (values || []).forEach(function(v){
+      if (v === null || v === undefined) return;
+      var key = String(v);
+      if (!seen[key]) { seen[key] = true; out.push(v); }
+    });
+    return out;
+  }
+
   function getAppContext() {
     try {
       if (window.opener && !window.opener.closed) {
@@ -72,24 +83,25 @@
     return (typeof platform.weapons === 'object') ? platform.weapons : {};
   }
   function getWeaponsAvailableToSelectedBlueShooters(selectedShooterNames, bluePlatforms, allWeapons) {
-    var selectedSet = new Set(selectedShooterNames);
-    var weaponNameSet = new Set();
+    var selectedSet = {};
+    var weaponNameSet = {};
+    selectedShooterNames.forEach(function(name){ selectedSet[name]=true; });
 
     bluePlatforms.forEach(function (platform) {
-      if (!selectedSet.has(platform.platform_name)) {
+      if (!selectedSet[platform.platform_name]) {
         return;
       }
       var loadout = getLoadoutQuantitiesForPlatform(platform);
       Object.keys(loadout).forEach(function (weaponName) {
         var qty = parseInt(loadout[weaponName], 10);
         if (!isNaN(qty) && qty > 0) {
-          weaponNameSet.add(weaponName);
+          weaponNameSet[weaponName] = true;
         }
       });
     });
 
     return allWeapons.filter(function (w) {
-      return weaponNameSet.has(w.weapon_name);
+      return !!weaponNameSet[w.weapon_name];
     });
   }
   function getWeaponRangeData(weapon) {
@@ -113,8 +125,8 @@
       blueShooters: bluePlatforms.map(function (p) { return p.platform_name; }).sort(),
       redTargets: redPlatforms.map(function (p) { return p.platform_name; }).sort(),
       blueWeapons: availableWeapons.map(function (w) { return w.weapon_name; }).sort(),
-      offensivePlatformTypes: Array.from(new Set(bluePlatforms.map(function (p) { return p.type || 'Unspecified'; }))).sort(),
-      targetPlatformTypes: Array.from(new Set(redPlatforms.map(function (p) { return p.type || 'Unspecified'; }))).sort()
+      offensivePlatformTypes: uniqueStrings(bluePlatforms.map(function (p) { return p.type || 'Unspecified'; })).sort(),
+      targetPlatformTypes: uniqueStrings(redPlatforms.map(function (p) { return p.type || 'Unspecified'; })).sort()
     };
   }
 
@@ -144,9 +156,10 @@
     var distanceMap = getPlatformToPlatformDistanceData(data);
 
     var hasLoadouts = selectedBlue.every(function (p) { return Object.keys(getLoadoutQuantitiesForPlatform(p)).length > 0; });
-    var targetTypes = new Set(selectedRed.map(function (p) { return p.type || 'Unspecified'; }));
+    var targetTypes = {};
+    selectedRed.forEach(function (p) { targetTypes[p.type || 'Unspecified'] = true; });
     var lethalityMatches = data.lethality.filter(function (entry) {
-      return filters.blueWeapons.indexOf(entry.weapon) >= 0 && targetTypes.has(entry.platformType);
+      return filters.blueWeapons.indexOf(entry.weapon) >= 0 && !!targetTypes[entry.platformType];
     });
 
     var distanceHits = 0;
@@ -255,30 +268,29 @@
       var requiredDataWarnings = validateRequiredMissionData(data, options);
       Array.prototype.push.apply(diagnostics, requiredDataWarnings);
 
-      root.innerHTML = `
-        <section class="missions-card">
-          <h2>Mission Filters</h2>
-          <div class="filters-grid">
-            <label>Blue shooters*<select id="blueShooters" multiple size="8"></select></label>
-            <label>Red targets*<select id="redTargets" multiple size="8"></select></label>
-            <label>Blue weapons*<select id="blueWeapons" multiple size="8"></select></label>
-            <label>Offensive platform types<select id="offensiveTypes" multiple size="6"></select></label>
-            <label>Target platform types<select id="targetTypes" multiple size="6"></select></label>
-          </div>
-          <details><summary>Advanced Generation Settings</summary>
-            <div class="advanced-grid">
-              <label>Max missions<input id="maxMissions" type="number" min="1" value="${state.filters.advanced.maxMissions}"></label>
-              <label>Max candidate engagements<input id="maxCandidateEngagements" type="number" min="1" value="${state.filters.advanced.maxCandidateEngagements}"></label>
-              <label>Max search depth<input id="maxSearchDepth" type="number" min="1" value="${state.filters.advanced.maxSearchDepth}"></label>
-              <label>Include mixed weapon engagements<input id="includeMixedWeaponEngagements" type="checkbox" ${state.filters.advanced.includeMixedWeaponEngagements ? 'checked' : ''}></label>
-            </div>
-          </details>
-          <div id="validationErrors" class="validation"></div>
-          <button id="generateMissionsButton" type="button">Generate Missions</button>
-        </section>
-        <section class="missions-card"><h2>Mission Input / Filter JSON</h2><pre id="inputJson"></pre></section>
-        <section class="missions-card"><h2>Mission Data Diagnostic Log</h2><pre id="diagnosticLog"></pre></section>
-      `;
+      root.innerHTML = '' +
+        '<section class="missions-card">' +
+          '<h2>Mission Filters</h2>' +
+          '<div class="filters-grid">' +
+            '<label>Blue shooters*<select id="blueShooters" multiple size="8"></select></label>' +
+            '<label>Red targets*<select id="redTargets" multiple size="8"></select></label>' +
+            '<label>Blue weapons*<select id="blueWeapons" multiple size="8"></select></label>' +
+            '<label>Offensive platform types<select id="offensiveTypes" multiple size="6"></select></label>' +
+            '<label>Target platform types<select id="targetTypes" multiple size="6"></select></label>' +
+          '</div>' +
+          '<details><summary>Advanced Generation Settings</summary>' +
+            '<div class="advanced-grid">' +
+              '<label>Max missions<input id="maxMissions" type="number" min="1" value="' + state.filters.advanced.maxMissions + '"></label>' +
+              '<label>Max candidate engagements<input id="maxCandidateEngagements" type="number" min="1" value="' + state.filters.advanced.maxCandidateEngagements + '"></label>' +
+              '<label>Max search depth<input id="maxSearchDepth" type="number" min="1" value="' + state.filters.advanced.maxSearchDepth + '"></label>' +
+              '<label>Include mixed weapon engagements<input id="includeMixedWeaponEngagements" type="checkbox" ' + (state.filters.advanced.includeMixedWeaponEngagements ? 'checked' : '') + '></label>' +
+            '</div>' +
+          '</details>' +
+          '<div id="validationErrors" class="validation"></div>' +
+          '<button id="generateMissionsButton" type="button">Generate Missions</button>' +
+        '</section>' +
+        '<section class="missions-card"><h2>Mission Input / Filter JSON</h2><pre id="inputJson"></pre></section>' +
+        '<section class="missions-card"><h2>Mission Data Diagnostic Log</h2><pre id="diagnosticLog"></pre></section>';
 
       function fillSelect(id, values, selected) {
         var el = document.getElementById(id);
