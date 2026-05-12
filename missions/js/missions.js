@@ -1,370 +1,262 @@
 (function () {
   'use strict';
 
-  function normalizeSide(side) {
-    return (typeof side === 'string' ? side.trim().toLowerCase() : '');
-  }
+  function n(v) { return (v || '').toString().trim(); }
+  function side(v) { return n(v).toLowerCase(); }
+  function pretty(v) { return JSON.stringify(v, null, 2); }
+  function uniq(a) { return Array.from(new Set(a)); }
+  function byName(arr, key) { var m = {}; arr.forEach(function (x) { m[n(x[key])] = x; }); return m; }
 
-  function pretty(obj) {
-    return JSON.stringify(obj, null, 2);
-  }
-
-  function uniqueStrings(values) {
-    var seen = {};
-    var out = [];
-    (values || []).forEach(function(v){
-      if (v === null || v === undefined) return;
-      var key = String(v);
-      if (!seen[key]) { seen[key] = true; out.push(v); }
-    });
-    return out;
-  }
-
-  function getAppContext() {
-    try {
-      if (window.opener && !window.opener.closed) {
-        return window.opener;
-      }
-    } catch (err) {
-      console.warn('Missions opener access failed; falling back to local window context.', err);
-    }
+  function getApp() {
+    try { if (window.opener && !window.opener.closed) return window.opener; } catch (e) {}
     return window;
   }
 
-  function collectDataSources(app) {
-    var platformData = [];
-    var weaponData = [];
-    var lethalityData = [];
-    var distanceData = {};
-
-    try {
-      if (app.PlatformModel && typeof app.PlatformModel.getPlatformData === 'function') {
-        platformData = app.PlatformModel.getPlatformData() || [];
-      }
-      if (app.WeaponStorage && typeof app.WeaponStorage.getWeaponData === 'function') {
-        weaponData = app.WeaponStorage.getWeaponData() || [];
-      }
-      if (app.WeaponLethalityStorage && typeof app.WeaponLethalityStorage.getLethalityData === 'function') {
-        lethalityData = app.WeaponLethalityStorage.getLethalityData() || [];
-      }
-      if (app.DistanceStorage && typeof app.DistanceStorage.getAllDistanceData === 'function') {
-        distanceData = app.DistanceStorage.getAllDistanceData() || {};
-      }
-    } catch (err) {
-      console.error('Missions data collection error:', err);
-    }
-
+  function collectData(app) {
     return {
-      platforms: Array.isArray(platformData) ? platformData : [],
-      weapons: Array.isArray(weaponData) ? weaponData : [],
-      lethality: Array.isArray(lethalityData) ? lethalityData : [],
-      distances: (distanceData && typeof distanceData === 'object') ? distanceData : {}
+      platforms: app.PlatformModel && app.PlatformModel.getPlatformData ? (app.PlatformModel.getPlatformData() || []) : [],
+      weapons: app.WeaponStorage && app.WeaponStorage.getWeaponData ? (app.WeaponStorage.getWeaponData() || []) : [],
+      lethality: app.WeaponLethalityStorage && app.WeaponLethalityStorage.getLethalityData ? (app.WeaponLethalityStorage.getLethalityData() || []) : [],
+      distances: app.DistanceStorage && app.DistanceStorage.getAllDistanceData ? (app.DistanceStorage.getAllDistanceData() || {}) : {}
     };
   }
 
-  function getAllPlatforms(data) { return data.platforms; }
-  function getPlatformsBySide(data, side) {
-    var sideNorm = normalizeSide(side);
-    return data.platforms.filter(function (p) { return normalizeSide(p && p.side) === sideNorm; });
+  function loadoutMap(platform) {
+    var out = {};
+    var w = platform && platform.weapons;
+    if (Array.isArray(w)) w.forEach(function (x) { if (x && x.name) out[n(x.name)] = parseInt(x.quantity, 10) || 0; });
+    else if (w && typeof w === 'object') Object.keys(w).forEach(function (k) { out[n(k)] = parseInt(w[k], 10) || 0; });
+    return out;
   }
-  function getBluePlatforms(data) { return getPlatformsBySide(data, 'blue'); }
-  function getRedPlatforms(data) { return getPlatformsBySide(data, 'red'); }
-  function getAllWeapons(data) { return data.weapons; }
-  function getLoadoutQuantitiesForPlatform(platform) {
-    if (!platform || !platform.weapons) return {};
-    if (Array.isArray(platform.weapons)) {
-      var normalized = {};
-      platform.weapons.forEach(function (entry) {
-        if (!entry || !entry.name) return;
-        normalized[entry.name] = parseInt(entry.quantity, 10) || 0;
-      });
-      return normalized;
-    }
-    return (typeof platform.weapons === 'object') ? platform.weapons : {};
-  }
-  function getWeaponsAvailableToSelectedBlueShooters(selectedShooterNames, bluePlatforms, allWeapons) {
-    var selectedSet = {};
-    var weaponNameSet = {};
-    selectedShooterNames.forEach(function(name){ selectedSet[name]=true; });
 
-    bluePlatforms.forEach(function (platform) {
-      if (!selectedSet[platform.platform_name]) {
+  function rangeOfWeapon(weapon) { return parseFloat(weapon.weapon_range || weapon.max_range || 0) || 0; }
+  function distanceBetween(dist, a, b) { return parseFloat(dist[n(a) + '---' + n(b)] || dist[n(b) + '---' + n(a)] || Infinity); }
+  function lethalityKey(w, t) { return n(w) + '||' + n(t); }
+
+  function parseLethality(lethalityRows) {
+    var map = {};
+    lethalityRows.forEach(function (r) {
+      var key = lethalityKey(r.weapon || r.weapon_name, r.platformType || r.platform_type || r.targetType);
+      var qty = parseFloat(r.quantity || r.required || r.shots || r.lethality);
+      if (key && qty > 0) map[key] = qty;
+    });
+    return map;
+  }
+
+  function missionSummary(mission) {
+    mission.destroyedPlatformCount = mission.targetPlatformsDestroyed.length;
+    mission.totalAmmoExpended = Object.values(mission.ammoExpendedByWeapon).reduce(function (a, b) { return a + b; }, 0);
+    mission.offensivePlatformsUsed = Object.keys(mission.killsByOffensivePlatform);
+    mission.offensivePlatformTypesUsed = Object.keys(mission.killsByOffensivePlatformType);
+    mission.weaponsUsed = Object.keys(mission.killsByWeapon);
+    mission.targetPlatformTypesDestroyed = Object.keys(mission.killsAgainstTargetPlatformType || {});
+  }
+
+  function generate(data, filters, adv, optional) {
+    var logs = [];
+    var blue = data.platforms.filter(function (p) { return side(p.side) === 'blue' && filters.blueShooters.indexOf(p.platform_name) >= 0; });
+    var red = data.platforms.filter(function (p) { return side(p.side) === 'red' && filters.redTargets.indexOf(p.platform_name) >= 0; });
+    var weaponByName = byName(data.weapons, 'weapon_name');
+    var leth = parseLethality(data.lethality);
+    var candidates = [];
+    var reject = { range: 0, lethality: 0, ammo: 0, loadout: 0, weaponMissing: 0 };
+
+    logs.push('selected required filters=' + pretty(filters));
+    logs.push('selected optional filters=' + pretty(optional));
+    logs.push('selected advanced settings=' + pretty(adv));
+
+    red.forEach(function (target) {
+      var tType = target.type || 'Unspecified';
+      var contributors = [];
+      blue.forEach(function (shooter) {
+        var loadout = loadoutMap(shooter);
+        filters.blueWeapons.forEach(function (weaponName) {
+          var ammo = loadout[weaponName] || 0;
+          if (ammo <= 0) { reject.loadout += 1; return; }
+          var w = weaponByName[weaponName];
+          if (!w) { reject.weaponMissing += 1; return; }
+          var req = leth[lethalityKey(weaponName, tType)];
+          if (!req) { reject.lethality += 1; return; }
+          var d = distanceBetween(data.distances, shooter.platform_name, target.platform_name);
+          if (d > rangeOfWeapon(w)) { reject.range += 1; return; }
+          contributors.push({ shooter: shooter, weapon: weaponName, req: req, ammo: ammo, contributionPerRound: 1 / req });
+        });
+      });
+
+      // single weapon candidates
+      contributors.forEach(function (c) {
+        var need = Math.ceil(c.req);
+        if (c.ammo < need) { reject.ammo += 1; return; }
+        candidates.push({
+          target: target,
+          allocations: [{ shooter: c.shooter.platform_name, shooterType: c.shooter.type || 'Unspecified', weapon: c.weapon, qty: need, contribution: need / c.req }],
+          contribution: need / c.req,
+          ammo: need
+        });
+      });
+
+      // mixed candidates
+      if (adv.includeMixedWeaponEngagements) {
+        contributors.sort(function (a, b) { return b.contributionPerRound - a.contributionPerRound; });
+        var chosen = [];
+        var sum = 0;
+        for (var i = 0; i < contributors.length && chosen.length < adv.maxContributingWeaponsPerEngagement; i++) {
+          var c2 = contributors[i];
+          var canUse = Math.min(c2.ammo, Math.ceil((1 - sum) * c2.req));
+          if (canUse <= 0) continue;
+          chosen.push({ shooter: c2.shooter.platform_name, shooterType: c2.shooter.type || 'Unspecified', weapon: c2.weapon, qty: canUse, contribution: canUse / c2.req });
+          sum += canUse / c2.req;
+          if (sum >= 1) break;
+        }
+        if (sum >= 1 && chosen.length > 1) {
+          candidates.push({ target: target, allocations: chosen, contribution: sum, ammo: chosen.reduce(function (s, x) { return s + x.qty; }, 0) });
+        }
+      }
+    });
+
+    logs.push('candidate single+mixed engagement options=' + candidates.length);
+    logs.push('rejections=' + pretty(reject));
+
+    var byTarget = {};
+    candidates.forEach(function (c) { var t = c.target.platform_name; (byTarget[t] = byTarget[t] || []).push(c); });
+
+    var missions = [];
+    var targetList = Object.keys(byTarget).slice(0, adv.maxSearchDepth);
+
+    function dfs(ti, usedAmmo, engagements) {
+      if (missions.length >= adv.maxMissions) return;
+      if (ti >= targetList.length) {
+        if (!engagements.length) return;
+        var mission = {
+          missionId: 'mission-' + (missions.length + 1), offensiveSide: 'Blue', targetSide: 'Red', engagements: engagements.slice(),
+          targetPlatformsDestroyed: engagements.map(function (e) { return e.targetPlatform; }),
+          ammoExpendedByWeapon: {}, killsByWeapon: {}, killsByOffensivePlatform: {}, killsByOffensivePlatformType: {}, killsAgainstTargetPlatformType: {}
+        };
+        engagements.forEach(function (e) {
+          mission.killsAgainstTargetPlatformType[e.targetPlatformType] = (mission.killsAgainstTargetPlatformType[e.targetPlatformType] || 0) + 1;
+          var credited = {};
+          e.weaponAllocations.forEach(function (a) {
+            mission.ammoExpendedByWeapon[a.weapon] = (mission.ammoExpendedByWeapon[a.weapon] || 0) + a.quantity;
+            if (!credited[a.weapon]) { mission.killsByWeapon[a.weapon] = (mission.killsByWeapon[a.weapon] || 0) + 1; credited[a.weapon] = true; }
+            mission.killsByOffensivePlatform[a.offensivePlatform] = (mission.killsByOffensivePlatform[a.offensivePlatform] || 0) + 1;
+            mission.killsByOffensivePlatformType[a.offensivePlatformType] = (mission.killsByOffensivePlatformType[a.offensivePlatformType] || 0) + 1;
+          });
+        });
+        missionSummary(mission);
+        if (mission.destroyedPlatformCount >= optional.minDestroyedPlatforms && mission.destroyedPlatformCount <= optional.maxDestroyedPlatforms) missions.push(mission);
         return;
       }
-      var loadout = getLoadoutQuantitiesForPlatform(platform);
-      Object.keys(loadout).forEach(function (weaponName) {
-        var qty = parseInt(loadout[weaponName], 10);
-        if (!isNaN(qty) && qty > 0) {
-          weaponNameSet[weaponName] = true;
-        }
+
+      dfs(ti + 1, usedAmmo, engagements);
+      var targetName = targetList[ti];
+      (byTarget[targetName] || []).slice(0, adv.maxCandidateEngagements).forEach(function (cand) {
+        var local = JSON.parse(JSON.stringify(usedAmmo));
+        var valid = true;
+        cand.allocations.forEach(function (a) {
+          var key = a.shooter + '||' + a.weapon;
+          local[key] = (local[key] || 0) + a.qty;
+          var shooter = blue.find(function (b) { return b.platform_name === a.shooter; });
+          if (local[key] > (loadoutMap(shooter)[a.weapon] || 0)) valid = false;
+        });
+        if (!valid) return;
+        var e = {
+          engagementId: 'eng-' + (engagements.length + 1) + '-' + targetName,
+          targetPlatform: targetName,
+          targetPlatformType: cand.target.type || 'Unspecified',
+          targetPlatformSide: cand.target.side,
+          contributingOffensivePlatforms: uniq(cand.allocations.map(function (a) { return a.shooter; })),
+          contributingOffensivePlatformTypes: uniq(cand.allocations.map(function (a) { return a.shooterType; })),
+          weaponAllocations: cand.allocations.map(function (a) { return { offensivePlatform: a.shooter, offensivePlatformType: a.shooterType, weapon: a.weapon, quantity: a.qty, contribution: a.contribution }; }),
+          totalAmmoExpended: cand.ammo,
+          contributionValue: cand.contribution,
+          lethalitySatisfied: cand.contribution >= 1
+        };
+        dfs(ti + 1, local, engagements.concat([e]));
       });
+    }
+    dfs(0, {}, []);
+
+    missions.sort(function (a, b) {
+      if (b.destroyedPlatformCount !== a.destroyedPlatformCount) return b.destroyedPlatformCount - a.destroyedPlatformCount;
+      if (a.totalAmmoExpended !== b.totalAmmoExpended) return a.totalAmmoExpended - b.totalAmmoExpended;
+      return a.engagements.length - b.engagements.length;
     });
 
-    return allWeapons.filter(function (w) {
-      return !!weaponNameSet[w.weapon_name];
-    });
-  }
-  function getWeaponRangeData(weapon) {
-    if (!weapon) return null;
-    if (weapon.weapon_range !== undefined) return weapon.weapon_range;
-    if (weapon.max_range !== undefined) return weapon.max_range;
-    return null;
-  }
-  function getWeaponLethalityData(data) { return data.lethality; }
-  function getPlatformToPlatformDistanceData(data) { return data.distances; }
-
-  function buildFilterOptionLists(data, selectedShooters) {
-    var bluePlatforms = getBluePlatforms(data);
-    var redPlatforms = getRedPlatforms(data);
-    var allWeapons = getAllWeapons(data);
-    var availableWeapons = selectedShooters.length > 0
-      ? getWeaponsAvailableToSelectedBlueShooters(selectedShooters, bluePlatforms, allWeapons)
-      : getWeaponsAvailableToSelectedBlueShooters(bluePlatforms.map(function (p) { return p.platform_name; }), bluePlatforms, allWeapons);
-
-    return {
-      blueShooters: bluePlatforms.map(function (p) { return p.platform_name; }).sort(),
-      redTargets: redPlatforms.map(function (p) { return p.platform_name; }).sort(),
-      blueWeapons: availableWeapons.map(function (w) { return w.weapon_name; }).sort(),
-      offensivePlatformTypes: uniqueStrings(bluePlatforms.map(function (p) { return p.type || 'Unspecified'; })).sort(),
-      targetPlatformTypes: uniqueStrings(redPlatforms.map(function (p) { return p.type || 'Unspecified'; })).sort()
-    };
+    logs.push('final generated missions=' + missions.length);
+    if (!missions.length) logs.push('reason: no valid missions under selected constraints / data / limits');
+    return { missions: missions.slice(0, adv.maxMissions), logs: logs };
   }
 
-  function validateSelectedFilters(filters) {
-    var errors = [];
-    if (!filters.blueShooters.length) errors.push('Select at least one Blue shooter before generating missions.');
-    if (!filters.redTargets.length) errors.push('Select at least one Red target before generating missions.');
-    if (!filters.blueWeapons.length) errors.push('Select at least one Blue weapon before generating missions.');
-    return errors;
-  }
-
-  function validateRequiredMissionData(data, options) {
-    var messages = [];
-    if (!data.platforms.length) messages.push('No platforms found in application data.');
-    if (!options.blueShooters.length) messages.push('No Blue platforms found because no platform side field matched "Blue".');
-    if (!options.redTargets.length) messages.push('No Red platforms found because platform side data is missing or no side matched "Red".');
-    if (!data.weapons.length) messages.push('No weapon records found in application data.');
-    if (!options.blueWeapons.length) messages.push('No Blue weapons found because selected/all Blue platforms have no valid loadout data.');
-    return messages;
-  }
-
-  function createReadiness(data, filters) {
-    var bluePlatforms = getBluePlatforms(data);
-    var redPlatforms = getRedPlatforms(data);
-    var selectedBlue = bluePlatforms.filter(function (p) { return filters.blueShooters.indexOf(p.platform_name) >= 0; });
-    var selectedRed = redPlatforms.filter(function (p) { return filters.redTargets.indexOf(p.platform_name) >= 0; });
-    var distanceMap = getPlatformToPlatformDistanceData(data);
-
-    var hasLoadouts = selectedBlue.every(function (p) { return Object.keys(getLoadoutQuantitiesForPlatform(p)).length > 0; });
-    var targetTypes = {};
-    selectedRed.forEach(function (p) { targetTypes[p.type || 'Unspecified'] = true; });
-    var lethalityMatches = data.lethality.filter(function (entry) {
-      return filters.blueWeapons.indexOf(entry.weapon) >= 0 && !!targetTypes[entry.platformType];
-    });
-
-    var distanceHits = 0;
-    selectedBlue.forEach(function (s) {
-      selectedRed.forEach(function (t) {
-        if (distanceMap[s.platform_name + '---' + t.platform_name] || distanceMap[t.platform_name + '---' + s.platform_name]) {
-          distanceHits += 1;
-        }
-      });
-    });
-
-    var blockingProblems = validateSelectedFilters(filters).slice();
-    if (!hasLoadouts) blockingProblems.push('One or more selected Blue shooters do not have weapon loadout data.');
-    if (!lethalityMatches.length) blockingProblems.push('No lethality data found for selected Blue weapons against selected Red target platform types.');
-    if (!distanceHits) blockingProblems.push('No distance data found between selected Blue shooters and selected Red targets.');
-
-    return {
-      requiredFiltersValid: blockingProblems.length === 0 || blockingProblems.every(function (m) { return m.indexOf('Select at least one') !== -1 ? false : true; }) === false ? validateSelectedFilters(filters).length === 0 : false,
-      selectedBlueShooters: filters.blueShooters,
-      selectedRedTargets: filters.redTargets,
-      selectedBlueWeapons: filters.blueWeapons,
-      candidateShooterCount: selectedBlue.length,
-      candidateTargetCount: selectedRed.length,
-      candidateWeaponCount: filters.blueWeapons.length,
-      loadoutDataExistsForSelectedShooters: hasLoadouts,
-      lethalityDataExistsForSelectedWeaponsAgainstSelectedTargetTypes: lethalityMatches.length > 0,
-      distanceDataExistsBetweenSelectedShootersAndTargets: distanceHits > 0,
-      roughCandidatePairCount: selectedBlue.length * selectedRed.length,
-      blockingProblems: blockingProblems
-    };
-  }
-
-  function initializeMissionsPage() {
+  function init() {
+    var app = getApp();
+    var data = collectData(app);
     var root = document.getElementById('missions-root');
-    if (!root) { return; }
-    var app;
-    try {
-      app = getAppContext();
-    } catch (err) {
-      app = window;
-      root.innerHTML = '<section class="missions-card"><h2>Missions initialization error</h2><pre>' + String(err) + '</pre></section>';
-    }
-    var data = collectDataSources(app);
-
-    if ((!data.platforms.length || !data.weapons.length) && app.View && typeof app.View.updateAll === 'function') {
-      try { app.View.updateAll(); } catch (e) { console.warn('Unable to call opener View.updateAll()', e); }
-    }
-
-    window.addEventListener('message', function(event) {
-      if (!event.data || event.data.type !== 'missionsData' || !event.data.data) return;
-      data = {
-        platforms: Array.isArray(event.data.data.platformData) ? event.data.data.platformData : [],
-        weapons: Array.isArray(event.data.data.weaponData) ? event.data.data.weaponData : [],
-        lethality: Array.isArray(event.data.data.lethalityData) ? event.data.data.lethalityData : [],
-        distances: (event.data.data.distanceData && typeof event.data.data.distanceData === 'object') ? event.data.data.distanceData : {}
-      };
-      render();
-    });
-
-    var state = {
-      filters: {
-        blueShooters: [],
-        redTargets: [],
-        blueWeapons: [],
-        optional: {
-          offensivePlatformTypes: [],
-          targetPlatformTypes: [],
-          minDestroyedPlatforms: 0,
-          maxDestroyedPlatforms: 999
-        },
-        advanced: {
-          maxMissions: 250,
-          maxCandidateEngagements: 20000,
-          maxSearchDepth: 6,
-          maxKillsPerMission: 20,
-          includeMixedWeaponEngagements: true,
-          allowMultiPlatformEngagements: true,
-          maxContributingPlatformsPerEngagement: 4,
-          maxContributingWeaponsPerEngagement: 6,
-          overkillTolerance: 0,
-          debugLoggingVerbosity: 'normal'
-        }
-      }
-    };
-
-    function selectedValues(selectEl) {
-      return Array.from(selectEl.selectedOptions).map(function (o) { return o.value; });
-    }
+    var state = { filters: { blueShooters: [], redTargets: [], blueWeapons: [] }, optional: { minDestroyedPlatforms: 0, maxDestroyedPlatforms: 999 }, advanced: { maxMissions: 100, maxCandidateEngagements: 30, maxSearchDepth: 8, includeMixedWeaponEngagements: true, maxContributingWeaponsPerEngagement: 4 } };
 
     function render() {
-      var options = buildFilterOptionLists(data, state.filters.blueShooters);
-      var diagnostics = [];
-      if (app === window && !data.platforms.length && !data.weapons.length) {
-        diagnostics.push('Warning: Missions page has no opener context or did not receive data message; open it from the main app menu or click Refresh Data.');
-      }
-      diagnostics.push('Total platforms found: ' + getAllPlatforms(data).length);
-      diagnostics.push('Blue platforms found: ' + getBluePlatforms(data).length);
-      diagnostics.push('Red platforms found: ' + getRedPlatforms(data).length);
-      diagnostics.push('Total weapons found: ' + getAllWeapons(data).length);
-      diagnostics.push('Blue weapons/loadout weapons found: ' + options.blueWeapons.length);
-      diagnostics.push('Lethality records found: ' + getWeaponLethalityData(data).length);
-      diagnostics.push('Distance records found: ' + Object.keys(getPlatformToPlatformDistanceData(data)).length);
-      diagnostics.push('Platform sides recognized: ' + (getBluePlatforms(data).length + getRedPlatforms(data).length > 0));
-      diagnostics.push('Platform types recognized: ' + data.platforms.every(function (p) { return !!p.type; }));
+      var blue = data.platforms.filter(function (p) { return side(p.side) === 'blue'; });
+      var red = data.platforms.filter(function (p) { return side(p.side) === 'red'; });
+      var blueNames = blue.map(function (p) { return p.platform_name; }).sort();
+      var redNames = red.map(function (p) { return p.platform_name; }).sort();
+      var weaponNames = uniq(blue.flatMap(function (p) { var m = loadoutMap(p); return Object.keys(m).filter(function (w) { return m[w] > 0; }); })).sort();
 
-      var requiredDataWarnings = validateRequiredMissionData(data, options);
-      Array.prototype.push.apply(diagnostics, requiredDataWarnings);
+      root.innerHTML = '<section class="missions-card"><h2>Mission Filters</h2><div class="filters-grid">' +
+      '<label>Blue shooters*<select id="blueShooters" multiple size="8"></select></label>' +
+      '<label>Red targets*<select id="redTargets" multiple size="8"></select></label>' +
+      '<label>Blue weapons*<select id="blueWeapons" multiple size="8"></select></label>' +
+      '</div><details><summary>Advanced Generation Settings</summary><div class="advanced-grid">' +
+      '<label>Max missions<input id="maxMissions" type="number" min="1" value="'+state.advanced.maxMissions+'"></label>' +
+      '<label>Max candidate engagements<input id="maxCandidateEngagements" type="number" min="1" value="'+state.advanced.maxCandidateEngagements+'"></label>' +
+      '<label>Max search depth<input id="maxSearchDepth" type="number" min="1" value="'+state.advanced.maxSearchDepth+'"></label>' +
+      '<label>Include mixed weapon engagements<input id="includeMixedWeaponEngagements" type="checkbox" '+(state.advanced.includeMixedWeaponEngagements?'checked':'')+'></label>' +
+      '</div></details><div id="validationErrors" class="validation"></div><button id="generateMissionsButton">Generate Missions</button></section>' +
+      '<section class="missions-card"><h2>Generated Missions JSON</h2><pre id="missionsJson"></pre></section>' +
+      '<section class="missions-card"><h2>Mission Generation Log</h2><pre id="generationLog"></pre></section>';
 
-      root.innerHTML = '' +
-        '<section class="missions-card">' +
-          '<h2>Mission Filters</h2>' +
-          '<div class="filters-grid">' +
-            '<label>Blue shooters*<select id="blueShooters" multiple size="8"></select></label>' +
-            '<label>Red targets*<select id="redTargets" multiple size="8"></select></label>' +
-            '<label>Blue weapons*<select id="blueWeapons" multiple size="8"></select></label>' +
-            '<label>Offensive platform types<select id="offensiveTypes" multiple size="6"></select></label>' +
-            '<label>Target platform types<select id="targetTypes" multiple size="6"></select></label>' +
-          '</div>' +
-          '<details><summary>Advanced Generation Settings</summary>' +
-            '<div class="advanced-grid">' +
-              '<label>Max missions<input id="maxMissions" type="number" min="1" value="' + state.filters.advanced.maxMissions + '"></label>' +
-              '<label>Max candidate engagements<input id="maxCandidateEngagements" type="number" min="1" value="' + state.filters.advanced.maxCandidateEngagements + '"></label>' +
-              '<label>Max search depth<input id="maxSearchDepth" type="number" min="1" value="' + state.filters.advanced.maxSearchDepth + '"></label>' +
-              '<label>Include mixed weapon engagements<input id="includeMixedWeaponEngagements" type="checkbox" ' + (state.filters.advanced.includeMixedWeaponEngagements ? 'checked' : '') + '></label>' +
-            '</div>' +
-          '</details>' +
-          '<div id="validationErrors" class="validation"></div>' +
-          '<button id="generateMissionsButton" type="button">Generate Missions</button>' +
-        '</section>' +
-        '<section class="missions-card"><h2>Mission Input / Filter JSON</h2><pre id="inputJson"></pre></section>' +
-        '<section class="missions-card"><h2>Mission Data Diagnostic Log</h2><pre id="diagnosticLog"></pre></section>';
+      function fill(id, vals, sel) { var el = document.getElementById(id); el.innerHTML = vals.map(function (v) { return '<option value="'+v+'">'+v+'</option>'; }).join(''); Array.from(el.options).forEach(function (o) { o.selected = sel.indexOf(o.value) >= 0; }); }
+      fill('blueShooters', blueNames, state.filters.blueShooters); fill('redTargets', redNames, state.filters.redTargets); fill('blueWeapons', weaponNames, state.filters.blueWeapons);
 
-      function fillSelect(id, values, selected) {
-        var el = document.getElementById(id);
-        el.innerHTML = values.map(function (v) { return '<option value="' + v + '">' + v + '</option>'; }).join('');
-        selected.forEach(function (s) {
-          var opt = Array.from(el.options).find(function (o) { return o.value === s; });
-          if (opt) opt.selected = true;
-        });
-      }
+      var errors = [];
+      if (!state.filters.blueShooters.length) errors.push('Select at least one Blue shooter before generating missions.');
+      if (!state.filters.redTargets.length) errors.push('Select at least one Red target before generating missions.');
+      if (!state.filters.blueWeapons.length) errors.push('Select at least one Blue weapon before generating missions.');
+      document.getElementById('validationErrors').innerHTML = errors.join('<br>');
+      document.getElementById('generateMissionsButton').disabled = errors.length > 0;
 
-      fillSelect('blueShooters', options.blueShooters, state.filters.blueShooters);
-      fillSelect('redTargets', options.redTargets, state.filters.redTargets);
-      fillSelect('blueWeapons', options.blueWeapons, state.filters.blueWeapons.filter(function (w) { return options.blueWeapons.indexOf(w) >= 0; }));
-      fillSelect('offensiveTypes', options.offensivePlatformTypes, state.filters.optional.offensivePlatformTypes);
-      fillSelect('targetTypes', options.targetPlatformTypes, state.filters.optional.targetPlatformTypes);
+      document.getElementById('generationLog').textContent = [
+        'platforms=' + data.platforms.length,
+        'blue platforms=' + blue.length,
+        'red platforms=' + red.length,
+        'weapons=' + data.weapons.length,
+        'lethality rows=' + data.lethality.length,
+        'distance rows=' + Object.keys(data.distances || {}).length
+      ].join('\n');
 
-      var validationErrors = validateSelectedFilters(state.filters);
-      document.getElementById('validationErrors').innerHTML = validationErrors.map(function (e) { return '<div>' + e + '</div>'; }).join('');
-      document.getElementById('generateMissionsButton').disabled = validationErrors.length > 0;
+      var sv = function (id) { return Array.from(document.getElementById(id).selectedOptions).map(function (x) { return x.value; }); };
+      document.getElementById('blueShooters').onchange = function () { state.filters.blueShooters = sv('blueShooters'); render(); };
+      document.getElementById('redTargets').onchange = function () { state.filters.redTargets = sv('redTargets'); render(); };
+      document.getElementById('blueWeapons').onchange = function () { state.filters.blueWeapons = sv('blueWeapons'); render(); };
+      document.getElementById('maxMissions').onchange = function (e) { state.advanced.maxMissions = parseInt(e.target.value, 10) || 100; };
+      document.getElementById('maxCandidateEngagements').onchange = function (e) { state.advanced.maxCandidateEngagements = parseInt(e.target.value, 10) || 30; };
+      document.getElementById('maxSearchDepth').onchange = function (e) { state.advanced.maxSearchDepth = parseInt(e.target.value, 10) || 8; };
+      document.getElementById('includeMixedWeaponEngagements').onchange = function (e) { state.advanced.includeMixedWeaponEngagements = !!e.target.checked; };
 
-      document.getElementById('inputJson').textContent = pretty({
-        selectedBlueShooters: state.filters.blueShooters,
-        selectedRedTargets: state.filters.redTargets,
-        selectedBlueWeapons: state.filters.blueWeapons,
-        selectedOptionalFilters: state.filters.optional,
-        selectedAdvancedGenerationSettings: state.filters.advanced
-      });
-      document.getElementById('diagnosticLog').textContent = diagnostics.join('\n');
-
-      document.getElementById('blueShooters').addEventListener('change', function (e) {
-        state.filters.blueShooters = selectedValues(e.target);
-        state.filters.blueWeapons = [];
-        render();
-      });
-      document.getElementById('redTargets').addEventListener('change', function (e) {
-        state.filters.redTargets = selectedValues(e.target);
-        render();
-      });
-      document.getElementById('blueWeapons').addEventListener('change', function (e) {
-        state.filters.blueWeapons = selectedValues(e.target);
-        render();
-      });
-      document.getElementById('offensiveTypes').addEventListener('change', function (e) {
-        state.filters.optional.offensivePlatformTypes = selectedValues(e.target);
-        render();
-      });
-      document.getElementById('targetTypes').addEventListener('change', function (e) {
-        state.filters.optional.targetPlatformTypes = selectedValues(e.target);
-        render();
-      });
-      document.getElementById('maxMissions').addEventListener('change', function (e) { state.filters.advanced.maxMissions = parseInt(e.target.value, 10) || 250; render(); });
-      document.getElementById('maxCandidateEngagements').addEventListener('change', function (e) { state.filters.advanced.maxCandidateEngagements = parseInt(e.target.value, 10) || 20000; render(); });
-      document.getElementById('maxSearchDepth').addEventListener('change', function (e) { state.filters.advanced.maxSearchDepth = parseInt(e.target.value, 10) || 6; render(); });
-      document.getElementById('includeMixedWeaponEngagements').addEventListener('change', function (e) { state.filters.advanced.includeMixedWeaponEngagements = e.target.checked; render(); });
-
-      document.getElementById('generateMissionsButton').addEventListener('click', function () {
-        var readiness = createReadiness(data, state.filters);
-        document.getElementById('inputJson').textContent = pretty({
-          selectedBlueShooters: state.filters.blueShooters,
-          selectedRedTargets: state.filters.redTargets,
-          selectedBlueWeapons: state.filters.blueWeapons,
-          selectedOptionalFilters: state.filters.optional,
-          selectedAdvancedGenerationSettings: state.filters.advanced,
-          missionGenerationReadiness: readiness
-        });
-      });
+      document.getElementById('generateMissionsButton').onclick = function () {
+        var out = generate(data, state.filters, state.advanced, state.optional);
+        document.getElementById('missionsJson').textContent = pretty(out.missions);
+        document.getElementById('generationLog').textContent = out.logs.join('\n');
+      };
     }
+
+    window.addEventListener('message', function (event) {
+      var p = event && event.data;
+      if (!p || p.type !== 'missionsData' || !p.data) return;
+      data = { platforms: p.data.platformData || [], weapons: p.data.weaponData || [], lethality: p.data.lethalityData || [], distances: p.data.distanceData || {} };
+      render();
+    });
 
     render();
   }
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initializeMissionsPage);
-  } else {
-    initializeMissionsPage();
-  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
 })();
