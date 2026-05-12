@@ -5,30 +5,79 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>WALT Missions</title>
 
-  <!-- External Libraries -->
   <link rel="stylesheet" href="libs/jquery/jquery-ui.css">
-
-  <!-- Custom Stylesheets -->
+  <link rel="stylesheet" href="libs/elements/select2.min.css">
   <link rel="stylesheet" href="missions/css/missions.css">
 </head>
 <body>
   <header class="missions-header">
     <h1>Missions</h1>
-    <p class="missions-subtitle">This page is ready for mission planning features.</p>
+    <p class="missions-subtitle">Generate and rank best valid missions (Blue attacking Red).</p>
   </header>
 
   <main id="missions-root" class="missions-content" aria-live="polite">
-    <section class="missions-placeholder">
-      <h2>Placeholder</h2>
-      <p>Use <code>missions/js/missions.js</code> for behavior and <code>missions/css/missions.css</code> for styling.</p>
+    <section class="missions-panel">
+      <h2>Required Filters</h2>
+      <div class="required-grid">
+        <label>Blue Shooters
+          <select id="filter-shooters" multiple></select>
+        </label>
+        <label>Red Targets
+          <select id="filter-targets" multiple></select>
+        </label>
+        <label>Blue Weapons
+          <select id="filter-weapons" multiple></select>
+        </label>
+      </div>
+      <div id="required-validation" class="validation"></div>
+    </section>
+
+    <section class="missions-panel">
+      <h2>Optional Filters</h2>
+      <div class="optional-grid">
+        <label>Min Destroyed Platforms <input id="opt-min-kills" type="number" min="0" value="0"></label>
+        <label>Max Destroyed Platforms <input id="opt-max-kills" type="number" min="0"></label>
+        <label>Must Use Weapon <select id="opt-must-weapon"><option value="">Any</option></select></label>
+        <label>Exclude Weapon <select id="opt-exclude-weapon"><option value="">None</option></select></label>
+      </div>
+    </section>
+
+    <section class="missions-panel">
+      <button id="toggle-advanced" class="secondary">Advanced Generation Settings</button>
+      <div id="advanced-panel" class="advanced hidden">
+        <div class="optional-grid">
+          <label>Max Missions <input id="adv-max-missions" type="number" min="1" value="25"></label>
+          <label>Max Candidate Engagements <input id="adv-max-candidates" type="number" min="1" value="400"></label>
+          <label>Max Search Depth <input id="adv-max-depth" type="number" min="1" value="8"></label>
+          <label>Max Kills Per Mission <input id="adv-max-kills" type="number" min="1" value="8"></label>
+          <label><input id="adv-mixed" type="checkbox" checked> Include Mixed-Weapon Engagements</label>
+          <label><input id="adv-multi" type="checkbox" checked> Allow Multi-Platform Engagements</label>
+          <label>Max Contributing Platforms <input id="adv-max-platforms" type="number" min="1" value="3"></label>
+          <label>Max Contributing Weapons <input id="adv-max-weapons" type="number" min="1" value="4"></label>
+          <label>Overkill Tolerance <input id="adv-overkill" type="number" min="0" step="0.05" value="0.25"></label>
+        </div>
+      </div>
+      <button id="generate-missions" disabled>Generate Missions</button>
+    </section>
+
+    <section class="missions-panel">
+      <h2>Generated Missions JSON</h2>
+      <textarea id="missions-json" rows="14" readonly></textarea>
+    </section>
+
+    <section class="missions-panel">
+      <h2>Mission Generation Log</h2>
+      <textarea id="missions-log" rows="14" readonly></textarea>
     </section>
   </main>
 
-  <!-- External Scripts -->
   <script src="libs/jquery/jquery.min.js"></script>
   <script src="libs/jquery/jquery-ui.js"></script>
-
-  <!-- Page Scripts -->
+  <script src="libs/elements/select2.min.js"></script>
+  <script src="input/platform_details.js"></script>
+  <script src="input/weapon_details.js"></script>
+  <script src="input/weapon_lethality_details.js"></script>
+  <script src="libs/geo/geolib.min.js"></script>
   <script src="missions/js/missions.js"></script>
 </body>
 </html>
