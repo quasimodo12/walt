@@ -1,49 +1,17 @@
 body {
   margin: 0;
   font-family: Arial, Helvetica, sans-serif;
-  background-color: #ffffff;
+  background-color: #f8fafc;
   color: #1f2933;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
 }
-
-.missions-header {
-  padding: 1.5rem 1rem;
-  border-bottom: 1px solid #d9e1f1;
-}
-
-.missions-header h1 {
-  margin: 0;
-  font-size: 1.75rem;
-}
-
-.missions-subtitle {
-  margin: 0.5rem 0 0;
-  color: #4c596c;
-  font-size: 1rem;
-}
-
-.missions-content {
-  flex: 1;
-  padding: 2rem 1rem;
-}
-
-.missions-placeholder {
-  max-width: 640px;
-  margin: 0 auto;
-  padding: 1.5rem;
-  border: 1px dashed #c8d2e4;
-  border-radius: 6px;
-  background-color: #ffffff;
-}
-
-.missions-placeholder h2 {
-  margin-top: 0;
-  font-size: 1.25rem;
-}
-
-.missions-placeholder p {
-  margin-bottom: 0;
-  line-height: 1.5;
-}
+.missions-header { padding: 1rem 1.25rem; border-bottom: 1px solid #d9e1f1; background: #fff; }
+.missions-content { padding: 1rem 1.25rem; display: grid; gap: 1rem; }
+.missions-card { background: #fff; border: 1px solid #d9e1f1; border-radius: 8px; padding: 1rem; }
+.filters-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(220px,1fr)); gap: .75rem; }
+label { display: flex; flex-direction: column; gap: .3rem; font-weight: 600; font-size: .9rem; }
+select, input { font: inherit; padding: .35rem; border: 1px solid #c9d5ea; border-radius: 4px; }
+.advanced-grid { margin-top: .75rem; display: grid; gap: .6rem; grid-template-columns: repeat(auto-fit,minmax(220px,1fr)); }
+.validation { color: #b42318; min-height: 1.2rem; margin: .75rem 0; font-weight: 600; }
+button { background: #1d4ed8; color: #fff; border: none; border-radius: 4px; padding: .55rem .9rem; cursor: pointer; }
+button:disabled { opacity: .45; cursor: not-allowed; }
+pre { white-space: pre-wrap; margin: 0; background: #0f172a; color: #e2e8f0; border-radius: 6px; padding: .75rem; max-height: 360px; overflow: auto; }

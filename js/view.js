@@ -5,6 +5,7 @@ var View = (function() {
 
     // Global variable to hold the reference to the new window
     let newWindow = null;
+    let missionsWindow = null;
 
     // Initialize the map with boxZoom disabled
     function initializeMap() {
@@ -159,7 +160,14 @@ var View = (function() {
 
         // Navigate to the Missions page when requested
         document.getElementById('missionsButton').addEventListener('click', function () {
-            window.open('missions.html', '_blank', 'noopener');
+            missionsWindow = window.open('missions.html', '_blank');
+            if (!missionsWindow) {
+                console.error('view.js: Failed to open missions window.');
+                return;
+            }
+            missionsWindow.onload = function() {
+                sendDataToMissionsWindow();
+            };
         });
 
     }
@@ -308,6 +316,22 @@ var View = (function() {
         }
     }
 
+
+    function sendDataToMissionsWindow() {
+        if (!missionsWindow || missionsWindow.closed) {
+            return;
+        }
+        missionsWindow.postMessage({
+            type: 'missionsData',
+            data: {
+                platformData: PlatformModel.getPlatformData(),
+                weaponData: WeaponStorage.getWeaponData(),
+                lethalityData: WeaponLethalityStorage.getLethalityData(),
+                distanceData: DistanceStorage.getAllDistanceData()
+            }
+        }, '*');
+    }
+
     // Function to update all data containers in the new window
     function updateAll() {
         console.log("view.js >>> updating the new window with all containers");
@@ -321,6 +345,7 @@ var View = (function() {
         sendDataToNewWindow({type: 'weaponData', data: weaponData});
         sendDataToNewWindow({type: 'sensorData', data: sensorData});
         sendDataToNewWindow({type: 'distanceData', data: distanceData});
+        sendDataToMissionsWindow();
     }
 
     /**
