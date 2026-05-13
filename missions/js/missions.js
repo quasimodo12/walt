@@ -275,6 +275,7 @@
             '<label>Blue shooters*<select id="blueShooters" multiple size="8"></select></label>' +
             '<label>Red targets*<select id="redTargets" multiple size="8"></select></label>' +
             '<label>Blue weapons*<select id="blueWeapons" multiple size="8"></select></label>' +
+            '<label>Salvo size*<input id="salvoSize" type="number" min="1" value="1"></label>' +
             '<label>Offensive platform types<select id="offensiveTypes" multiple size="6"></select></label>' +
             '<label>Target platform types<select id="targetTypes" multiple size="6"></select></label>' +
           '</div>' +
@@ -316,7 +317,8 @@
         selectedRedTargets: state.filters.redTargets,
         selectedBlueWeapons: state.filters.blueWeapons,
         selectedOptionalFilters: state.filters.optional,
-        selectedAdvancedGenerationSettings: state.filters.advanced
+        selectedAdvancedGenerationSettings: state.filters.advanced,
+        selectedSalvoSize: parseInt((document.getElementById('salvoSize')||{value:1}).value,10)||0
       });
       document.getElementById('diagnosticLog').textContent = diagnostics.join('\n');
 
@@ -348,14 +350,37 @@
 
       document.getElementById('generateMissionsButton').addEventListener('click', function () {
         var readiness = createReadiness(data, state.filters);
+        var salvoSize = parseInt(document.getElementById('salvoSize').value, 10) || 0;
+        if (salvoSize < 1) {
+          document.getElementById('validationErrors').innerHTML = '<div>Salvo size is required and must be at least 1.</div>';
+          return;
+        }
+        var result = (window.MissionGenerator && typeof window.MissionGenerator.generateMissions === 'function')
+          ? window.MissionGenerator.generateMissions({
+              data: data,
+              filters: state.filters,
+              salvoSize: salvoSize,
+              limits: {
+                maxEngagementCandidates: state.filters.advanced.maxCandidateEngagements,
+                maxMissionCandidates: state.filters.advanced.maxMissions,
+                maxTargetsPerMission: state.filters.advanced.maxKillsPerMission,
+                maxContributorsPerEngagement: state.filters.advanced.maxContributingPlatformsPerEngagement,
+                maxRuntimeMs: 2000
+              }
+            })
+          : { missions: [], log: ['MissionGenerator not loaded.'], limitsReached: false };
+
         document.getElementById('inputJson').textContent = pretty({
           selectedBlueShooters: state.filters.blueShooters,
           selectedRedTargets: state.filters.redTargets,
           selectedBlueWeapons: state.filters.blueWeapons,
           selectedOptionalFilters: state.filters.optional,
           selectedAdvancedGenerationSettings: state.filters.advanced,
-          missionGenerationReadiness: readiness
+          selectedSalvoSize: salvoSize,
+          missionGenerationReadiness: readiness,
+          generatedMissions: result.missions
         });
+        document.getElementById('diagnosticLog').textContent = result.log.join('\n');
       });
     }
 
