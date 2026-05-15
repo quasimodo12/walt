@@ -436,6 +436,17 @@ var View = (function() {
         return map; // Return the map instance for external access
     }
 
+    function refreshPlatformIcons() {
+        var platformData = PlatformModel.getPlatformData();
+        platformData.forEach(function(platform) {
+            var marker = platformMarkers[platform.platform_name];
+            if (!marker) {
+                return;
+            }
+            marker.setIcon(createCustomIcon(platform.side));
+        });
+    }
+
     //===== DIALOG WINDOWS =====//
 
     // Creates and opens the platform configuration window
@@ -450,6 +461,7 @@ var View = (function() {
         highlightMarker: highlightMarker,
         unhighlightMarker: unhighlightMarker,
         getMap: getMap, // Expose the getMap function
+        refreshPlatformIcons: refreshPlatformIcons,
         showPlatformInfo: showPlatformInfo, // Expose the showPlatformInfo function
         sendDataToNewWindow: sendDataToNewWindow,
         updateAll: updateAll, // Update platformData, weaponData, sensorData, and distanceData in the new window

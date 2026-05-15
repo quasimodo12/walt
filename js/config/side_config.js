@@ -82,6 +82,53 @@
         : FALLBACK_COLOR;
 
     var sideMap = mapById(sides);
+    var STORAGE_KEY = 'walt.sideIconOverrides';
+
+    function loadIconOverrides() {
+        if (!global.localStorage) {
+            return;
+        }
+
+        try {
+            var rawValue = global.localStorage.getItem(STORAGE_KEY);
+            if (!rawValue) {
+                return;
+            }
+
+            var parsed = JSON.parse(rawValue);
+            if (!parsed || typeof parsed !== 'object') {
+                return;
+            }
+
+            Object.keys(parsed).forEach(function(sideId) {
+                var iconUrl = parsed[sideId];
+                if (!sideMap[sideId] || typeof iconUrl !== 'string' || !iconUrl.trim()) {
+                    return;
+                }
+                sideMap[sideId].iconUrl = iconUrl.trim();
+            });
+        } catch (error) {
+            console.warn('side_config.js: failed to load icon overrides', error);
+        }
+    }
+
+    function saveIconOverrides() {
+        if (!global.localStorage) {
+            return;
+        }
+
+        try {
+            var overridesToStore = {};
+            sides.forEach(function(side) {
+                if (side && side.id && side.iconUrl) {
+                    overridesToStore[side.id] = side.iconUrl;
+                }
+            });
+            global.localStorage.setItem(STORAGE_KEY, JSON.stringify(overridesToStore));
+        } catch (error) {
+            console.warn('side_config.js: failed to save icon overrides', error);
+        }
+    }
 
     function getSides() {
         return sides.map(function(side) {
@@ -141,11 +188,23 @@
         return fallbackColor;
     }
 
+    function setIconForSide(id, iconUrl) {
+        if (typeof id !== 'string' || !sideMap[id] || typeof iconUrl !== 'string' || iconUrl.trim().length === 0) {
+            return false;
+        }
+
+        sideMap[id].iconUrl = iconUrl.trim();
+        saveIconOverrides();
+        return true;
+    }
+
     function getAllSideIds() {
         return sides.map(function(side) {
             return side.id;
         });
     }
+
+    loadIconOverrides();
 
     global.SideConfig = {
         getSides: getSides,
@@ -154,6 +213,7 @@
         getDefaultOpponent: getDefaultOpponent,
         getLabelForSide: getLabelForSide,
         getIconForSide: getIconForSide,
+        setIconForSide: setIconForSide,
         getColorForSide: getColorForSide,
         getAllSideIds: getAllSideIds
     };

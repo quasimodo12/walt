@@ -70,9 +70,22 @@
         <div class="platform-table-toolbar">
           <h3 class="platform-table-subtitle">Platforms</h3>
           <div class="platform-table-toolbar-actions">
-            <button type="button" id="iconsButton" class="column-toggle-button">
+            <button
+              type="button"
+              id="iconsButton"
+              class="column-toggle-button"
+              aria-haspopup="true"
+              aria-expanded="false"
+              aria-controls="iconsMenu"
+            >
               Icons
             </button>
+            <div
+              id="iconsMenu"
+              class="column-toggle-menu icon-color-menu"
+              role="menu"
+              aria-hidden="true"
+            ></div>
             <button
               type="button"
               id="columnToggleButton"
