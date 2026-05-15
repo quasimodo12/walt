@@ -85,7 +85,7 @@
     var STORAGE_KEY = 'walt.sideIconOverrides';
     var ICONS_BASE_PATH = 'images/colored-icons/surface-icons/';
 
-    function normalizeIconUrl(iconUrl) {
+    function normalizeIconUrl(iconUrl, sideId) {
         if (typeof iconUrl !== 'string') {
             return '';
         }
@@ -97,8 +97,14 @@
         if (trimmed.indexOf(ICONS_BASE_PATH) === 0) {
             var filename = trimmed.slice(ICONS_BASE_PATH.length);
             if (/^[^/]+\.png$/i.test(filename) && filename.indexOf('plat_') !== 0) {
-                return ICONS_BASE_PATH + 'plat_' + filename;
+                filename = 'plat_' + filename;
             }
+
+            if (sideId === 'red' && filename.indexOf('DMD_') !== 0) {
+                filename = 'DMD_' + filename;
+            }
+
+            return ICONS_BASE_PATH + filename;
         }
 
         return trimmed;
@@ -122,7 +128,7 @@
 
             Object.keys(parsed).forEach(function(sideId) {
                 var iconUrl = parsed[sideId];
-                var normalizedIconUrl = normalizeIconUrl(iconUrl);
+                var normalizedIconUrl = normalizeIconUrl(iconUrl, sideId);
                 if (!sideMap[sideId] || !normalizedIconUrl) {
                     return;
                 }
@@ -210,7 +216,7 @@
     }
 
     function setIconForSide(id, iconUrl) {
-        var normalizedIconUrl = normalizeIconUrl(iconUrl);
+        var normalizedIconUrl = normalizeIconUrl(iconUrl, id);
         if (typeof id !== 'string' || !sideMap[id] || !normalizedIconUrl) {
             return false;
         }
