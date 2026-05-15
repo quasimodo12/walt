@@ -83,6 +83,26 @@
 
     var sideMap = mapById(sides);
     var STORAGE_KEY = 'walt.sideIconOverrides';
+    var ICONS_BASE_PATH = 'images/colored-icons/surface-icons/';
+
+    function normalizeIconUrl(iconUrl) {
+        if (typeof iconUrl !== 'string') {
+            return '';
+        }
+        var trimmed = iconUrl.trim();
+        if (!trimmed) {
+            return '';
+        }
+
+        if (trimmed.indexOf(ICONS_BASE_PATH) === 0) {
+            var filename = trimmed.slice(ICONS_BASE_PATH.length);
+            if (/^[^/]+\.png$/i.test(filename) && filename.indexOf('plat_') !== 0) {
+                return ICONS_BASE_PATH + 'plat_' + filename;
+            }
+        }
+
+        return trimmed;
+    }
 
     function loadIconOverrides() {
         if (!global.localStorage) {
@@ -102,10 +122,11 @@
 
             Object.keys(parsed).forEach(function(sideId) {
                 var iconUrl = parsed[sideId];
-                if (!sideMap[sideId] || typeof iconUrl !== 'string' || !iconUrl.trim()) {
+                var normalizedIconUrl = normalizeIconUrl(iconUrl);
+                if (!sideMap[sideId] || !normalizedIconUrl) {
                     return;
                 }
-                sideMap[sideId].iconUrl = iconUrl.trim();
+                sideMap[sideId].iconUrl = normalizedIconUrl;
             });
         } catch (error) {
             console.warn('side_config.js: failed to load icon overrides', error);
@@ -189,11 +210,12 @@
     }
 
     function setIconForSide(id, iconUrl) {
-        if (typeof id !== 'string' || !sideMap[id] || typeof iconUrl !== 'string' || iconUrl.trim().length === 0) {
+        var normalizedIconUrl = normalizeIconUrl(iconUrl);
+        if (typeof id !== 'string' || !sideMap[id] || !normalizedIconUrl) {
             return false;
         }
 
-        sideMap[id].iconUrl = iconUrl.trim();
+        sideMap[id].iconUrl = normalizedIconUrl;
         saveIconOverrides();
         return true;
     }

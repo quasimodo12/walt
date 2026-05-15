@@ -299,7 +299,7 @@ var TableController = (function() {
 
             Object.keys(ICON_COLOR_OPTIONS).forEach(function(colorName) {
                 var rgb = ICON_COLOR_OPTIONS[colorName];
-                var iconPath = 'images/colored-icons/surface-icons/' + colorName + '.png';
+                var iconPath = 'images/colored-icons/surface-icons/plat_' + colorName + '.png';
                 var $swatch = $('<button></button>', {
                     type: 'button',
                     'class': 'icon-color-swatch',
