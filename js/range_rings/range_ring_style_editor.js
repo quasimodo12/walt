@@ -7,11 +7,16 @@ var RangeRingStyleEditor = (function() {
 
   var templates = [];
   var selectedTemplateIndex = 0;
+  var TEMPLATE_STORAGE_KEY = 'walt.rangeRingStyleTemplates';
 
   function initTemplates() {
-    var incoming = Array.isArray(window.range_ring_style_templates)
-      ? window.range_ring_style_templates
-      : [];
+    var incoming = loadStoredTemplates();
+
+    if (!incoming.length) {
+      incoming = Array.isArray(window.range_ring_style_templates)
+        ? window.range_ring_style_templates
+        : [];
+    }
 
     templates = incoming.map(function(template) {
       return normalizeTemplate(template);
@@ -107,8 +112,14 @@ var RangeRingStyleEditor = (function() {
       if (!template) {
         return;
       }
+      if (hasDuplicateTemplateName(template.name)) {
+        alert('A template with this name already exists. Please choose a unique name.');
+        return;
+      }
+
       templates.push(template);
       selectedTemplateIndex = templates.length - 1;
+      persistTemplates();
       renderTemplateSelect();
       loadTemplateIntoInputs(selectedTemplateIndex);
     });
@@ -124,7 +135,13 @@ var RangeRingStyleEditor = (function() {
       if (!template) {
         return;
       }
+      if (hasDuplicateTemplateName(template.name, selectedTemplateIndex)) {
+        alert('A template with this name already exists. Please choose a unique name.');
+        return;
+      }
+
       templates[selectedTemplateIndex] = template;
+      persistTemplates();
       RangeRingLogic.applyStyleToToggledRangeRings(template);
       $('#rangeRingStyleDialog').dialog('close');
       $('#rangeRingInfoDialog').dialog('close');
@@ -193,6 +210,56 @@ var RangeRingStyleEditor = (function() {
     ctx.globalAlpha = clamp(template.opacity, 0, 1);
     ctx.stroke();
     ctx.globalAlpha = 1;
+  }
+
+
+  function loadStoredTemplates() {
+    if (!window.localStorage) {
+      return [];
+    }
+
+    try {
+      var rawValue = window.localStorage.getItem(TEMPLATE_STORAGE_KEY);
+      if (!rawValue) {
+        return [];
+      }
+
+      var parsed = JSON.parse(rawValue);
+      return Array.isArray(parsed) ? parsed : [];
+    } catch (error) {
+      console.warn('range_ring_style_editor.js: failed to load stored templates', error);
+      return [];
+    }
+  }
+
+  function persistTemplates() {
+    window.range_ring_style_templates = templates.map(function(template) {
+      return Object.assign({}, template);
+    });
+
+    if (!window.localStorage) {
+      return;
+    }
+
+    try {
+      window.localStorage.setItem(TEMPLATE_STORAGE_KEY, JSON.stringify(window.range_ring_style_templates));
+    } catch (error) {
+      console.warn('range_ring_style_editor.js: failed to persist templates', error);
+    }
+  }
+
+  function hasDuplicateTemplateName(name, ignoreIndex) {
+    var normalizedName = String(name || '').trim().toLowerCase();
+    if (!normalizedName) {
+      return false;
+    }
+
+    return templates.some(function(template, index) {
+      if (index === ignoreIndex) {
+        return false;
+      }
+      return String(template.name || '').trim().toLowerCase() === normalizedName;
+    });
   }
 
   function copyTemplatesToClipboard() {
