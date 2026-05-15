@@ -101,6 +101,52 @@
     display: flex;
 }
 
+#platformTableContainer .icon-color-menu {
+    width: 320px;
+    max-height: 280px;
+    overflow-y: auto;
+    gap: 10px;
+}
+
+#platformTableContainer .icon-color-section {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+#platformTableContainer .icon-color-section-title {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #555;
+}
+
+#platformTableContainer .icon-color-grid {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    gap: 6px;
+}
+
+#platformTableContainer .icon-color-swatch {
+    width: 20px;
+    height: 20px;
+    border: 1px solid #9b9b9b;
+    border-radius: 4px;
+    cursor: pointer;
+    padding: 0;
+}
+
+#platformTableContainer .icon-color-swatch:hover,
+#platformTableContainer .icon-color-swatch:focus {
+    transform: scale(1.06);
+    outline: 1px solid #555;
+}
+
+#platformTableContainer .icon-color-swatch.is-selected {
+    border: 2px solid #1f1f1f;
+    box-shadow: 0 0 0 1px #ffffff inset;
+}
+
 #platformTableContainer .column-toggle-option {
     display: flex;
     align-items: center;

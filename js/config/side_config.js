@@ -82,6 +82,74 @@
         : FALLBACK_COLOR;
 
     var sideMap = mapById(sides);
+    var STORAGE_KEY = 'walt.sideIconOverrides';
+    var ICONS_BASE_PATH = 'images/colored-icons/surface-icons/';
+
+    function normalizeIconUrl(iconUrl) {
+        if (typeof iconUrl !== 'string') {
+            return '';
+        }
+        var trimmed = iconUrl.trim();
+        if (!trimmed) {
+            return '';
+        }
+
+        if (trimmed.indexOf(ICONS_BASE_PATH) === 0) {
+            var filename = trimmed.slice(ICONS_BASE_PATH.length);
+            if (/^[^/]+\.png$/i.test(filename) && filename.indexOf('plat_') !== 0) {
+                return ICONS_BASE_PATH + 'plat_' + filename;
+            }
+        }
+
+        return trimmed;
+    }
+
+    function loadIconOverrides() {
+        if (!global.localStorage) {
+            return;
+        }
+
+        try {
+            var rawValue = global.localStorage.getItem(STORAGE_KEY);
+            if (!rawValue) {
+                return;
+            }
+
+            var parsed = JSON.parse(rawValue);
+            if (!parsed || typeof parsed !== 'object') {
+                return;
+            }
+
+            Object.keys(parsed).forEach(function(sideId) {
+                var iconUrl = parsed[sideId];
+                var normalizedIconUrl = normalizeIconUrl(iconUrl);
+                if (!sideMap[sideId] || !normalizedIconUrl) {
+                    return;
+                }
+                sideMap[sideId].iconUrl = normalizedIconUrl;
+            });
+        } catch (error) {
+            console.warn('side_config.js: failed to load icon overrides', error);
+        }
+    }
+
+    function saveIconOverrides() {
+        if (!global.localStorage) {
+            return;
+        }
+
+        try {
+            var overridesToStore = {};
+            sides.forEach(function(side) {
+                if (side && side.id && side.iconUrl) {
+                    overridesToStore[side.id] = side.iconUrl;
+                }
+            });
+            global.localStorage.setItem(STORAGE_KEY, JSON.stringify(overridesToStore));
+        } catch (error) {
+            console.warn('side_config.js: failed to save icon overrides', error);
+        }
+    }
 
     function getSides() {
         return sides.map(function(side) {
@@ -141,11 +209,24 @@
         return fallbackColor;
     }
 
+    function setIconForSide(id, iconUrl) {
+        var normalizedIconUrl = normalizeIconUrl(iconUrl);
+        if (typeof id !== 'string' || !sideMap[id] || !normalizedIconUrl) {
+            return false;
+        }
+
+        sideMap[id].iconUrl = normalizedIconUrl;
+        saveIconOverrides();
+        return true;
+    }
+
     function getAllSideIds() {
         return sides.map(function(side) {
             return side.id;
         });
     }
+
+    loadIconOverrides();
 
     global.SideConfig = {
         getSides: getSides,
@@ -154,6 +235,7 @@
         getDefaultOpponent: getDefaultOpponent,
         getLabelForSide: getLabelForSide,
         getIconForSide: getIconForSide,
+        setIconForSide: setIconForSide,
         getColorForSide: getColorForSide,
         getAllSideIds: getAllSideIds
     };

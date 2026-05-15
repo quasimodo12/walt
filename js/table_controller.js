@@ -19,6 +19,87 @@
 
 */
 var TableController = (function() {
+    var ICON_COLOR_OPTIONS = {
+        red_light: [255, 180, 180],
+        red_soft: [255, 120, 120],
+        red: [255, 0, 0],
+        red_deep: [200, 0, 0],
+        red_dark: [139, 0, 0],
+        red_crimson: [220, 20, 60],
+        red_burgundy: [128, 0, 32],
+        red_maroon: [128, 0, 0],
+        green_light: [170, 255, 170],
+        green_soft: [100, 220, 100],
+        green: [0, 170, 0],
+        green_bright: [0, 255, 0],
+        green_deep: [0, 120, 0],
+        green_dark: [0, 100, 0],
+        green_forest: [34, 139, 34],
+        green_emerald: [0, 128, 96],
+        green_mint: [152, 255, 152],
+        green_olive: [107, 142, 35],
+        blue_light: [180, 220, 255],
+        blue_soft: [100, 170, 255],
+        blue: [0, 102, 255],
+        blue_bright: [0, 170, 255],
+        blue_deep: [0, 70, 180],
+        blue_dark: [0, 0, 139],
+        blue_navy: [0, 0, 128],
+        blue_royal: [65, 105, 225],
+        blue_sky: [135, 206, 235],
+        blue_cyan: [0, 255, 255],
+        yellow_light: [255, 255, 200],
+        yellow_soft: [255, 245, 120],
+        yellow: [255, 204, 0],
+        yellow_bright: [255, 255, 0],
+        yellow_gold: [255, 180, 0],
+        yellow_dark: [200, 160, 0],
+        yellow_mustard: [204, 170, 0],
+        yellow_amber: [255, 191, 0],
+        orange_light: [255, 220, 180],
+        orange_soft: [255, 180, 100],
+        orange: [255, 128, 0],
+        orange_bright: [255, 165, 0],
+        orange_deep: [255, 90, 0],
+        orange_dark: [204, 85, 0],
+        orange_burnt: [191, 87, 0],
+        orange_peach: [255, 200, 150],
+        purple_light: [230, 200, 255],
+        purple_soft: [190, 130, 255],
+        purple: [153, 51, 255],
+        purple_bright: [180, 0, 255],
+        purple_deep: [110, 0, 180],
+        purple_dark: [75, 0, 130],
+        purple_violet: [138, 43, 226],
+        purple_lavender: [230, 230, 250],
+        purple_magenta: [255, 0, 255],
+        pink_light: [255, 210, 230],
+        pink_soft: [255, 150, 200],
+        pink: [255, 105, 180],
+        pink_bright: [255, 0, 170],
+        pink_deep: [220, 20, 140],
+        pink_dark: [180, 0, 100],
+        teal_light: [160, 255, 240],
+        teal_soft: [80, 220, 200],
+        teal: [0, 128, 128],
+        teal_deep: [0, 100, 100],
+        teal_dark: [0, 70, 70],
+        cyan_light: [180, 255, 255],
+        cyan: [0, 255, 255],
+        cyan_dark: [0, 160, 180],
+        tan_light: [230, 210, 170],
+        tan: [210, 180, 140],
+        brown_light: [180, 120, 70],
+        brown: [139, 69, 19],
+        brown_dark: [90, 45, 10],
+        white: [255, 255, 255],
+        gray_very_light: [230, 230, 230],
+        gray_light: [200, 200, 200],
+        gray: [128, 128, 128],
+        gray_dark: [80, 80, 80],
+        gray_very_dark: [40, 40, 40],
+        black: [0, 0, 0]
+    };
     var dataTableInstance = null;
     var resizeTimer = null;
     var BASE_FONT_SIZE = 13;
@@ -184,6 +265,111 @@ var TableController = (function() {
 
         refreshColumnToggleMenuState();
         setColumnToggleMenuOpen(false);
+    }
+
+    function setIconsMenuOpen(isOpen) {
+        var $button = $('#iconsButton');
+        var $menu = $('#iconsMenu');
+        if (!$button.length || !$menu.length) {
+            return;
+        }
+
+        if (isOpen) {
+            $menu.addClass('is-open').attr('aria-hidden', 'false');
+            $button.attr('aria-expanded', 'true');
+        } else {
+            $menu.removeClass('is-open').attr('aria-hidden', 'true');
+            $button.attr('aria-expanded', 'false');
+        }
+    }
+
+    function initializeIconsMenu() {
+        var $button = $('#iconsButton');
+        var $menu = $('#iconsMenu');
+        if (!$button.length || !$menu.length || typeof SideConfig === 'undefined') {
+            return;
+        }
+
+        $menu.empty();
+
+        ['blue', 'red'].forEach(function(sideId) {
+            var $section = $('<div></div>', { 'class': 'icon-color-section' });
+            var $title = $('<div></div>', { 'class': 'icon-color-section-title' }).text(SideConfig.getLabelForSide(sideId));
+            var $grid = $('<div></div>', { 'class': 'icon-color-grid', 'data-side-id': sideId });
+
+            Object.keys(ICON_COLOR_OPTIONS).forEach(function(colorName) {
+                var rgb = ICON_COLOR_OPTIONS[colorName];
+                var iconPath = 'images/colored-icons/surface-icons/plat_' + colorName + '.png';
+                var $swatch = $('<button></button>', {
+                    type: 'button',
+                    'class': 'icon-color-swatch',
+                    'data-side-id': sideId,
+                    'data-color-name': colorName,
+                    'data-icon-path': iconPath,
+                    'aria-label': SideConfig.getLabelForSide(sideId) + ' icon color ' + colorName.replace(/_/g, ' ')
+                });
+                $swatch.css('background-color', 'rgb(' + rgb.join(',') + ')');
+
+                if (SideConfig.getIconForSide(sideId) === iconPath) {
+                    $swatch.addClass('is-selected');
+                }
+                $grid.append($swatch);
+            });
+
+            $section.append($title, $grid);
+            $menu.append($section);
+        });
+
+        $menu
+            .off('click.iconsMenu')
+            .on('click.iconsMenu', function(event) {
+                event.stopPropagation();
+            })
+            .off('click.iconChoice')
+            .on('click.iconChoice', '.icon-color-swatch', function(event) {
+                event.preventDefault();
+                event.stopPropagation();
+
+                var $swatch = $(this);
+                var sideId = $swatch.attr('data-side-id');
+                var iconPath = $swatch.attr('data-icon-path');
+                if (!SideConfig.setIconForSide(sideId, iconPath)) {
+                    return;
+                }
+
+                $menu.find('.icon-color-grid[data-side-id="' + sideId + '"] .icon-color-swatch').removeClass('is-selected');
+                $swatch.addClass('is-selected');
+
+                if (typeof View !== 'undefined' && typeof View.refreshPlatformIcons === 'function') {
+                    View.refreshPlatformIcons();
+                }
+            });
+
+        $button
+            .off('click.iconsMenu')
+            .on('click.iconsMenu', function(event) {
+                event.preventDefault();
+                event.stopPropagation();
+                var isOpen = $menu.hasClass('is-open');
+                setColumnToggleMenuOpen(false);
+                setIconsMenuOpen(!isOpen);
+            });
+
+        $(document)
+            .off('click.iconsMenu')
+            .on('click.iconsMenu', function(event) {
+                if ($(event.target).closest('#iconsButton, #iconsMenu').length === 0) {
+                    setIconsMenuOpen(false);
+                }
+            })
+            .off('keydown.iconsMenu')
+            .on('keydown.iconsMenu', function(event) {
+                if (event.key === 'Escape') {
+                    setIconsMenuOpen(false);
+                }
+            });
+
+        setIconsMenuOpen(false);
     }
 
     function calculateTableHeight() {
@@ -415,6 +601,7 @@ var TableController = (function() {
         });
 
         initializeColumnToggleMenu();
+        initializeIconsMenu();
 
         registerResizeHandler();
 
