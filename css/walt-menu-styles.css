@@ -49,6 +49,24 @@
     flex: 0 0 auto;
 }
 
+#platformTableContainer .platform-table-title-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+#platformTableContainer .platform-table-logo {
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+    flex: 0 0 auto;
+}
+
+#platformTableContainer .platform-table-title {
+    margin: 0;
+    line-height: 1.2;
+}
+
 #platformTableContainer .platform-table-toolbar {
     display: flex;
     justify-content: space-between;
