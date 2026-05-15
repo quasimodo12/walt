@@ -96,7 +96,7 @@
 
         if (trimmed.indexOf(ICONS_BASE_PATH) === 0) {
             var filename = trimmed.slice(ICONS_BASE_PATH.length);
-            if (/^[^/]+\.png$/i.test(filename) && filename.indexOf('plat_') !== 0) {
+            if (/^[^/]+\.png$/i.test(filename) && filename.indexOf('plat_') !== 0 && filename.indexOf('DMD_plat_') !== 0) {
                 filename = 'plat_' + filename;
             }
 
