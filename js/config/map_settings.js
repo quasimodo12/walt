@@ -39,6 +39,7 @@
             ],
             maxBoundsViscosity: 1.0,
             boxZoom: false,
+            doubleClickZoom: false,
             zoomAnimation: true,
             fadeAnimation: true
         },
