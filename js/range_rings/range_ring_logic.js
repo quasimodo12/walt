@@ -16,33 +16,45 @@ var RangeRingLogic = (function() {
 
     rangeRings
       .filter(function(rangeRing) { return rangeRing.toggled === 1; })
-      .sort(function(a, b) { return b.range_val - a.range_val; })
+      .sort(function(a, b) { return getRangeMaxValue(b) - getRangeMaxValue(a); })
       .forEach(function(rangeRing) {
+        var rangeBand = getRangeRingBand(rangeRing);
+        if (!isValidRangeBand(rangeBand)) {
+          return;
+        }
+
         var style = getRangeRingStyle(rangeRing, platformSideLookup[rangeRing.platform_name]);
-        var circle = L.circle([rangeRing.latitude, rangeRing.longitude], {
-          radius: rangeRing.range_val,
+        var tooltipContent = createRangeBandTooltip(rangeRing, rangeBand);
+        var outerCircle = L.circle([rangeRing.latitude, rangeRing.longitude], {
+          radius: rangeBand.max,
           color: style.color,
           weight: style.lineWidth,
           opacity: style.opacity,
           fillOpacity: 0.01
         });
 
-        var rangeValue = typeof rangeRing.range_val === 'number' ? rangeRing.range_val : parseFloat(rangeRing.range_val);
-        var formattedRange = isFinite(rangeValue) ? rangeValue.toLocaleString() : 'Unknown';
-        var tooltipContent = [
-          rangeRing.system_name || 'Unknown System',
-          rangeRing.platform_name || 'Unknown Platform',
-          formattedRange + ' m'
-        ].join('<br>');
-
-        circle.bindTooltip(tooltipContent, {
+        outerCircle.bindTooltip(tooltipContent, {
           direction: 'top',
           sticky: true,
           className: 'range-ring-tooltip'
         });
 
-        circle.addTo(map);
-        rangeRingLayers.push(circle);
+        outerCircle.addTo(map);
+        rangeRingLayers.push(outerCircle);
+
+        if (rangeBand.min > 0) {
+          var innerCircle = L.circle([rangeRing.latitude, rangeRing.longitude], {
+            radius: rangeBand.min,
+            color: style.color,
+            weight: Math.max(1, Math.round(style.lineWidth * 0.75)),
+            opacity: style.opacity,
+            fillOpacity: 0,
+            dashArray: '6 6'
+          });
+
+          innerCircle.addTo(map);
+          rangeRingLayers.push(innerCircle);
+        }
       });
 
     updateRangeRingConfigCheckboxes();
@@ -102,6 +114,67 @@ var RangeRingLogic = (function() {
 
   function createRangeRingKey(platformName, systemName) {
     return String(platformName) + '|' + String(systemName);
+  }
+
+  function getRangeRingBand(rangeRing) {
+    var min = parseRangeValue(rangeRing.range_min_val);
+    var max = parseRangeValue(rangeRing.range_max_val);
+
+    if (min === null) {
+      min = 0;
+    }
+    if (max === null) {
+      max = parseRangeValue(rangeRing.range_val);
+    }
+
+    return {
+      min: min,
+      max: max
+    };
+  }
+
+  function getRangeMaxValue(rangeRing) {
+    var rangeBand = getRangeRingBand(rangeRing);
+    return rangeBand.max === null ? -Infinity : rangeBand.max;
+  }
+
+  function parseRangeValue(value) {
+    if (typeof RangeUtils !== 'undefined' && typeof RangeUtils.parseRange === 'function') {
+      return RangeUtils.parseRange(value);
+    }
+
+    var parsed = typeof value === 'number' ? value : parseFloat(value);
+    return isFinite(parsed) ? parsed : null;
+  }
+
+  function isValidRangeBand(rangeBand) {
+    if (typeof RangeUtils !== 'undefined' && typeof RangeUtils.isValidRangeBand === 'function') {
+      return RangeUtils.isValidRangeBand(rangeBand.min, rangeBand.max);
+    }
+
+    return isFinite(rangeBand.min) &&
+      isFinite(rangeBand.max) &&
+      rangeBand.min >= 0 &&
+      rangeBand.max >= 0 &&
+      rangeBand.min <= rangeBand.max;
+  }
+
+  function formatRangeValue(value) {
+    if (typeof RangeUtils !== 'undefined' && typeof RangeUtils.formatRange === 'function') {
+      return RangeUtils.formatRange(value);
+    }
+
+    var parsed = parseRangeValue(value);
+    return parsed === null ? 'Unknown' : parsed.toLocaleString();
+  }
+
+  function createRangeBandTooltip(rangeRing, rangeBand) {
+    return [
+      rangeRing.system_name || 'Unknown System',
+      rangeRing.platform_name || 'Unknown Platform',
+      'Min: ' + formatRangeValue(rangeBand.min) + ' m',
+      'Max: ' + formatRangeValue(rangeBand.max) + ' m'
+    ].join('<br>');
   }
 
   function getRangeRingStyle(rangeRing, side) {

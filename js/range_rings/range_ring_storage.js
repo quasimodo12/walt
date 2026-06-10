@@ -7,6 +7,7 @@ var RangeRingStorage = (function() {
         var weaponData = WeaponStorage.getWeaponData();
         var sensorData = SensorStorage.getSensorData();
         var setToggled = 0;
+        var existingRangeRingState = createExistingRangeRingStateLookup(rangeRings);
 
         rangeRings = [];
 
@@ -26,15 +27,23 @@ var RangeRingStorage = (function() {
             if (platform.weapons) {
                 platform.weapons.forEach(function(weapon) {
                     if (weaponDict[weapon.name]) {
+                        var weaponBand = getWeaponRangeBand(weaponDict[weapon.name]);
+                        var weaponState = getExistingRangeRingState(
+                            existingRangeRingState,
+                            platform.platform_name,
+                            weapon.name
+                        );
+
                         rangeRings.push({
                             platform_name: platform.platform_name,
                             system_name: weapon.name,
                             system_type: "weapon",
-                            range_val: weaponDict[weapon.name].weapon_range,
+                            range_min_val: weaponBand.min,
+                            range_max_val: weaponBand.max,
                             latitude: parseFloat(platform.latitude),
                             longitude: parseFloat(platform.longitude),
-                            toggled: setToggled,
-                            style: Object.assign({}, defaultStyle)
+                            toggled: weaponState && weaponState.toggled !== undefined ? weaponState.toggled : setToggled,
+                            style: weaponState && weaponState.style ? Object.assign({}, weaponState.style) : Object.assign({}, defaultStyle)
                         });
                     }
                 });
@@ -43,20 +52,76 @@ var RangeRingStorage = (function() {
             if (platform.sensors) {
                 platform.sensors.forEach(function(sensorName) {
                     if (sensorDict[sensorName]) {
+                        var sensorBand = getSensorRangeBand(sensorDict[sensorName]);
+                        var sensorState = getExistingRangeRingState(
+                            existingRangeRingState,
+                            platform.platform_name,
+                            sensorName
+                        );
+
                         rangeRings.push({
                             platform_name: platform.platform_name,
                             system_name: sensorName,
                             system_type: "sensor",
-                            range_val: sensorDict[sensorName].sensor_range,
+                            range_min_val: sensorBand.min,
+                            range_max_val: sensorBand.max,
                             latitude: parseFloat(platform.latitude),
                             longitude: parseFloat(platform.longitude),
-                            toggled: setToggled,
-                            style: Object.assign({}, defaultStyle)
+                            toggled: sensorState && sensorState.toggled !== undefined ? sensorState.toggled : setToggled,
+                            style: sensorState && sensorState.style ? Object.assign({}, sensorState.style) : Object.assign({}, defaultStyle)
                         });
                     }
                 });
             }
         });
+    }
+
+    function getWeaponRangeBand(weapon) {
+        if (typeof WeaponStorage !== 'undefined' && typeof WeaponStorage.getWeaponRangeBand === 'function') {
+            return WeaponStorage.getWeaponRangeBand(weapon);
+        }
+        if (typeof RangeUtils !== 'undefined' && typeof RangeUtils.getWeaponRangeBand === 'function') {
+            return RangeUtils.getWeaponRangeBand(weapon);
+        }
+        return {
+            min: weapon && isFinite(weapon.weapon_min_range) ? Number(weapon.weapon_min_range) : 0,
+            max: weapon && isFinite(weapon.weapon_max_range) ? Number(weapon.weapon_max_range) : Number(weapon && weapon.weapon_range),
+            isValid: true
+        };
+    }
+
+    function getSensorRangeBand(sensor) {
+        if (typeof SensorStorage !== 'undefined' && typeof SensorStorage.getSensorRangeBand === 'function') {
+            return SensorStorage.getSensorRangeBand(sensor);
+        }
+        if (typeof RangeUtils !== 'undefined' && typeof RangeUtils.getSensorRangeBand === 'function') {
+            return RangeUtils.getSensorRangeBand(sensor);
+        }
+        return {
+            min: sensor && isFinite(sensor.sensor_min_range) ? Number(sensor.sensor_min_range) : 0,
+            max: sensor && isFinite(sensor.sensor_max_range) ? Number(sensor.sensor_max_range) : Number(sensor && sensor.sensor_range),
+            isValid: true
+        };
+    }
+
+    function createExistingRangeRingStateLookup(existingRangeRings) {
+        if (!Array.isArray(existingRangeRings)) { return {}; }
+
+        return existingRangeRings.reduce(function(lookup, rangeRing) {
+            lookup[createRangeRingKey(rangeRing.platform_name, rangeRing.system_name)] = {
+                toggled: rangeRing.toggled,
+                style: rangeRing.style ? Object.assign({}, rangeRing.style) : undefined
+            };
+            return lookup;
+        }, {});
+    }
+
+    function getExistingRangeRingState(existingRangeRingState, platformName, systemName) {
+        return existingRangeRingState[createRangeRingKey(platformName, systemName)];
+    }
+
+    function createRangeRingKey(platformName, systemName) {
+        return String(platformName) + '|' + String(systemName);
     }
 
     function getDefaultStyleForSide(side) {
