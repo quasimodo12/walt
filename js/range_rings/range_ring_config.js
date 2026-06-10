@@ -15,7 +15,8 @@ var RangeRingConfig = (function() {
                             <th>Platform Name</th>
                             <th>System Name</th>
                             <th>System Type</th>
-                            <th>Range (m)</th>
+                            <th>Min Range (m)</th>
+                            <th>Max Range (m)</th>
                             <th>Latitude</th>
                             <th>Longitude</th>
                         </tr>
@@ -27,7 +28,8 @@ var RangeRingConfig = (function() {
                                 <td>${ring.platform_name}</td>
                                 <td>${ring.system_name}</td>
                                 <td>${ring.system_type}</td>
-                                <td>${ring.range_val}</td>
+                                <td data-order="${getRangeMinValue(ring)}">${formatRangeValue(getRangeMinValue(ring))}</td>
+                                <td data-order="${getRangeMaxValue(ring)}">${formatRangeValue(getRangeMaxValue(ring))}</td>
                                 <td>${ring.latitude}</td>
                                 <td>${ring.longitude}</td>
                             </tr>
@@ -90,6 +92,49 @@ var RangeRingConfig = (function() {
         $('#editRangeRingStyleButton').on('click', function() {
             RangeRingStyleEditor.createEditStyleDialog();
         });
+    }
+
+    function getRangeMinValue(ring) {
+        var value = ring && ring.range_min_val;
+        if (value === undefined && ring) {
+            value = ring.min_range_val;
+        }
+        if (value === undefined) {
+            value = 0;
+        }
+        var parsed = parseRangeValue(value);
+        return parsed === null ? 0 : parsed;
+    }
+
+    function getRangeMaxValue(ring) {
+        var value = ring && ring.range_max_val;
+        if (value === undefined && ring) {
+            value = ring.max_range_val;
+        }
+        if (value === undefined && ring) {
+            value = ring.range_val;
+        }
+        var parsed = parseRangeValue(value);
+        return parsed === null ? NaN : parsed;
+    }
+
+    function parseRangeValue(value) {
+        if (typeof RangeUtils !== 'undefined' && typeof RangeUtils.parseRange === 'function') {
+            return RangeUtils.parseRange(value);
+        }
+        if (value === undefined || value === null || value === '') {
+            return null;
+        }
+        var parsed = Number(value);
+        return isFinite(parsed) ? parsed : null;
+    }
+
+    function formatRangeValue(value) {
+        if (typeof RangeUtils !== 'undefined' && typeof RangeUtils.formatRange === 'function') {
+            return RangeUtils.formatRange(value);
+        }
+        var parsed = parseRangeValue(value);
+        return parsed === null ? 'Unknown' : parsed.toLocaleString();
     }
 
     return {
