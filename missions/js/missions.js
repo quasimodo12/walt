@@ -104,11 +104,17 @@
       return !!weaponNameSet[w.weapon_name];
     });
   }
-  function getWeaponRangeData(weapon) {
+  function getWeaponRangeBandData(weapon) {
     if (!weapon) return null;
-    if (weapon.weapon_range !== undefined) return weapon.weapon_range;
-    if (weapon.max_range !== undefined) return weapon.max_range;
-    return null;
+    if (typeof RangeUtils !== 'undefined' && RangeUtils.getWeaponRangeBand) {
+      return RangeUtils.getWeaponRangeBand(weapon);
+    }
+    var maxRange = weapon.weapon_range !== undefined ? weapon.weapon_range : weapon.max_range;
+    return { min: 0, max: maxRange, isValid: maxRange !== undefined && maxRange !== null };
+  }
+  function getWeaponRangeData(weapon) {
+    var band = getWeaponRangeBandData(weapon);
+    return band ? band.max : null;
   }
   function getWeaponLethalityData(data) { return data.lethality; }
   function getPlatformToPlatformDistanceData(data) { return data.distances; }
