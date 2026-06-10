@@ -51,6 +51,50 @@ var PlatformConfig = (function() {
         return optionsHtml;
     }
 
+    function formatRangeBand(rangeBand) {
+        if (typeof RangeUtils !== 'undefined' && RangeUtils.formatRangeBand) {
+            return RangeUtils.formatRangeBand(rangeBand);
+        }
+        if (!rangeBand || rangeBand.min === undefined || rangeBand.max === undefined) {
+            return 'N/A';
+        }
+        return rangeBand.min + ' - ' + rangeBand.max + ' m';
+    }
+
+    function getWeaponRangeBand(weapon) {
+        if (WeaponStorage.getWeaponRangeBand) {
+            return WeaponStorage.getWeaponRangeBand(weapon);
+        }
+        if (typeof RangeUtils !== 'undefined' && RangeUtils.getWeaponRangeBand) {
+            return RangeUtils.getWeaponRangeBand(weapon);
+        }
+        return {
+            min: weapon && weapon.weapon_min_range !== undefined ? Number(weapon.weapon_min_range) : 0,
+            max: weapon && weapon.weapon_max_range !== undefined ? Number(weapon.weapon_max_range) : Number(weapon && weapon.weapon_range)
+        };
+    }
+
+    function getSensorRangeBand(sensor) {
+        if (SensorStorage.getSensorRangeBand) {
+            return SensorStorage.getSensorRangeBand(sensor);
+        }
+        if (typeof RangeUtils !== 'undefined' && RangeUtils.getSensorRangeBand) {
+            return RangeUtils.getSensorRangeBand(sensor);
+        }
+        return {
+            min: sensor && sensor.sensor_min_range !== undefined ? Number(sensor.sensor_min_range) : 0,
+            max: sensor && sensor.sensor_max_range !== undefined ? Number(sensor.sensor_max_range) : Number(sensor && sensor.sensor_range)
+        };
+    }
+
+    function formatWeaponRangeBand(weapon) {
+        return weapon ? formatRangeBand(getWeaponRangeBand(weapon)) : 'N/A';
+    }
+
+    function formatSensorRangeBand(sensor) {
+        return sensor ? formatRangeBand(getSensorRangeBand(sensor)) : 'N/A';
+    }
+
     // Function to create platform info dialog with inputs
     function createPlatformDialog(platform) {
         var sideOptions = buildSideOptions(platform && platform.side);
@@ -102,7 +146,7 @@ var PlatformConfig = (function() {
                 color: white;
                 border: none;
             }
-    
+
             /* Optional: Responsive Adjustments */
             @media (max-width: 768px) {
                 .main-table, .basic-info-table {
@@ -114,7 +158,7 @@ var PlatformConfig = (function() {
                 }
             }
         </style>
-    
+
         <!-- Main Configuration Table -->
         <table class="main-table">
             <tr>
@@ -127,7 +171,7 @@ var PlatformConfig = (function() {
                             <td><label for="platformNameInput"><strong>Name:</strong></label></td>
                             <td><input type="text" id="platformNameInput" value="${platform.platform_name}" class="full-width" maxlength="32"></td>
                         </tr>
-                        
+
                         <!-- Row 2: Group -->
                         <tr>
                             <td><label for="platformGroupInput"><strong>Group:</strong></label></td>
@@ -155,7 +199,7 @@ var PlatformConfig = (function() {
                                 </select>
                             </td>
                         </tr>
-                        
+
                         <!-- Row 6: Latitude -->
                         <tr>
                             <td><label for="platformLatitudeInput"><strong>Latitude:</strong></label></td>
@@ -175,7 +219,7 @@ var PlatformConfig = (function() {
                         </tr>
                     </table>
                 </td>
-                
+
                 <!-- Weapon Management Section -->
                 <td class="section-cell">
                     <strong>Weapon Management</strong>
@@ -184,7 +228,7 @@ var PlatformConfig = (function() {
                             <thead>
                                 <tr>
                                     <th>Weapon Name</th>
-                                    <th>Range</th>
+                                    <th>Range Band</th>
                                     <th>Quantity</th>
                                     <th>Action</th>
                                 </tr>
@@ -225,7 +269,7 @@ var PlatformConfig = (function() {
                         <button id="addSubgroupButton">Add Subgroup</button>
                     </div>
                 </td>
-                
+
                 <!-- Sensor Management Section -->
                 <td class="section-cell">
                     <strong>Sensor Management</strong>
@@ -234,7 +278,7 @@ var PlatformConfig = (function() {
                             <thead>
                                 <tr>
                                     <th>Sensor Name</th>
-                                    <th>Range</th>
+                                    <th>Range Band</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -249,14 +293,14 @@ var PlatformConfig = (function() {
                 </td>
             </tr>
         </table>
-    
+
         <!-- Action Buttons -->
         <div class="action-buttons">
             <button id="updatePlatformButton">Update</button>
             <button id="deletePlatformButton" class="delete-button">Delete</button>
         </div>
     `;
-    
+
         // Display the platform dialog content
         $('#platformInfoContent').html(content);
         $('#platformInfoDialog').dialog('open');
@@ -264,7 +308,7 @@ var PlatformConfig = (function() {
         // ########################################################################
         // PLATFORM WEAPON CONFIGURATION SETUP
         // ########################################################################
-        
+
         // Initialize DataTable for weapons currently equipped on the platform
         var weaponsData = platform.weapons || [];
         var weaponDataArray = WeaponStorage.getWeaponData();
@@ -275,18 +319,18 @@ var PlatformConfig = (function() {
                 var weaponDetails = weaponDataArray.find(function(w) {
                     return w.weapon_name === weapon.name;
                 });
-                // If weapon details are found, get the range, otherwise show 'N/A'
-                var weaponRange = weaponDetails ? weaponDetails.weapon_range : 'N/A';
+                // If weapon details are found, show the min/max range band, otherwise show 'N/A'
+                var weaponRangeBand = formatWeaponRangeBand(weaponDetails);
                 return [
                     weapon.name,
-                    weaponRange,
+                    weaponRangeBand,
                     weapon.quantity,
                     '<button class="removeWeaponButton">Remove</button>'
                 ];
             }),
             columns: [
                 { title: "Weapon Name" },
-                { title: "Range" },
+                { title: "Range Band" },
                 { title: "Quantity" },
                 { title: "Action" }
             ],
@@ -315,7 +359,7 @@ var PlatformConfig = (function() {
                 <div>
                     <label for="weaponSelect">Select Weapon:</label>
                     <select id="weaponSelect">
-                        ${availableWeapons.map(weapon => `<option value="${weapon.weapon_name}">${weapon.weapon_name} (Range: ${weapon.weapon_range})</option>`).join('')}
+                        ${availableWeapons.map(weapon => `<option value="${weapon.weapon_name}">${weapon.weapon_name} (Range Band: ${formatWeaponRangeBand(weapon)})</option>`).join('')}
                     </select>
                     <br><br>
                     <label for="weaponQuantityInput">Quantity:</label>
@@ -349,7 +393,7 @@ var PlatformConfig = (function() {
                             if (weaponDetails) {
                                 weaponsTable.row.add([
                                     weaponDetails.weapon_name,
-                                    weaponDetails.weapon_range,
+                                    formatWeaponRangeBand(weaponDetails),
                                     selectedWeaponQuantity,
                                     '<button class="removeWeaponButton">Remove</button>'
                                 ]).draw();
@@ -374,7 +418,7 @@ var PlatformConfig = (function() {
         // ########################################################################
         // PLATFORM SENSOR CONFIGURATION SETUP
         // ########################################################################
-        
+
         // Initialize DataTable for sensors currently equipped on the platform
         var sensorsData = platform.sensors || [];
         var sensorDataArray = SensorStorage.getSensorData();
@@ -385,17 +429,17 @@ var PlatformConfig = (function() {
                 var sensorDetails = sensorDataArray.find(function(s) {
                     return s.sensor_name === sensor;
                 });
-                // If sensor details are found, get the range, otherwise show 'N/A'
-                var sensorRange = sensorDetails ? sensorDetails.sensor_range : 'N/A';
+                // If sensor details are found, show the min/max range band, otherwise show 'N/A'
+                var sensorRangeBand = formatSensorRangeBand(sensorDetails);
                 return [
                     sensor,
-                    sensorRange,
+                    sensorRangeBand,
                     '<button class="removeSensorButton">Remove</button>'
                 ];
             }),
             columns: [
                 { title: "Sensor Name" },
-                { title: "Range" },
+                { title: "Range Band" },
                 { title: "Action" }
             ],
             searching: false,
@@ -423,7 +467,7 @@ var PlatformConfig = (function() {
                 <div>
                     <label for="sensorSelect">Select Sensor:</label>
                     <select id="sensorSelect">
-                        ${availableSensors.map(sensor => `<option value="${sensor.sensor_name}">${sensor.sensor_name} (Range: ${sensor.sensor_range})</option>`).join('')}
+                        ${availableSensors.map(sensor => `<option value="${sensor.sensor_name}">${sensor.sensor_name} (Range Band: ${formatSensorRangeBand(sensor)})</option>`).join('')}
                     </select>
                     <br><br>
                 </div>
@@ -454,7 +498,7 @@ var PlatformConfig = (function() {
                             if (sensorDetails) {
                                 sensorsTable.row.add([
                                     sensorDetails.sensor_name,
-                                    sensorDetails.sensor_range,
+                                    formatSensorRangeBand(sensorDetails),
                                     '<button class="removeSensorButton">Remove</button>'
                                 ]).draw();
                             }
@@ -639,7 +683,7 @@ var PlatformConfig = (function() {
             platformToUpdate.subgroups = updatedSubgroupsData;
         }
     }
-    
+
     return {
         createPlatformDialog: createPlatformDialog
     }

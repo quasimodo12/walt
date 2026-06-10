@@ -55,6 +55,50 @@ var SensorConfig = (function() {
         return optionsHtml;
     }
 
+    function parseRangeInput(value) {
+        if (typeof RangeUtils !== 'undefined' && RangeUtils.parseRange) {
+            return RangeUtils.parseRange(value);
+        }
+        if (value === undefined || value === null || value === '') {
+            return null;
+        }
+        var parsed = Number(value);
+        return Number.isFinite(parsed) ? parsed : null;
+    }
+
+    function getSensorRangeBand(sensor) {
+        if (SensorStorage.getSensorRangeBand) {
+            return SensorStorage.getSensorRangeBand(sensor);
+        }
+        if (typeof RangeUtils !== 'undefined' && RangeUtils.getSensorRangeBand) {
+            return RangeUtils.getSensorRangeBand(sensor);
+        }
+        return {
+            min: parseRangeInput(sensor && sensor.sensor_min_range) || 0,
+            max: parseRangeInput(sensor && (sensor.sensor_max_range !== undefined ? sensor.sensor_max_range : sensor.sensor_range)) || 0
+        };
+    }
+
+    function validateSensorRangeBand(minRange, maxRange) {
+        var errors = [];
+        if (minRange === null) {
+            errors.push('Minimum range must be a numeric value.');
+        }
+        if (maxRange === null) {
+            errors.push('Maximum range must be a numeric value.');
+        }
+        if (minRange !== null && minRange < 0) {
+            errors.push('Minimum range cannot be negative.');
+        }
+        if (maxRange !== null && maxRange < 0) {
+            errors.push('Maximum range cannot be negative.');
+        }
+        if (minRange !== null && maxRange !== null && minRange > maxRange) {
+            errors.push('Minimum range cannot be greater than maximum range.');
+        }
+        return errors;
+    }
+
     // Function to create platform info dialog with inputs
     function createSensorConfigDialog() {
         var sensorData = SensorStorage.getSensorData();
@@ -63,19 +107,22 @@ var SensorConfig = (function() {
         var content = '<table id="sensorTable" class="display"><thead><tr>' +
             '<th>Name</th>' +
             '<th>Side</th>' +
-            '<th>Max Range</th>' +
+            '<th>Minimum Range (m)</th>' +
+            '<th>Maximum Range (m)</th>' +
             '<th>Actions</th>' +
             '</tr></thead><tbody>';
 
         // Populate the table with sensor data
         sensorData.forEach(function(sensor, index) {
             var sideOptions = buildSideOptions(sensor && sensor.side);
+            var rangeBand = getSensorRangeBand(sensor);
             content += '<tr>' +
                 '<td><input type="text" value="' + sensor.sensor_name + '" class="sensor-name" data-index="' + index + '" maxlength="32" /></td>' +
                 '<td><select class="sensor-side" data-index="' + index + '">' +
                 sideOptions +
                 '</select></td>' +
-                '<td><input type="number" value="' + sensor.sensor_range + '" class="sensor-range" data-index="' + index + '" /></td>' +
+                '<td><input type="number" value="' + rangeBand.min + '" class="sensor-min-range" data-index="' + index + '" min="0" step="any" /></td>' +
+                '<td><input type="number" value="' + rangeBand.max + '" class="sensor-max-range" data-index="' + index + '" min="0" step="any" /></td>' +
                 '<td><button class="delete-sensor" data-index="' + index + '">Delete</button></td>' +
                 '</tr>';
         });
@@ -102,8 +149,8 @@ var SensorConfig = (function() {
     }
 
     function updateAllSensorsInStorage() {
-        var isValid = true;
         var sensorData = [];
+        var errors = [];
 
         // Use DataTables API to get all rows, regardless of pagination
         var table = $('#sensorTable').DataTable();
@@ -114,26 +161,35 @@ var SensorConfig = (function() {
             var index = $(this).find('.sensor-name').data('index');
             var name = $(this).find('.sensor-name').val().trim();
             var side = $(this).find('.sensor-side').val() || getDefaultSideId();
-            var range = parseInt($(this).find('.sensor-range').val(), 10);
-        
-            // Save old name for updating platformData
-            var oldName = SensorStorage.getSensorData()[index].sensor_name;
-        
-            // Update platformData if the name has changed
-            if (oldName !== name) {
-                updatePlatformSensorReferences(oldName, name);
+            var minRange = parseRangeInput($(this).find('.sensor-min-range').val());
+            var maxRange = parseRangeInput($(this).find('.sensor-max-range').val());
+            var existingSensor = SensorStorage.getSensorData()[index] || {};
+            var oldName = existingSensor.sensor_name;
+            var rangeErrors = validateSensorRangeBand(minRange, maxRange);
+
+            if (!name) {
+                errors.push('Sensor name cannot be empty.');
             }
-        
-            // Collect data for validation
+
+            rangeErrors.forEach(function(error) {
+                errors.push((name || oldName || 'Unnamed sensor') + ': ' + error);
+            });
+
+            // Collect data for validation and storage update. Keep sensor_range
+            // synchronized as a migration fallback for code that has not yet
+            // moved to canonical min/max fields.
             sensorData.push({
-                index: index,
+                oldName: oldName,
                 sensor_name: name,
                 side: side,
-                sensor_range: range
+                sensor_min_range: minRange,
+                sensor_max_range: maxRange,
+                sensor_range: maxRange
             });
         });
-        
-        if (!isValid) {
+
+        if (errors.length > 0) {
+            alert(errors.join('\n'));
             return;
         }
 
@@ -145,11 +201,20 @@ var SensorConfig = (function() {
             return;
         }
 
+        sensorData.forEach(function(sensor) {
+            if (sensor.oldName !== sensor.sensor_name) {
+                updatePlatformSensorReferences(sensor.oldName, sensor.sensor_name);
+            }
+            delete sensor.oldName;
+        });
+
         // Update SensorStorage with the new data
         SensorStorage.setSensorData(sensorData);
 
         // Update range rings and redraw on the map
         RangeRingStorage.init();
+        RangeRingLogic.drawRangeRings();
+        View.updateAll();
 
         // Optionally, close the dialog or provide a success message
         alert('Sensor data has been updated successfully.');
@@ -178,6 +243,10 @@ var SensorConfig = (function() {
             <div id="addSensorDialogContent">
                 <label for="newSensorName">Sensor Name:</label>
                 <input type="text" id="newSensorName" class="ui-widget-content ui-corner-all" style="width: 100%;" maxlength="32" />
+                <label for="newSensorMinRange" style="display:block; margin-top: 10px;">Minimum Range (m):</label>
+                <input type="number" id="newSensorMinRange" class="ui-widget-content ui-corner-all" style="width: 100%;" value="0" min="0" step="any" />
+                <label for="newSensorMaxRange" style="display:block; margin-top: 10px;">Maximum Range (m):</label>
+                <input type="number" id="newSensorMaxRange" class="ui-widget-content ui-corner-all" style="width: 100%;" value="0" min="0" step="any" />
                 <div style="margin-top: 10px; text-align: right;">
                     <button id="completeAddSensor">Complete</button>
                 </div>
@@ -192,7 +261,7 @@ var SensorConfig = (function() {
             title: "Add New Sensor",
             modal: true,
             resizable: false,
-            width: 300,
+            width: 360,
             close: function() {
                 $(this).dialog('destroy').remove();
             }
@@ -200,6 +269,9 @@ var SensorConfig = (function() {
 
         $('#completeAddSensor').off('click').on('click', function() {
             const sensorName = $('#newSensorName').val().trim();
+            var minRange = parseRangeInput($('#newSensorMinRange').val());
+            var maxRange = parseRangeInput($('#newSensorMaxRange').val());
+            var rangeErrors = validateSensorRangeBand(minRange, maxRange);
 
             if (!sensorName) {
                 alert("Sensor name cannot be empty. Please enter a valid name.");
@@ -211,21 +283,32 @@ var SensorConfig = (function() {
                 return;
             }
 
-            addSensorToStorage(sensorName, getDefaultSideId(), 0);
+            if (rangeErrors.length > 0) {
+                alert(rangeErrors.join('\n'));
+                return;
+            }
+
+            addSensorToStorage(sensorName, getDefaultSideId(), minRange, maxRange);
             $('#addSensorDialogContent').dialog('close');
             createSensorConfigDialog();
         });
     }
 
-    function addSensorToStorage(name, side, maxRange) {
+    function addSensorToStorage(name, side, minRange, maxRange) {
         if (name.trim() === '') {
             alert('Sensor name cannot be empty. Please enter a valid name.');
         } else if (isUniqueSensorName(name)) {
-            SensorStorage.getSensorData().push({
+            var sensor = {
                 sensor_name: name,
                 side: side || getDefaultSideId(),
+                sensor_min_range: minRange,
+                sensor_max_range: maxRange,
                 sensor_range: maxRange
-            });
+            };
+            if (typeof RangeUtils !== 'undefined' && RangeUtils.normalizeSensorRecord) {
+                sensor = RangeUtils.normalizeSensorRecord(sensor);
+            }
+            SensorStorage.getSensorData().push(sensor);
         } else {
             alert('Sensor name must be unique. Please choose a different name.');
         }
