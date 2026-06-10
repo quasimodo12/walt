@@ -19,8 +19,23 @@ var WeaponStorage = (function() {
         return weaponData;
     }
 
+    function toCanonicalWeaponRecord(item) {
+        if (typeof RangeUtils !== 'undefined' && RangeUtils.toCanonicalWeaponRecord) {
+            return RangeUtils.toCanonicalWeaponRecord(item);
+        }
+
+        var normalized = normalizeWeaponRecord(item);
+        delete normalized.weapon_range;
+        delete normalized.min_range;
+        delete normalized.max_range;
+        delete normalized.index;
+        return normalized;
+    }
+
     function exportData() {
-        return JSON.stringify(weaponData, null, 2);
+        return JSON.stringify(weaponData.map(function(item) {
+            return toCanonicalWeaponRecord(item);
+        }), null, 2);
     }
 
     function setWeaponData(newWeaponData) {
@@ -33,8 +48,14 @@ var WeaponStorage = (function() {
         if (typeof RangeUtils !== 'undefined' && RangeUtils.getWeaponRangeBand) {
             return RangeUtils.getWeaponRangeBand(weapon);
         }
-        var maxRange = weapon && weapon.weapon_range !== undefined ? Number(weapon.weapon_range) : null;
-        return { min: 0, max: maxRange, isValid: isFinite(maxRange) && maxRange >= 0 };
+        var minRange = weapon && weapon.weapon_min_range !== undefined ? Number(weapon.weapon_min_range) : 0;
+        var maxRange = weapon && weapon.weapon_max_range !== undefined ? Number(weapon.weapon_max_range) :
+            (weapon && weapon.weapon_range !== undefined ? Number(weapon.weapon_range) : null);
+        return {
+            min: minRange,
+            max: maxRange,
+            isValid: isFinite(minRange) && isFinite(maxRange) && minRange >= 0 && maxRange >= 0 && minRange <= maxRange
+        };
     }
 
     var originalObject = {

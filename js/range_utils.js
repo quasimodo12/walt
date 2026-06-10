@@ -169,6 +169,24 @@ var RangeUtils = (function() {
         return normalized;
     }
 
+    function removeMigrationOnlyFields(record, fieldNames) {
+        var canonical = Object.assign({}, record || {});
+        fieldNames.forEach(function(fieldName) {
+            delete canonical[fieldName];
+        });
+        return canonical;
+    }
+
+    function toCanonicalWeaponRecord(weapon) {
+        var normalized = normalizeWeaponRecord(weapon);
+        return removeMigrationOnlyFields(normalized, ['weapon_range', 'min_range', 'max_range', 'index']);
+    }
+
+    function toCanonicalSensorRecord(sensor) {
+        var normalized = normalizeSensorRecord(sensor);
+        return removeMigrationOnlyFields(normalized, ['sensor_range', 'min_range', 'max_range', 'index']);
+    }
+
     function isDistanceInRangeBand(distance, rangeBand) {
         var parsedDistance = parseRange(distance);
         if (parsedDistance === null || !rangeBand || !isValidRangeBand(rangeBand.min, rangeBand.max)) {
@@ -200,6 +218,8 @@ var RangeUtils = (function() {
         normalizeRangeBand: normalizeRangeBand,
         normalizeWeaponRecord: normalizeWeaponRecord,
         normalizeSensorRecord: normalizeSensorRecord,
+        toCanonicalWeaponRecord: toCanonicalWeaponRecord,
+        toCanonicalSensorRecord: toCanonicalSensorRecord,
         isDistanceInRangeBand: isDistanceInRangeBand,
         formatRange: formatRange,
         formatRangeBand: formatRangeBand
