@@ -19,8 +19,24 @@ var WeaponStorage = (function() {
         return weaponData;
     }
 
+    function getCanonicalWeaponRecord(item) {
+        if (typeof RangeUtils !== 'undefined' && RangeUtils.getCanonicalWeaponRecord) {
+            return RangeUtils.getCanonicalWeaponRecord(item);
+        }
+        var normalized = normalizeWeaponRecord(item);
+        var canonical = Object.assign({}, normalized);
+        delete canonical.weapon_range;
+        delete canonical.min_range;
+        delete canonical.max_range;
+        delete canonical.index;
+        return canonical;
+    }
+
     function exportData() {
-        return JSON.stringify(weaponData, null, 2);
+        var canonicalWeaponData = weaponData.map(function(item) {
+            return getCanonicalWeaponRecord(item);
+        });
+        return JSON.stringify(canonicalWeaponData, null, 2);
     }
 
     function setWeaponData(newWeaponData) {

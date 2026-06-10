@@ -169,6 +169,70 @@ var RangeUtils = (function() {
         return normalized;
     }
 
+
+
+    function getCanonicalWeaponRecord(weapon) {
+        var normalized = normalizeWeaponRecord(weapon);
+        var canonical = {};
+
+        if (normalized.weapon_name !== undefined) {
+            canonical.weapon_name = normalized.weapon_name;
+        }
+        if (normalized.side !== undefined) {
+            canonical.side = normalized.side;
+        }
+
+        Object.keys(normalized).forEach(function(key) {
+            if (key === 'weapon_name' ||
+                key === 'side' ||
+                key === 'weapon_range' ||
+                key === 'weapon_min_range' ||
+                key === 'weapon_max_range' ||
+                key === 'min_range' ||
+                key === 'max_range' ||
+                key === 'index') {
+                return;
+            }
+            canonical[key] = normalized[key];
+        });
+
+        canonical.weapon_min_range = normalized.weapon_min_range;
+        canonical.weapon_max_range = normalized.weapon_max_range;
+
+        return canonical;
+    }
+
+    function getCanonicalSensorRecord(sensor) {
+        var normalized = normalizeSensorRecord(sensor);
+        var canonical = {};
+
+        if (normalized.sensor_name !== undefined) {
+            canonical.sensor_name = normalized.sensor_name;
+        }
+        if (normalized.side !== undefined) {
+            canonical.side = normalized.side;
+        }
+
+        Object.keys(normalized).forEach(function(key) {
+            if (key === 'sensor_name' ||
+                key === 'side' ||
+                key === 'sensor_range' ||
+                key === 'sensor_min_range' ||
+                key === 'sensor_max_range' ||
+                key === 'min_range' ||
+                key === 'max_range' ||
+                key === 'index') {
+                return;
+            }
+            canonical[key] = normalized[key];
+        });
+
+        canonical.sensor_min_range = normalized.sensor_min_range;
+        canonical.sensor_max_range = normalized.sensor_max_range;
+
+        return canonical;
+    }
+
     function isDistanceInRangeBand(distance, rangeBand) {
         var parsedDistance = parseRange(distance);
         if (parsedDistance === null || !rangeBand || !isValidRangeBand(rangeBand.min, rangeBand.max)) {
@@ -200,6 +264,8 @@ var RangeUtils = (function() {
         normalizeRangeBand: normalizeRangeBand,
         normalizeWeaponRecord: normalizeWeaponRecord,
         normalizeSensorRecord: normalizeSensorRecord,
+        getCanonicalWeaponRecord: getCanonicalWeaponRecord,
+        getCanonicalSensorRecord: getCanonicalSensorRecord,
         isDistanceInRangeBand: isDistanceInRangeBand,
         formatRange: formatRange,
         formatRangeBand: formatRangeBand

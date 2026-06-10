@@ -19,8 +19,24 @@ var SensorStorage = (function() {
         return sensorData;
     }
 
+    function getCanonicalSensorRecord(item) {
+        if (typeof RangeUtils !== 'undefined' && RangeUtils.getCanonicalSensorRecord) {
+            return RangeUtils.getCanonicalSensorRecord(item);
+        }
+        var normalized = normalizeSensorRecord(item);
+        var canonical = Object.assign({}, normalized);
+        delete canonical.sensor_range;
+        delete canonical.min_range;
+        delete canonical.max_range;
+        delete canonical.index;
+        return canonical;
+    }
+
     function exportData() {
-        return JSON.stringify(sensorData, null, 2);
+        var canonicalSensorData = sensorData.map(function(item) {
+            return getCanonicalSensorRecord(item);
+        });
+        return JSON.stringify(canonicalSensorData, null, 2);
     }
 
     function setSensorData(newSensorData) {
