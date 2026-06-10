@@ -81,7 +81,7 @@ function createLegend(divId, legendType, side) {
     var enemySideColor = resolveSideColor(friendlySideId, '#4d94ff');
 
     if (legendType === 'Pie') {
-        // Row 1: 'Side' Circle | "Percent of Platforms in WEZ"
+        // Row 1: 'Side' Circle | "Percent of Platforms in WEZ / range band"
         var row1 = tbody.insertRow();
 
         var cell1 = row1.insertCell();
@@ -94,9 +94,9 @@ function createLegend(divId, legendType, side) {
         cell1.appendChild(sideCircle);
 
         var cell2 = row1.insertCell();
-        cell2.innerText = ` Percent of ${enemySideText} Platforms in WEZ`;
+        cell2.innerText = ` Percent of ${enemySideText} Platforms in WEZ / range band`;
 
-        // Row 2: Grey Circle | "Percent of Platforms outside of WEZ"
+        // Row 2: Grey Circle | "Percent of Platforms outside WEZ / range band"
         var row2 = tbody.insertRow();
 
         var cell3 = row2.insertCell();
@@ -113,7 +113,7 @@ function createLegend(divId, legendType, side) {
         row1.classList.add('legend-row');
         row2.classList.add('legend-row');
 
-        cell4.innerText = ` Percent of ${enemySideText} Platforms outside of WEZ`;
+        cell4.innerText = ` Percent of ${enemySideText} Platforms outside WEZ / range band`;
     } else if (legendType === 'Loadout') {
         // Row 1: Grey Bar | "Number of Red Platforms in the Group"
         var row1 = tbody.insertRow();
@@ -129,7 +129,7 @@ function createLegend(divId, legendType, side) {
         var cell2 = row1.insertCell();
         cell2.innerText = `Number of ${enemySideText} Platforms in the Group`;
 
-        // Row 2: 'enemySide' Bar | "Number of Red Platforms in the WEZ"
+        // Row 2: 'enemySide' Bar | "Number of platforms in the WEZ / range band"
         var row2 = tbody.insertRow();
 
         var cell3 = row2.insertCell();
@@ -141,7 +141,7 @@ function createLegend(divId, legendType, side) {
         cell3.appendChild(enemySide);
 
         var cell4 = row2.insertCell();
-        cell4.innerText = `Number of ${enemySideText} Platforms in the WEZ`;
+        cell4.innerText = `Number of ${enemySideText} Platforms in the WEZ / range band`;
 
         // Row 3: Yellow Bar | "Quantity of Available Weapons"
         var row3 = tbody.insertRow();
