@@ -19,8 +19,23 @@ var SensorStorage = (function() {
         return sensorData;
     }
 
+    function toCanonicalSensorRecord(item) {
+        if (typeof RangeUtils !== 'undefined' && RangeUtils.toCanonicalSensorRecord) {
+            return RangeUtils.toCanonicalSensorRecord(item);
+        }
+
+        var normalized = normalizeSensorRecord(item);
+        delete normalized.sensor_range;
+        delete normalized.min_range;
+        delete normalized.max_range;
+        delete normalized.index;
+        return normalized;
+    }
+
     function exportData() {
-        return JSON.stringify(sensorData, null, 2);
+        return JSON.stringify(sensorData.map(function(item) {
+            return toCanonicalSensorRecord(item);
+        }), null, 2);
     }
 
     function setSensorData(newSensorData) {
@@ -33,8 +48,14 @@ var SensorStorage = (function() {
         if (typeof RangeUtils !== 'undefined' && RangeUtils.getSensorRangeBand) {
             return RangeUtils.getSensorRangeBand(sensor);
         }
-        var maxRange = sensor && sensor.sensor_range !== undefined ? Number(sensor.sensor_range) : null;
-        return { min: 0, max: maxRange, isValid: isFinite(maxRange) && maxRange >= 0 };
+        var minRange = sensor && sensor.sensor_min_range !== undefined ? Number(sensor.sensor_min_range) : 0;
+        var maxRange = sensor && sensor.sensor_max_range !== undefined ? Number(sensor.sensor_max_range) :
+            (sensor && sensor.sensor_range !== undefined ? Number(sensor.sensor_range) : null);
+        return {
+            min: minRange,
+            max: maxRange,
+            isValid: isFinite(minRange) && isFinite(maxRange) && minRange >= 0 && maxRange >= 0 && minRange <= maxRange
+        };
     }
 
     return {
