@@ -6,14 +6,6 @@
  * the user's selections.
  */
 
-/**
- * Sum the quantity of a particular weapon across a set of platforms.
- *
- * @param {Object[]} pData - list of platform objects
- * @param {string[]} pNames - platform names to search
- * @param {string} wName - weapon name to count
- * @returns {number}
- */
 function getSideColor(sideId, fallbackColor) {
     if (typeof SideConfig !== 'undefined' && typeof SideConfig.getColorForSide === 'function') {
         const color = SideConfig.getColorForSide(sideId);
@@ -37,6 +29,108 @@ function getSideLabelOrFallback(sideId, fallbackLabel) {
     return fallbackLabel || '';
 }
 
+
+function getFallbackRangeBand(record, minFieldNames, maxFieldNames) {
+    function firstDefined(fieldNames) {
+        for (var i = 0; i < fieldNames.length; i++) {
+            if (record && record[fieldNames[i]] !== undefined && record[fieldNames[i]] !== null && record[fieldNames[i]] !== '') {
+                return record[fieldNames[i]];
+            }
+        }
+        return undefined;
+    }
+
+    var min = Number(firstDefined(minFieldNames));
+    var max = Number(firstDefined(maxFieldNames));
+
+    if (!isFinite(min)) {
+        min = 0;
+    }
+
+    return {
+        min: min,
+        max: max,
+        isValid: isFinite(min) && isFinite(max) && min >= 0 && max >= 0 && min <= max
+    };
+}
+
+function getResultsWeaponRangeBand(weapon) {
+    if (typeof RangeUtils !== 'undefined' && typeof RangeUtils.getWeaponRangeBand === 'function') {
+        return RangeUtils.getWeaponRangeBand(weapon);
+    }
+    return getFallbackRangeBand(weapon, ['weapon_min_range', 'min_range'], ['weapon_max_range', 'max_range', 'weapon_range']);
+}
+
+function getResultsSensorRangeBand(sensor) {
+    if (typeof RangeUtils !== 'undefined' && typeof RangeUtils.getSensorRangeBand === 'function') {
+        return RangeUtils.getSensorRangeBand(sensor);
+    }
+    return getFallbackRangeBand(sensor, ['sensor_min_range', 'min_range'], ['sensor_max_range', 'max_range', 'sensor_range']);
+}
+
+function isResultsDistanceInRangeBand(distance, rangeBand) {
+    if (typeof RangeUtils !== 'undefined' && typeof RangeUtils.isDistanceInRangeBand === 'function') {
+        return RangeUtils.isDistanceInRangeBand(distance, rangeBand);
+    }
+
+    var parsedDistance = Number(distance);
+    return isFinite(parsedDistance) &&
+        rangeBand &&
+        rangeBand.isValid &&
+        parsedDistance >= rangeBand.min &&
+        parsedDistance <= rangeBand.max;
+}
+
+function formatResultsRange(value) {
+    if (typeof RangeUtils !== 'undefined' && typeof RangeUtils.formatRange === 'function') {
+        return RangeUtils.formatRange(value);
+    }
+    var parsed = Number(value);
+    return isFinite(parsed) ? parsed.toLocaleString() : 'Unknown';
+}
+
+function formatResultsRangeBand(rangeBand) {
+    if (typeof RangeUtils !== 'undefined' && typeof RangeUtils.formatRangeBand === 'function') {
+        return RangeUtils.formatRangeBand(rangeBand);
+    }
+    if (!rangeBand || !rangeBand.isValid) {
+        return 'Unknown';
+    }
+    return formatResultsRange(rangeBand.min) + ' - ' + formatResultsRange(rangeBand.max) + ' m';
+}
+
+function getDistanceBetweenPlatformsForResults(platformName, enemyPlatformName) {
+    var distanceKey1 = platformName + '---' + enemyPlatformName;
+    var distanceKey2 = enemyPlatformName + '---' + platformName;
+
+    if (distanceData[distanceKey1] !== undefined) {
+        return distanceData[distanceKey1];
+    }
+    return distanceData[distanceKey2];
+}
+
+function describeOutOfBandReason(distance, rangeBand) {
+    var parsedDistance = Number(distance);
+    if (!isFinite(parsedDistance) || !rangeBand || !rangeBand.isValid) {
+        return 'invalid distance or range band';
+    }
+    if (parsedDistance < rangeBand.min) {
+        return 'inside minimum range';
+    }
+    if (parsedDistance > rangeBand.max) {
+        return 'beyond maximum range';
+    }
+    return 'outside range band';
+}
+
+/**
+ * Sum the quantity of a particular weapon across a set of platforms.
+ *
+ * @param {Object[]} pData - list of platform objects
+ * @param {string[]} pNames - platform names to search
+ * @param {string} wName - weapon name to count
+ * @returns {number}
+ */
 function getTotalWeaponQuantity(pData, pNames, wName) {
     console.log("results.js >>> getTotalWeaponQuantity() entered");
     let totalQuantity = 0;
@@ -135,7 +229,7 @@ function processItems(itemList, itemType) {
                     }
                     console.log(`Found platform: ${platform.platform_name}`);
 
-                    var range;
+                    var rangeBand;
                     if (itemType === 'weapon') {
                         var weapon = platform.weapons.find(w => w.name.trim().toLowerCase() === itemName.trim().toLowerCase());
                         if (!weapon) {
@@ -149,9 +243,8 @@ function processItems(itemList, itemType) {
                             console.log(`Weapon info for "${weapon.name}" not found in weaponData.`);
                             return;
                         }
-                        console.log(`Weapon info found: Range = ${weaponInfo.weapon_range} meters`);
-
-                        range = weaponInfo.weapon_range;
+                        rangeBand = getResultsWeaponRangeBand(weaponInfo);
+                        console.log(`Weapon info found: Range band = ${formatResultsRangeBand(rangeBand)}`);
                     } else if (itemType === 'sensor') {
                         var sensorEquipped = platform.sensors && platform.sensors.some(s => s.trim().toLowerCase() === itemName.trim().toLowerCase());
                         if (!sensorEquipped) {
@@ -165,17 +258,19 @@ function processItems(itemList, itemType) {
                             console.log(`Sensor info for "${itemName}" not found in sensorData.`);
                             return;
                         }
-                        console.log(`Sensor info found: Range = ${sensorInfo.sensor_range} meters`);
-
-                        range = sensorInfo.sensor_range;
+                        rangeBand = getResultsSensorRangeBand(sensorInfo);
+                        console.log(`Sensor info found: Range band = ${formatResultsRangeBand(rangeBand)}`);
                     } else {
                         console.log(`Unknown itemType "${itemType}". Skipping platform "${platform.platform_name}".`);
                         return;
                     }
 
-                    var distanceKey1 = platform.platform_name + '---' + enemyPlatform.platform_name;
-                    var distanceKey2 = enemyPlatform.platform_name + '---' + platform.platform_name;
-                    var distance = distanceData[distanceKey1] || distanceData[distanceKey2];
+                    if (!rangeBand || !rangeBand.isValid) {
+                        console.log(`Invalid range band for ${itemType} "${itemName}" (${formatResultsRangeBand(rangeBand)}). Skipping platform "${platform.platform_name}".`);
+                        return;
+                    }
+
+                    var distance = getDistanceBetweenPlatformsForResults(platform.platform_name, enemyPlatform.platform_name);
 
                     if (distance === undefined) {
                         console.log(`Distance between "${platform.platform_name}" and "${enemyPlatform.platform_name}" not found.`);
@@ -184,8 +279,8 @@ function processItems(itemList, itemType) {
 
                     console.log(`Distance between "${platform.platform_name}" and "${enemyPlatform.platform_name}": ${distance} meters`);
 
-                    if (distance <= range) {
-                        console.log(`Enemy "${enemyPlatform.platform_name}" is within range (${distance} <= ${range}) of "${itemName}" from "${platform.platform_name}".`);
+                    if (isResultsDistanceInRangeBand(distance, rangeBand)) {
+                        console.log(`Enemy "${enemyPlatform.platform_name}" is within range band (${formatResultsRange(rangeBand.min)} <= ${formatResultsRange(distance)} <= ${formatResultsRange(rangeBand.max)} meters) of "${itemName}" from "${platform.platform_name}".`);
 
                         contributingPlatformsSet.add(platform.platform_name);
                         contributingPlatforms = Array.from(contributingPlatformsSet);
@@ -205,9 +300,9 @@ function processItems(itemList, itemType) {
                         isInRange = true;
                         inRangeCount++;
 
-                        console.log(`Enemy "${enemyPlatform.platform_name}" is within range of "${itemName}" from "${platform.platform_name}" at: ${distance} meters`);
+                        console.log(`Enemy "${enemyPlatform.platform_name}" is within range band of "${itemName}" from "${platform.platform_name}" at: ${formatResultsRange(distance)} meters`);
                     } else {
-                        console.log(`Enemy "${enemyPlatform.platform_name}" is out of range (${distance} > ${range}) of "${itemName}" from "${platform.platform_name}".`);
+                        console.log(`Enemy "${enemyPlatform.platform_name}" is out of range band (${formatResultsRange(distance)} m is ${describeOutOfBandReason(distance, rangeBand)}; valid band ${formatResultsRangeBand(rangeBand)}) of "${itemName}" from "${platform.platform_name}".`);
                     }
                 });
             });
@@ -215,8 +310,8 @@ function processItems(itemList, itemType) {
             var percentageInRange = totalEnemies > 0 ? (inRangeCount / totalEnemies) * 100 : 0;
             var percentageOutOfRange = 100 - percentageInRange;
 
-            console.log(`Percentage of enemies in range for ${itemType} ${itemName} in group ${group}: ${percentageInRange}%`);
-            console.log(`Percentage of enemies out of range for ${itemType} ${itemName} in group ${group}: ${percentageOutOfRange}%`);
+            console.log(`Percentage of enemies in range band for ${itemType} ${itemName} in group ${group}: ${percentageInRange}%`);
+            console.log(`Percentage of enemies out of range band for ${itemType} ${itemName} in group ${group}: ${percentageOutOfRange}%`);
 
             const selectedColor = getSideColor(selectedSide, '#36A2EB');
             const enemySideLabel = getSideLabelOrFallback(enemySide, 'Enemy');
@@ -288,7 +383,7 @@ function processItems(itemList, itemType) {
                         barPriority: numPlatsBarPriority
                     },
                     {
-                        barLabel: `${enemySideLabel} Platforms in WEZ`,
+                        barLabel: `${enemySideLabel} Platforms in WEZ / range band`,
                         barValue: wez,
                         barColor: wezBarColor,
                         barPriority: wezBarPriority
@@ -312,9 +407,9 @@ function processItems(itemList, itemType) {
                 console.log("results.js >>> processItems() >>> invalid chart-type");
             }
 
-            console.log(`\nMap of shooter platforms to in-range enemies for ${itemType} "${itemName}" and group "${group}":`);
+            console.log(`\nMap of shooter platforms to enemies within range band for ${itemType} "${itemName}" and group "${group}":`);
             platformToEnemiesMap.forEach(function(enemyList, shooterPlatform) {
-                console.log(`Shooter Platform: ${shooterPlatform} -> In-range Enemies: ${enemyList.join(', ')}`);
+                console.log(`Shooter Platform: ${shooterPlatform} -> In-range-band Enemies: ${enemyList.join(', ')}`);
             });
 
         });
