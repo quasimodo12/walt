@@ -112,11 +112,6 @@ var View = (function() {
             }
         });
 
-        // Add Clear Range Rings button functionality
-        document.getElementById('clearRangeRingsButton').addEventListener('click', function() {
-            RangeRingLogic.clearAllRangeRings();
-        });
-
         // Add Export Laydown button functionality
         document.getElementById('exportLaydownButton').addEventListener('click', function() {
             LaydownExporter.exportLaydown();
@@ -223,16 +218,6 @@ var View = (function() {
                     if (platform) {
                         var platformName = platform.platform_name;
                         addPlatformToSelected(platformName);
-                    }
-                }
-            });
-
-            // Handle ctrl-click event for seeing range rings
-            marker.on('mousedown', function(event) {
-                if (event.originalEvent.ctrlKey) { // Access the native event for ctrlKey
-                    if (platform) {
-                        var platformName = platform.platform_name;
-                        RangeRingLogic.drawRangeRingForPlatform(platformName);
                     }
                 }
             });

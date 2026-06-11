@@ -635,20 +635,6 @@ var TableController = (function() {
                 }
             }
         });
-
-        // Handle ctrl-click on table rows
-        $('#platformTable tbody').on('click', 'tr', function(event) {
-            if (event.ctrlKey) {
-                var rowData = dataTableInstance.row(this).data();
-                var platform = PlatformModel.getPlatformData().find(function(p) {
-                    return p.platform_name === rowData.platform_name;
-                });
-                if (platform) {
-                    var platformName = platform.platform_name;
-                    RangeRingLogic.drawRangeRingForPlatform(platformName);
-                }
-            }
-        });
     }
 
     // Function to redraw the table with the latest platform data
