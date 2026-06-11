@@ -7,6 +7,7 @@ var RangeRingConfig = (function() {
         var content = `
             <div>
                 <button id="toggleAllCheckboxes">Toggle All</button>
+                <button id="untoggleAllRangeRingsButton">Untoggle All</button>
                 <button id="editRangeRingStyleButton">Edit Style</button>
                 <table id="rangeRingTable" class="display">
                     <thead>
@@ -87,6 +88,11 @@ var RangeRingConfig = (function() {
             });
 
             RangeRingLogic.drawRangeRings();
+        });
+
+        $('#untoggleAllRangeRingsButton').on('click', function() {
+            rangeRingDataTable.rows().nodes().to$().find('.range-toggle').prop('checked', false);
+            RangeRingLogic.clearAllRangeRings();
         });
 
         $('#editRangeRingStyleButton').on('click', function() {

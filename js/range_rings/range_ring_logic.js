@@ -109,23 +109,6 @@ var RangeRingLogic = (function() {
     return parsed === null ? 'Unknown' : parsed.toLocaleString();
   }
 
-  function drawRangeRingForPlatform(platformName) {
-    if (!platformName) { return; }
-    var rangeRings = RangeRingStorage.getAllRangeRings();
-    if (!Array.isArray(rangeRings)) { return; }
-
-    var matchingRangeRings = rangeRings.filter(function(rangeRing) {
-      return rangeRing.platform_name === platformName;
-    });
-    if (!matchingRangeRings.length) { return; }
-
-    var enableRings = matchingRangeRings.some(function(rangeRing) { return rangeRing.toggled !== 1; });
-    var newToggleValue = enableRings ? 1 : 0;
-    matchingRangeRings.forEach(function(rangeRing) { rangeRing.toggled = newToggleValue; });
-
-    drawRangeRings();
-  }
-
   function clearRangeRings() {
     var map = View.getMap();
     rangeRingLayers.forEach(function(layer) { map.removeLayer(layer); });
@@ -134,8 +117,7 @@ var RangeRingLogic = (function() {
 
   function clearAllRangeRings() {
     RangeRingStorage.setAllRangeRingToggleStates(0);
-    clearRangeRings();
-    updateRangeRingConfigCheckboxes();
+    drawRangeRings();
   }
 
   function updateRangeRingConfigCheckboxes() {
@@ -217,7 +199,6 @@ var RangeRingLogic = (function() {
 
   return {
     drawRangeRings: drawRangeRings,
-    drawRangeRingForPlatform: drawRangeRingForPlatform,
     clearRangeRings: clearRangeRings,
     clearAllRangeRings: clearAllRangeRings,
     applyStyleToToggledRangeRings: applyStyleToToggledRangeRings,

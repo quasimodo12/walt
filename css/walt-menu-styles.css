@@ -284,7 +284,7 @@
   /* ============================================= */
   #clearSelectedButton {
     position: absolute;
-    bottom: 60px; /* Positioned above the Clear Range Rings button */
+    bottom: 10px;
     right: 10px;
     z-index: 1000;
     background-color: #ff6347; 
@@ -300,23 +300,6 @@
     background-color: #ff4500;
   }
   
-  #clearRangeRingsButton {
-    position: absolute;
-    bottom: 10px;
-    right: 10px;
-    z-index: 1000;
-    background-color: #ff6347; 
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    cursor: pointer;
-    font-size: 14px;
-    border-radius: 5px;
-  }
-  
-  #clearRangeRingsButton:hover {
-    background-color: #ff4500; /* Darker shade on hover */
-  }
   
   /* ============================================= */
   /* Button Container & Custom Buttons             */
