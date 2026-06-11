@@ -77,13 +77,14 @@
 <body>
   <main class="container">
     <h1>Export Laydown</h1>
-    <p class="intro">Copy the current laydown datasets</p>
+    <p class="intro">Copy the current laydown datasets if a manual file export is needed</p>
     <div class="button-grid">
       <button id="copy-platforms">Copy platforms to clipboard</button>
       <button id="copy-weapons">Copy weapons to clipboard</button>
       <button id="copy-weapon-lethality">Copy weapon lethality to clipboard</button>
       <button id="copy-sensors">Copy sensors to clipboard</button>
       <button id="copy-labels">Copy labels to clipboard</button>
+      <button id="copy-range-ring-style-templates">Copy range ring style templates to clipboard</button>
     </div>
   </main>
   <script>
@@ -93,7 +94,8 @@
         { id: 'copy-weapons', storageKey: 'weaponLaydownData' },
         { id: 'copy-weapon-lethality', storageKey: 'weaponLethalityLaydownData' },
         { id: 'copy-sensors', storageKey: 'sensorLaydownData' },
-        { id: 'copy-labels', storageKey: 'labelLaydownData' }
+        { id: 'copy-labels', storageKey: 'labelLaydownData' },
+        { id: 'copy-range-ring-style-templates', storageKey: 'rangeRingStyleTemplateLaydownData' }
       ];
 
       function copyData(button, storageKey) {

@@ -158,6 +158,20 @@ Scripts that render dropdowns, map icons, range rings, or results views consume 
 configuration. If a platform, weapon, or sensor references a side that is not defined, the UI falls
 back to the configured default icon and a neutral color so undefined sides are still displayed.
 
+
+## Exporting the current laydown
+
+Click **Export Laydown** in the platform-table toolbar to download a ZIP archive containing the current laydown as a folder. The archive includes the six JavaScript files required by **Load Laydown**:
+
+- `labels.js`
+- `platform_details.js`
+- `range_ring_style_templates.js`
+- `sensor_details.js`
+- `weapon_details.js`
+- `weapon_lethality_details.js`
+
+Unzip the archive and select the exported folder with **Load Laydown** when you want to restore that laydown later.
+
 ## Loading an alternate laydown
 
 The default baseline scenario remains the repository `input/` folder. Opening `index.html` without

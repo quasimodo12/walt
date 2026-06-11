@@ -35,5 +35,6 @@ SelectionController.init(); // Initialize the selection controller (allows for p
 PlatformCopyController.init(); // Enable copy-paste workflows for selected platforms
 PlatformDeletionController.init(); // Enable deletion of selected platforms via the Delete key
 LaydownLoader.init(); // Enable loading a different laydown input folder at runtime
+LaydownExporter.init(); // Enable exporting the current laydown to a downloadable ZIP file
 
 
