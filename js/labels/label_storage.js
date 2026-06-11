@@ -4,6 +4,7 @@ var LabelStorage = (function() {
     var currentId = 0; // To generate unique IDs
 
     function loadInitialData(initialLabelData) {
+        currentId = 0;
         labelData = initialLabelData.map(function(item) {
             if (item.label_id >= currentId) {
                 currentId = item.label_id + 1;

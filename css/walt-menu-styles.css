@@ -63,6 +63,10 @@
     gap: 6px;
 }
 
+#platformTableContainer .laydown-folder-input {
+    display: none;
+}
+
 #platformTableContainer .column-toggle-button {
     padding: 6px 10px;
     font-size: 0.85rem;

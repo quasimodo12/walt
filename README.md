@@ -157,3 +157,24 @@ and any icon/color overrides you need:
 Scripts that render dropdowns, map icons, range rings, or results views consume this shared
 configuration. If a platform, weapon, or sensor references a side that is not defined, the UI falls
 back to the configured default icon and a neutral color so undefined sides are still displayed.
+
+## Loading an alternate laydown
+
+The default baseline scenario remains the repository `input/` folder. Opening `index.html` without
+selecting anything still loads the six checked-in files from that folder.
+
+To switch to another laydown while the application is running, click **Load Laydown** above the
+platform table and select a folder that contains all six required JavaScript files:
+
+- `labels.js`
+- `platform_details.js`
+- `range_ring_style_templates.js`
+- `sensor_details.js`
+- `weapon_details.js`
+- `weapon_lethality_details.js`
+
+After the folder is selected, WALT validates that all six files are present, reloads the platform,
+weapon, weapon lethality, sensor, label, range-ring, distance, table, and map data, and keeps the
+same page open. The selected folder's files use the same variable names as the default `input/`
+files.
+

@@ -68,6 +68,22 @@
           <div class="platform-table-toolbar-actions">
             <button
               type="button"
+              id="loadLaydownButton"
+              class="column-toggle-button"
+            >
+              Load Laydown
+            </button>
+            <input
+              type="file"
+              id="loadLaydownInput"
+              class="laydown-folder-input"
+              aria-label="Select laydown input folder"
+              webkitdirectory
+              directory
+              multiple
+            >
+            <button
+              type="button"
               id="iconsButton"
               class="column-toggle-button"
               aria-haspopup="true"
@@ -158,6 +174,7 @@
   <script src="js/distance_storage.js"></script>
   <script src="js/labels/label_storage.js"></script>
   <script src="js/export_laydown.js"></script>
+  <script src="js/laydown_loader.js"></script>
   <script src="js/map_tools/map_tools_menu.js"></script>
   <script src="js/menu/main_menu_layout_config.js"></script>
   <script src="js/menu/main_menu_button_layout.js"></script>
