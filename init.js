@@ -34,5 +34,6 @@ View.renderPlatforms(); // Add platforms to the map from PlatformModel and add e
 SelectionController.init(); // Initialize the selection controller (allows for platforms to be selected and dragged around)
 PlatformCopyController.init(); // Enable copy-paste workflows for selected platforms
 PlatformDeletionController.init(); // Enable deletion of selected platforms via the Delete key
+LaydownLoader.init(); // Enable loading a different laydown input folder at runtime
 
 
