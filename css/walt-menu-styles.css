@@ -405,3 +405,23 @@
 .ui-dialog-content {
     padding: 20px;
 }
+
+
+/* ============================================= */
+/* Weapon and Sensor Configuration Range Inputs  */
+/* ============================================= */
+#weaponInfoDialog .weapon-min-range,
+#weaponInfoDialog .weapon-max-range,
+#weaponInfoDialog #newWeaponMinRange,
+#weaponInfoDialog #newWeaponMaxRange,
+#sensorInfoDialog .sensor-min-range,
+#sensorInfoDialog .sensor-max-range,
+#sensorInfoDialog #newSensorMinRange,
+#sensorInfoDialog #newSensorMaxRange,
+#addWeaponDialogContent #newWeaponMinRange,
+#addWeaponDialogContent #newWeaponMaxRange,
+#addSensorDialogContent #newSensorMinRange,
+#addSensorDialogContent #newSensorMaxRange {
+    box-sizing: border-box;
+    width: 50% !important;
+}
