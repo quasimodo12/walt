@@ -263,10 +263,10 @@ var View = (function() {
 
     // ----- RESULTS WINDOW FUNCTIONS ----- //
 
-    // Function to open the results.html window
+    // Function to open the results window
     function openResultsWindow() {
-        console.log("view.js: Opening results.html");
-        newWindow = window.open('results.html', '_blank');
+        console.log("view.js: Opening results/index.html");
+        newWindow = window.open('results/index.html', '_blank');
 
         // Optionally, check if the window was opened successfully
         if (!newWindow) {
