@@ -104,8 +104,8 @@ var TableController = (function() {
     var resizeTimer = null;
     var BASE_FONT_SIZE = 13;
     var BASE_HEADER_FONT_SIZE = 14;
-    var BASE_PADDING = 10;
-    var MIN_SCALE = 0.3;
+    var BASE_PADDING = 8;
+    var MIN_SCALE = 0.85;
     var SCALE_EPSILON = 0.005;
     var SCALE_ITERATIONS = 14;
     var columnDefinitions = [
@@ -401,9 +401,9 @@ var TableController = (function() {
             return;
         }
 
-        var fontSize = Math.max(8, Math.round(BASE_FONT_SIZE * scale * 10) / 10);
-        var headerFontSize = Math.max(fontSize + 1, Math.round(BASE_HEADER_FONT_SIZE * scale * 10) / 10);
-        var padding = Math.max(4, Math.round(BASE_PADDING * scale));
+        var fontSize = Math.max(11, Math.round(BASE_FONT_SIZE * scale * 10) / 10);
+        var headerFontSize = Math.max(12, fontSize + 1, Math.round(BASE_HEADER_FONT_SIZE * scale * 10) / 10);
+        var padding = Math.max(6, Math.round(BASE_PADDING * scale));
         var lineHeight = Math.max(1.1, (1.2 + (scale * 0.4)).toFixed(2));
 
         $container.css({
@@ -596,6 +596,7 @@ var TableController = (function() {
             data: tableData,
             columns: columnDefinitions,
             scrollY: calculateTableHeight(),
+            scrollX: true,
             scrollCollapse: true,
             paging: false,
             deferRender: true

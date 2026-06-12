@@ -7,30 +7,30 @@
 
   var DEFAULT_CONFIG = {
     container: {
-      padding: '24px',
-      margin: '12px',
-      gap: '20px'
+      padding: '16px',
+      margin: '8px',
+      gap: '12px'
     },
     header: {
-      gap: '10px'
+      gap: '6px'
     },
     toolbar: {
-      gap: '14px'
+      gap: '10px'
     },
     table: {
-      minHeight: '340px',
+      minHeight: '280px',
       flex: '1 1 auto'
     },
     buttons: {
-      padding: '12px',
-      maxHeight: '28vh',
-      gap: '10px',
-      rowGap: '14px',
-      minWidth: 'clamp(120px, 22%, 240px)',
-      minHeight: 'clamp(36px, 2.8vw, 58px)',
-      fontSize: 'clamp(0.78rem, 0.55vw + 0.6rem, 1.05rem)',
-      paddingBlock: 'clamp(0.45rem, 0.28vw + 0.35rem, 0.65rem)',
-      paddingInline: 'clamp(0.75rem, 0.65vw + 0.5rem, 1.35rem)'
+      padding: '8px',
+      maxHeight: '24vh',
+      gap: '8px',
+      rowGap: '10px',
+      minWidth: 'clamp(108px, 21%, 220px)',
+      minHeight: 'clamp(34px, 2.4vw, 48px)',
+      fontSize: 'clamp(0.76rem, 0.42vw + 0.62rem, 0.98rem)',
+      paddingBlock: 'clamp(0.35rem, 0.2vw + 0.3rem, 0.52rem)',
+      paddingInline: 'clamp(0.62rem, 0.5vw + 0.42rem, 1.05rem)'
     }
   };
 
