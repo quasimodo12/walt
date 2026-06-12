@@ -79,6 +79,11 @@ function createLegend(divId, legendType, side) {
 
     var enemySideText = resolveSideLabel(enemySideId, 'Enemy');
     var enemySideColor = resolveSideColor(friendlySideId, '#4d94ff');
+    var pieInRangeColor = typeof getChartColor === 'function' ? getChartColor('pie', 'inRange') : enemySideColor;
+    var pieOutOfRangeColor = typeof getChartColor === 'function' ? getChartColor('pie', 'outOfRange') : '#d9d9d9';
+    var loadoutPlatformCountColor = typeof getChartColor === 'function' ? getChartColor('loadout', 'platformCount') : '#a6a6a6';
+    var loadoutWezColor = typeof getChartColor === 'function' ? getChartColor('loadout', 'wez') : enemySideColor;
+    var loadoutUsableWeaponsColor = typeof getChartColor === 'function' ? getChartColor('loadout', 'usableWeapons') : '#ffff99';
 
     if (legendType === 'Pie') {
         // Row 1: 'Side' Circle | "Percent of Platforms in WEZ / range band"
@@ -89,7 +94,7 @@ function createLegend(divId, legendType, side) {
         sideCircle.style.width = '20px';
         sideCircle.style.height = '20px';
         sideCircle.style.borderRadius = '50%';
-        sideCircle.style.backgroundColor = enemySideColor;
+        sideCircle.style.backgroundColor = pieInRangeColor;
         sideCircle.style.margin = '0 auto'; // Center in cell
         cell1.appendChild(sideCircle);
 
@@ -104,7 +109,7 @@ function createLegend(divId, legendType, side) {
         greyCircle.style.width = '20px';
         greyCircle.style.height = '20px';
         greyCircle.style.borderRadius = '50%';
-        greyCircle.style.backgroundColor = '#d9d9d9';
+        greyCircle.style.backgroundColor = pieOutOfRangeColor;
         greyCircle.style.margin = '0 auto';
         cell3.appendChild(greyCircle);
 
@@ -122,7 +127,7 @@ function createLegend(divId, legendType, side) {
         var greyBar = document.createElement('div');
         greyBar.style.width = '30px';
         greyBar.style.height = '10px';
-        greyBar.style.backgroundColor = '#a6a6a6';
+        greyBar.style.backgroundColor = loadoutPlatformCountColor;
         greyBar.style.margin = '0 auto';
         cell1.appendChild(greyBar);
 
@@ -136,7 +141,7 @@ function createLegend(divId, legendType, side) {
         var enemySide = document.createElement('div');
         enemySide.style.width = '30px';
         enemySide.style.height = '10px';
-        enemySide.style.backgroundColor = enemySideColor;
+        enemySide.style.backgroundColor = loadoutWezColor;
         enemySide.style.margin = '0 auto';
         cell3.appendChild(enemySide);
 
@@ -150,12 +155,12 @@ function createLegend(divId, legendType, side) {
         var yellowBar = document.createElement('div');
         yellowBar.style.width = '30px';
         yellowBar.style.height = '10px';
-        yellowBar.style.backgroundColor = '#ffff99';
+        yellowBar.style.backgroundColor = loadoutUsableWeaponsColor;
         yellowBar.style.margin = '0 auto';
         cell5.appendChild(yellowBar);
 
         var cell6 = row3.insertCell();
-        cell6.innerText = 'Quantity of Useable Weapons';
+        cell6.innerText = 'Quantity of Usable Weapons';
     } else {
         console.error('Invalid legend type:', legendType);
         return;

@@ -68,8 +68,13 @@
 </head>
 <body>
     <!-- Configuration Controls -->
-    <!-- Button to open the configuration dialog -->
-    <button id="open-config-button">Configure Display</button>
+    <div id="results-control-buttons">
+        <!-- Button to open the configuration dialog -->
+        <button id="open-config-button">Configure Display</button>
+
+        <!-- Button to open the chart color configuration dialog -->
+        <button id="open-colors-button">Configure Colors</button>
+    </div>
 
     <!-- Configuration Dialog -->
     <div id="config-dialog" style="display: none;">
@@ -132,6 +137,49 @@
                     </td>
                 </tr>
             </table>
+        </div>
+    </div>
+
+    <!-- Chart Color Configuration Dialog -->
+    <div id="color-config-dialog" style="display: none;">
+        <div id="color-config-panel">
+            <p id="color-config-description"></p>
+
+            <div id="pie-color-options" class="color-options-panel">
+                <div class="color-option-row">
+                    <label for="pie-in-range-color">Colored pie portion</label>
+                    <input type="color" id="pie-in-range-color">
+                    <span class="color-preview" data-preview-for="pie-in-range-color"></span>
+                    <span class="color-hex-value" data-hex-for="pie-in-range-color"></span>
+                </div>
+                <div class="color-option-row">
+                    <label for="pie-out-of-range-color">Uncolored pie portion</label>
+                    <input type="color" id="pie-out-of-range-color">
+                    <span class="color-preview" data-preview-for="pie-out-of-range-color"></span>
+                    <span class="color-hex-value" data-hex-for="pie-out-of-range-color"></span>
+                </div>
+            </div>
+
+            <div id="loadout-color-options" class="color-options-panel">
+                <div class="color-option-row">
+                    <label for="loadout-platform-count-color">Number of platforms in the group</label>
+                    <input type="color" id="loadout-platform-count-color">
+                    <span class="color-preview" data-preview-for="loadout-platform-count-color"></span>
+                    <span class="color-hex-value" data-hex-for="loadout-platform-count-color"></span>
+                </div>
+                <div class="color-option-row">
+                    <label for="loadout-wez-color">Number of platforms in the WEZ / range band</label>
+                    <input type="color" id="loadout-wez-color">
+                    <span class="color-preview" data-preview-for="loadout-wez-color"></span>
+                    <span class="color-hex-value" data-hex-for="loadout-wez-color"></span>
+                </div>
+                <div class="color-option-row">
+                    <label for="loadout-usable-weapons-color">Quantity of usable weapons</label>
+                    <input type="color" id="loadout-usable-weapons-color">
+                    <span class="color-preview" data-preview-for="loadout-usable-weapons-color"></span>
+                    <span class="color-hex-value" data-hex-for="loadout-usable-weapons-color"></span>
+                </div>
+            </div>
         </div>
     </div>
 

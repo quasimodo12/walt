@@ -67,7 +67,10 @@ class PieChartTable {
                     labels: ['Data1', 'Data2'],
                     datasets: [{
                         data: [],
-                        backgroundColor: ['#36A2EB', '#d9d9d9'],
+                        backgroundColor: [
+                            typeof getChartColor === 'function' ? getChartColor('pie', 'inRange') : '#36A2EB',
+                            typeof getChartColor === 'function' ? getChartColor('pie', 'outOfRange') : '#d9d9d9'
+                        ],
                     }]
                 };
 
@@ -249,19 +252,22 @@ class PieChartTable {
      * @param {String} colName - The column name associated with the chart.
      * @param {String} rowName - The row name associated with the chart.
      * @param {Array} newData - The new data array to update the chart with.
-     * @param {String} newColor - (Optional) The new hex color code to update the chart with.
+     * @param {String} newColor - (Optional) The new hex color code for the in-range pie slice.
      * @param {Map} mapData - (Optional) A Map with keys as column headers and arrays as row data.
+     * @param {String} outOfRangeColor - (Optional) The new hex color code for the out-of-range pie slice.
      */
-    updateChart(colName, rowName, newData, newColor = null, mapData = null) {
+    updateChart(colName, rowName, newData, newColor = null, mapData = null, outOfRangeColor = null) {
         console.log(`Updating chart for row ${rowName}, column ${colName}`);
         if (this.charts[rowName] && this.charts[rowName][colName]) {
             const chart = this.charts[rowName][colName];
             chart.data.datasets[0].data = newData;
 
-            // If a new color is provided, update the chart's color
-            if (newColor) {
-                console.log(`Updating chart color to ${newColor}`);
-                chart.data.datasets[0].backgroundColor = [newColor, '#d9d9d9'];
+            // If new colors are provided, update both pie slices.
+            if (newColor || outOfRangeColor) {
+                const inRangeSliceColor = newColor || chart.data.datasets[0].backgroundColor[0];
+                const outOfRangeSliceColor = outOfRangeColor || chart.data.datasets[0].backgroundColor[1];
+                console.log(`Updating chart colors to ${inRangeSliceColor}, ${outOfRangeSliceColor}`);
+                chart.data.datasets[0].backgroundColor = [inRangeSliceColor, outOfRangeSliceColor];
             }
 
             // Store mapData in chart instance

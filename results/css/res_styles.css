@@ -30,11 +30,13 @@ th, td {
     height: 160px !important;
 }
 
-/* Style for the configuration panel */
-#config-panel {
+/* Style for the configuration panels */
+#config-panel,
+#color-config-panel {
     padding: 20px;
 }
-#config-panel h3 {
+#config-panel h3,
+#color-config-panel h3 {
     font-size: 1.5em;
     color: #333;
 }
@@ -104,7 +106,15 @@ th, td {
 }
 
 /* Button styling */
-#open-config-button {
+#results-control-buttons {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+}
+
+#open-config-button,
+#open-colors-button {
     padding: 10px 15px;
     font-size: 1em;
     color: #fff;
@@ -114,6 +124,58 @@ th, td {
     cursor: pointer;
     transition: background-color 0.3s;
 }
-#open-config-button:hover {
+#open-config-button:hover,
+#open-colors-button:hover {
     background-color: #0056b3;
+}
+
+#color-config-panel p {
+    margin-bottom: 15px;
+    color: #333;
+}
+
+.color-options-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.color-option-row {
+    display: grid;
+    grid-template-columns: 1fr auto auto auto;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #f9f9f9;
+}
+
+.color-option-row label {
+    font-weight: bold;
+    color: #333;
+}
+
+.color-option-row input[type="color"] {
+    width: 46px;
+    height: 34px;
+    padding: 2px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #fff;
+    cursor: pointer;
+}
+
+.color-preview {
+    width: 28px;
+    height: 28px;
+    border: 1px solid #999;
+    border-radius: 4px;
+    display: inline-block;
+}
+
+.color-hex-value {
+    min-width: 70px;
+    font-family: monospace;
+    color: #333;
 }

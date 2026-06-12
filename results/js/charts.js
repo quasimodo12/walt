@@ -313,15 +313,18 @@ function processItems(itemList, itemType) {
             console.log(`Percentage of enemies in range band for ${itemType} ${itemName} in group ${group}: ${percentageInRange}%`);
             console.log(`Percentage of enemies out of range band for ${itemType} ${itemName} in group ${group}: ${percentageOutOfRange}%`);
 
-            const selectedColor = getSideColor(selectedSide, '#36A2EB');
+            const pieInRangeColor = getChartColor('pie', 'inRange');
+            const pieOutOfRangeColor = getChartColor('pie', 'outOfRange');
             const enemySideLabel = getSideLabelOrFallback(enemySide, 'Enemy');
-            const friendlyColor = getSideColor(selectedSide, '#4d94ff');
+            const loadoutPlatformCountColor = getChartColor('loadout', 'platformCount');
+            const loadoutWezColor = getChartColor('loadout', 'wez');
+            const loadoutUsableWeaponsColor = getChartColor('loadout', 'usableWeapons');
 
             const chartTypeDropdown = document.getElementById("chart-type");
             const selectedChartType = chartTypeDropdown.value;
 
             if (selectedChartType === 'Pie') {
-                pieChartTable.updateChart(itemName, group, [percentageInRange, percentageOutOfRange], selectedColor, platformToEnemiesMap);
+                pieChartTable.updateChart(itemName, group, [percentageInRange, percentageOutOfRange], pieInRangeColor, platformToEnemiesMap, pieOutOfRangeColor);
             }
             else if (selectedChartType === 'Loadouts') {
                 var numPlats = totalEnemies;
@@ -373,13 +376,13 @@ function processItems(itemList, itemType) {
                     quantityBarPriority = 2;
                 }
 
-                wezBarColor = friendlyColor;
+                wezBarColor = loadoutWezColor;
 
                 const newBars = [
                     {
                         barLabel: `${enemySideLabel} Platforms in Group`,
                         barValue: numPlats,
-                        barColor: '#a6a6a6',
+                        barColor: loadoutPlatformCountColor,
                         barPriority: numPlatsBarPriority
                     },
                     {
@@ -389,9 +392,9 @@ function processItems(itemList, itemType) {
                         barPriority: wezBarPriority
                     },
                     {
-                        barLabel: 'Useable Ammo',
+                        barLabel: 'Usable Weapons',
                         barValue: quantity,
-                        barColor: '#ffff99',
+                        barColor: loadoutUsableWeaponsColor,
                         barPriority: quantityBarPriority
                     }
                 ];
