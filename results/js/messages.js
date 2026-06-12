@@ -11,21 +11,21 @@ const messageHandlers = {
     platformData: (data) => {
         platformData = data;
         populateConfigDropdowns();
-        console.log('results.html: Updated platformData:', platformData);
+        console.log('results/index.html: Updated platformData:', platformData);
     },
     weaponData: (data) => {
         weaponData = data;
         populateConfigDropdowns();
-        console.log('results.html: Updated weaponData:', weaponData);
+        console.log('results/index.html: Updated weaponData:', weaponData);
     },
     sensorData: (data) => {
         sensorData = data;
         populateConfigDropdowns();
-        console.log('results.html: Updated sensorData:', sensorData);
+        console.log('results/index.html: Updated sensorData:', sensorData);
     },
     distanceData: (data) => {
         distanceData = data;
-        console.log('results.html: Received distanceData:', distanceData);
+        console.log('results/index.html: Received distanceData:', distanceData);
     }
 };
 
@@ -39,7 +39,7 @@ window.addEventListener('message', function(event) {
     if (handler) {
         handler(data);
     } else {
-        console.error('results.html: Received message of unknown type.');
+        console.error('results/index.html: Received message of unknown type.');
     }
 
     applyConfig();

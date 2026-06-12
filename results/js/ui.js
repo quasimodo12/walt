@@ -1,5 +1,5 @@
 /**
- * UI initialization and event bindings for results.html.
+ * UI initialization and event bindings for results/index.html.
  *
  * This module sets up the jQuery UI dialog used to configure which charts are
  * displayed and wires change events so that modifications take effect

@@ -1,6 +1,6 @@
 
 /**
- * Utility for building the legend shown next to the charts in results.html.
+ * Utility for building the legend shown next to the charts in results/index.html.
  */
 
 /**
