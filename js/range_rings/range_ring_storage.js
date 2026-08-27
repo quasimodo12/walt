@@ -6,7 +6,10 @@ var RangeRingStorage = (function() {
         var platformData = PlatformModel.getPlatformData();
         var weaponData = WeaponStorage.getWeaponData();
         var sensorData = SensorStorage.getSensorData();
-        var setToggled = 0;
+        var toggleStates = rangeRings.reduce(function(states, ring) {
+            states[createRangeRingKey(ring.platform_name, ring.system_name)] = ring.toggled === 1 ? 1 : 0;
+            return states;
+        }, {});
 
         rangeRings = [];
 
@@ -33,7 +36,7 @@ var RangeRingStorage = (function() {
                             systemName: weapon.name,
                             systemType: "weapon",
                             rangeBand: weaponBand,
-                            toggled: setToggled,
+                            toggled: getSavedToggleState(toggleStates, platform.platform_name, weapon.name),
                             style: defaultStyle
                         }));
                     }
@@ -50,13 +53,22 @@ var RangeRingStorage = (function() {
                             systemName: sensorName,
                             systemType: "sensor",
                             rangeBand: sensorBand,
-                            toggled: setToggled,
+                            toggled: getSavedToggleState(toggleStates, platform.platform_name, sensorName),
                             style: defaultStyle
                         }));
                     }
                 });
             }
         });
+    }
+
+    function getSavedToggleState(toggleStates, platformName, systemName) {
+        var key = createRangeRingKey(platformName, systemName);
+        return Object.prototype.hasOwnProperty.call(toggleStates, key) ? toggleStates[key] : 0;
+    }
+
+    function createRangeRingKey(platformName, systemName) {
+        return String(platformName) + '|' + String(systemName);
     }
 
     function createRangeRingRecord(options) {
