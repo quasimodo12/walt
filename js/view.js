@@ -349,7 +349,7 @@ var View = (function() {
         return L.icon({
             iconUrl: iconUrl,
             iconSize: [24, 24], // Customize the size of the icon
-            iconAnchor: [16, 16] // Anchor the icon at its center
+            iconAnchor: [12, 12] // Anchor the icon at its center
         });
     }
 
