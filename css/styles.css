@@ -1,6 +1,7 @@
 /* styles.css */
 
 #waltAppLayout {
+   --platform-menu-width: clamp(420px, 34vw, 560px);
    display: flex;
    align-items: stretch;
    justify-content: space-between;
@@ -12,12 +13,10 @@
 }
 
 #map {
-   width: 60%;
-   max-width: 60%;
    height: 100vh;
    min-height: 100vh;
    position: relative;
-   flex: 0 0 60%;
+   flex: 1 1 auto;
    min-width: 0;
 }
 

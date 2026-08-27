@@ -98,201 +98,142 @@ var PlatformConfig = (function() {
     // Function to create platform info dialog with inputs
     function createPlatformDialog(platform) {
         var sideOptions = buildSideOptions(platform && platform.side);
-        // Create the HTML content for the platform dialog
+        var subgroups = Array.isArray(platform.subgroups) ? platform.subgroups : [];
+
+        // Create the HTML content for the platform dialog. The layout and sizing
+        // are scoped in css/walt-menu-styles.css so the dialog can be compacted
+        // without inline styles accidentally affecting other menus.
         var content = `
-        <style>
-            /* Main Table Styling */
-            .main-table {
-                width: 100%;
-                border-spacing: 10px;
-                table-layout: fixed;
-            }
-            .section-cell {
-                border: 1px solid #ddd;
-                padding: 10px;
-                vertical-align: top;
-            }
-            .basic-info-table {
-                width: 100%;
-                border-spacing: 5px;
-                table-layout: fixed;
-            }
-            .basic-info-table td {
-                padding: 5px;
-                width: 50%; /* Ensures equal sizing for label and input cells */
-            }
-            .full-width {
-                width: 100%;
-                box-sizing: border-box; /* Ensures padding and borders are included in the width */
-            }
-            .center-text {
-                text-align: center;
-            }
-            .section-container {
-                margin-top: 10px;
-            }
-            .action-buttons {
-                display: flex;
-                justify-content: space-between;
-                margin-top: 20px;
-            }
-            button {
-                padding: 8px 16px;
-                font-size: 14px;
-                cursor: pointer;
-            }
-            .delete-button {
-                background-color: red;
-                color: white;
-                border: none;
-            }
+        <div class="platform-config-layout">
+            <!-- Basic Info Editing Section -->
+            <section class="platform-config-section">
+                <h3 class="platform-config-section-title">Basic Info</h3>
+                <table class="basic-info-table">
+                    <!-- Row 1: Name -->
+                    <tr>
+                        <td><label for="platformNameInput"><strong>Name:</strong></label></td>
+                        <td><input type="text" id="platformNameInput" value="${platform.platform_name}" class="full-width" maxlength="32"></td>
+                    </tr>
 
-            /* Optional: Responsive Adjustments */
-            @media (max-width: 768px) {
-                .main-table, .basic-info-table {
-                    table-layout: auto;
-                }
-                .action-buttons {
-                    flex-direction: column;
-                    gap: 10px;
-                }
-            }
-        </style>
+                    <!-- Row 2: Group -->
+                    <tr>
+                        <td><label for="platformGroupInput"><strong>Group:</strong></label></td>
+                        <td><input type="text" id="platformGroupInput" value="${platform.group}" class="full-width" maxlength="32"></td>
+                    </tr>
 
-        <!-- Main Configuration Table -->
-        <table class="main-table">
-            <tr>
-                <!-- Basic Info Editing Section -->
-                <td class="section-cell">
-                    <strong>Basic Info</strong>
-                    <table class="basic-info-table">
-                        <!-- Row 1: Name -->
-                        <tr>
-                            <td><label for="platformNameInput"><strong>Name:</strong></label></td>
-                            <td><input type="text" id="platformNameInput" value="${platform.platform_name}" class="full-width" maxlength="32"></td>
-                        </tr>
+                    <!-- Row 3: Category -->
+                    <tr>
+                        <td><label for="platformCategoryInput"><strong>Category:</strong></label></td>
+                        <td><input type="text" id="platformCategoryInput" value="${platform.category || ''}" class="full-width" maxlength="32"></td>
+                    </tr>
 
-                        <!-- Row 2: Group -->
-                        <tr>
-                            <td><label for="platformGroupInput"><strong>Group:</strong></label></td>
-                            <td><input type="text" id="platformGroupInput" value="${platform.group}" class="full-width" maxlength="32"></td>
-                        </tr>
+                    <!-- Row 4: Type -->
+                    <tr>
+                        <td><label for="platformTypeInput"><strong>Type:</strong></label></td>
+                        <td><input type="text" id="platformTypeInput" value="${platform.type && platform.type !== 'Unspecified' ? platform.type : ''}" class="full-width" maxlength="32"></td>
+                    </tr>
 
-                        <!-- Row 3: Category -->
-                        <tr>
-                            <td><label for="platformCategoryInput"><strong>Category:</strong></label></td>
-                            <td><input type="text" id="platformCategoryInput" value="${platform.category || ''}" class="full-width" maxlength="32"></td>
-                        </tr>
+                    <!-- Row 5: Side -->
+                    <tr>
+                        <td><label for="platformSideInput"><strong>Side:</strong></label></td>
+                        <td>
+                            <select id="platformSideInput" class="full-width">
+                                ${sideOptions}
+                            </select>
+                        </td>
+                    </tr>
 
-                        <!-- Row 4: Type -->
-                        <tr>
-                            <td><label for="platformTypeInput"><strong>Type:</strong></label></td>
-                            <td><input type="text" id="platformTypeInput" value="${platform.type && platform.type !== 'Unspecified' ? platform.type : ''}" class="full-width" maxlength="32"></td>
-                        </tr>
+                    <!-- Row 6: Latitude -->
+                    <tr>
+                        <td><label for="platformLatitudeInput"><strong>Latitude:</strong></label></td>
+                        <td><input type="text" id="platformLatitudeInput" value="${platform.latitude}" class="full-width" maxlength="32"></td>
+                    </tr>
 
-                        <!-- Row 5: Side -->
-                        <tr>
-                            <td><label for="platformSideInput"><strong>Side:</strong></label></td>
-                            <td>
-                                <select id="platformSideInput" class="full-width">
-                                    ${sideOptions}
-                                </select>
-                            </td>
-                        </tr>
+                    <!-- Row 7: Longitude -->
+                    <tr>
+                        <td><label for="platformLongitudeInput"><strong>Longitude:</strong></label></td>
+                        <td><input type="text" id="platformLongitudeInput" value="${platform.longitude}" class="full-width" maxlength="32"></td>
+                    </tr>
 
-                        <!-- Row 6: Latitude -->
-                        <tr>
-                            <td><label for="platformLatitudeInput"><strong>Latitude:</strong></label></td>
-                            <td><input type="text" id="platformLatitudeInput" value="${platform.latitude}" class="full-width" maxlength="32"></td>
-                        </tr>
+                    <!-- Row 8: Altitude -->
+                    <tr>
+                        <td><label for="platformAltitudeInput"><strong>Altitude:</strong></label></td>
+                        <td><input type="text" id="platformAltitudeInput" value="${platform.altitude}" class="full-width" maxlength="32"></td>
+                    </tr>
+                </table>
+            </section>
 
-                        <!-- Row 7: Longitude -->
-                        <tr>
-                            <td><label for="platformLongitudeInput"><strong>Longitude:</strong></label></td>
-                            <td><input type="text" id="platformLongitudeInput" value="${platform.longitude}" class="full-width" maxlength="32"></td>
-                        </tr>
-
-                        <!-- Row 8: Altitude -->
-                        <tr>
-                            <td><label for="platformAltitudeInput"><strong>Altitude:</strong></label></td>
-                            <td><input type="text" id="platformAltitudeInput" value="${platform.altitude}" class="full-width" maxlength="32"></td>
-                        </tr>
+            <!-- Weapon Management Section -->
+            <section class="platform-config-section">
+                <h3 class="platform-config-section-title">Weapon Management</h3>
+                <div id="platformWeaponsContainer" class="section-container">
+                    <table id="platformWeaponsTable" class="display" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>Weapon Name</th>
+                                <th>Range Band</th>
+                                <th>Quantity</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Weapon rows will be dynamically added here -->
+                        </tbody>
                     </table>
-                </td>
+                </div>
+                <div class="center-text section-container">
+                    <button id="addWeaponButton">Add Weapon</button>
+                </div>
+            </section>
 
-                <!-- Weapon Management Section -->
-                <td class="section-cell">
-                    <strong>Weapon Management</strong>
-                    <div id="platformWeaponsContainer" class="section-container">
-                        <table id="platformWeaponsTable" class="display" style="width:100%">
-                            <thead>
+            <!-- Subgroup Management Section -->
+            <section class="platform-config-section">
+                <h3 class="platform-config-section-title">Subgroup Management</h3>
+                <div id="platformSubgroupsContainer" class="section-container">
+                    <table id="platformSubgroupsTable" class="display" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>Subgroup Name</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${subgroups.map(subgroup => `
                                 <tr>
-                                    <th>Weapon Name</th>
-                                    <th>Range Band</th>
-                                    <th>Quantity</th>
-                                    <th>Action</th>
+                                    <td>${subgroup}</td>
+                                    <td><button class="removeSubgroupButton">Remove</button></td>
                                 </tr>
-                            </thead>
-                            <tbody>
-                                <!-- Weapon rows will be dynamically added here -->
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="center-text section-container">
-                        <button id="addWeaponButton">Add Weapon</button>
-                    </div>
-                </td>
-            </tr>
-            <tr>
-                <!-- Subgroup Management Section -->
-                <td class="section-cell">
-                    <strong>Subgroup Management</strong>
-                    <div id="platformSubgroupsContainer" class="section-container">
-                        <table id="platformSubgroupsTable" class="display" style="width:100%">
-                            <thead>
-                                <tr>
-                                    <th>Subgroup Name</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                ${platform.subgroups.map(subgroup => `
-                                    <tr>
-                                        <td>${subgroup}</td>
-                                        <td><button class="removeSubgroupButton">Remove</button></td>
-                                    </tr>
-                                `).join('')}
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="center-text section-container">
-                        <button id="addSubgroupButton">Add Subgroup</button>
-                    </div>
-                </td>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="center-text section-container">
+                    <button id="addSubgroupButton">Add Subgroup</button>
+                </div>
+            </section>
 
-                <!-- Sensor Management Section -->
-                <td class="section-cell">
-                    <strong>Sensor Management</strong>
-                    <div id="platformSensorsContainer" class="section-container">
-                        <table id="platformSensorsTable" class="display" style="width:100%">
-                            <thead>
-                                <tr>
-                                    <th>Sensor Name</th>
-                                    <th>Range Band</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <!-- Sensor rows will be dynamically added here -->
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="center-text section-container">
-                        <button id="addSensorButton">Add Sensor</button>
-                    </div>
-                </td>
-            </tr>
-        </table>
+            <!-- Sensor Management Section -->
+            <section class="platform-config-section">
+                <h3 class="platform-config-section-title">Sensor Management</h3>
+                <div id="platformSensorsContainer" class="section-container">
+                    <table id="platformSensorsTable" class="display" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>Sensor Name</th>
+                                <th>Range Band</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Sensor rows will be dynamically added here -->
+                        </tbody>
+                    </table>
+                </div>
+                <div class="center-text section-container">
+                    <button id="addSensorButton">Add Sensor</button>
+                </div>
+            </section>
+        </div>
 
         <!-- Action Buttons -->
         <div class="action-buttons">
@@ -303,7 +244,12 @@ var PlatformConfig = (function() {
 
         // Display the platform dialog content
         $('#platformInfoContent').html(content);
-        $('#platformInfoDialog').dialog('open');
+        $('#platformInfoDialog').dialog({
+            width: Math.min(Math.max($(window).width() * 0.72, 720), $(window).width() - 48),
+            maxWidth: $(window).width() - 48,
+            maxHeight: $(window).height() - 80,
+            modal: false
+        }).dialog('open');
 
         // ########################################################################
         // PLATFORM WEAPON CONFIGURATION SETUP
