@@ -179,12 +179,9 @@ var View = (function() {
 
         // Iterate through the platform data and create markers
         platformData.forEach(function(platform) {
-            // Determine the icon based on the side of the platform
-            var icon = createCustomIcon(platform.side);
-
-            // Create the marker with the custom icon and dragging disabled initially
+            // Surface platforms use their fixed side-specific symbol; all others use Leaflet's standard marker.
             var marker = L.marker([platform.latitude, platform.longitude], {
-                icon: icon,
+                icon: createPlatformIcon(platform),
                 draggable: false,
                 bubblingMouseEvents: true
             }).addTo(map);
@@ -333,23 +330,35 @@ var View = (function() {
         sendDataToMissionsWindow();
     }
 
-    /**
-     * Converts an array of platform data objects to a new formatted array of strings.
-     *
-     * @param {Array} platformDataArr - The original array of platform objects.
-     * @returns {Array} - A new array where each element is a formatted string representing a platform.
-     */
-    function createCustomIcon(side) {
-        var iconUrl = 'images/blue-plat.png';
-        if (typeof SideConfig !== 'undefined' && typeof SideConfig.getIconForSide === 'function') {
-            iconUrl = SideConfig.getIconForSide(side);
-        } else if (typeof side === 'string') {
-            iconUrl = side === 'red' ? 'images/red-plat.png' : 'images/blue-plat.png';
+    function createPlatformIcon(platform) {
+        var category = typeof platform.category === 'string' ? platform.category.trim().toLowerCase() : '';
+        var side = typeof platform.side === 'string' ? platform.side.trim().toLowerCase() : '';
+        var iconUrl = null;
+
+        if (category === 'surface') {
+            if (side === 'blue') {
+                iconUrl = 'images/platform-icons/surface_blue.png';
+            } else if (side === 'red') {
+                iconUrl = 'images/platform-icons/surface_red.png';
+            }
         }
+
+        if (iconUrl) {
+            return L.icon({
+                iconUrl: iconUrl,
+                iconSize: [24, 24],
+                iconAnchor: [12, 12]
+            });
+        }
+
         return L.icon({
-            iconUrl: iconUrl,
-            iconSize: [24, 24], // Customize the size of the icon
-            iconAnchor: [12, 12] // Anchor the icon at its center
+            iconUrl: 'images/marker-icon-2x.png',
+            shadowUrl: 'images/marker-shadow.png',
+            iconSize: [25, 41],
+            iconAnchor: [12, 41],
+            popupAnchor: [1, -34],
+            tooltipAnchor: [16, -28],
+            shadowSize: [41, 41]
         });
     }
 
@@ -421,17 +430,6 @@ var View = (function() {
         return map; // Return the map instance for external access
     }
 
-    function refreshPlatformIcons() {
-        var platformData = PlatformModel.getPlatformData();
-        platformData.forEach(function(platform) {
-            var marker = platformMarkers[platform.platform_name];
-            if (!marker) {
-                return;
-            }
-            marker.setIcon(createCustomIcon(platform.side));
-        });
-    }
-
     //===== DIALOG WINDOWS =====//
 
     // Creates and opens the platform configuration window
@@ -446,7 +444,6 @@ var View = (function() {
         highlightMarker: highlightMarker,
         unhighlightMarker: unhighlightMarker,
         getMap: getMap, // Expose the getMap function
-        refreshPlatformIcons: refreshPlatformIcons,
         showPlatformInfo: showPlatformInfo, // Expose the showPlatformInfo function
         sendDataToNewWindow: sendDataToNewWindow,
         updateAll: updateAll, // Update platformData, weaponData, sensorData, and distanceData in the new window
