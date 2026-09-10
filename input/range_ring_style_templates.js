@@ -1,13 +1,13 @@
 var range_ring_style_templates = [
   {
     name: 'Blue Default',
-    color: '#2f80ed',
+    color: '#0e4083',
     lineWidth: 2,
     opacity: 1.0
   },
   {
     name: 'Red Default',
-    color: '#eb5757',
+    color: '#d30909',
     lineWidth: 2,
     opacity: 1.0
   }
