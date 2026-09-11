@@ -182,6 +182,7 @@ var View = (function() {
             // Surface platforms use their fixed side-specific symbol; all others use Leaflet's standard marker.
             var marker = L.marker([platform.latitude, platform.longitude], {
                 icon: createPlatformIcon(platform),
+                rotationAngle: platform.rotation,
                 draggable: false,
                 bubblingMouseEvents: true
             }).addTo(map);

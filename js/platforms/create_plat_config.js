@@ -67,6 +67,10 @@ var CreatePlatConfig = (function () {
                         <td><input type="text" id="platformName" required maxlength="32"></td>
                     </tr>
                     <tr>
+                        <td><label for="rotation">Rotation:</label></td>
+                        <td><input type="number" id="rotation" min="0" max="360" step="1" value="0" required></td>
+                    </tr>
+                    <tr>
                         <td><label for="side">Side:</label></td>
                         <td>
                             <select id="side">
@@ -133,6 +137,12 @@ var CreatePlatConfig = (function () {
             var latitude = $('#latitude').val() || "0";
             var longitude = $('#longitude').val() || "0";
             var altitude = $('#altitude').val() || "0";
+            var rotationInput = document.getElementById('rotation');
+            if (!rotationInput.checkValidity()) {
+                alert('Rotation must be between 0 and 360 degrees.');
+                return;
+            }
+            var rotation = PlatformModel.normalizeRotation($('#rotation').val());
 
             // Validate required fields
             if (!platformName || !side || !group || !category || !type) {
@@ -165,6 +175,7 @@ var CreatePlatConfig = (function () {
                 latitude: latitude,
                 longitude: longitude,
                 altitude: altitude,
+                rotation: rotation,
                 category: category,
                 type: type,
                 weapons: [],

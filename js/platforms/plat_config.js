@@ -217,6 +217,12 @@ var PlatformConfig = (function() {
                             <td><label for="platformAltitudeInput"><strong>Altitude:</strong></label></td>
                             <td><input type="text" id="platformAltitudeInput" value="${platform.altitude}" class="full-width" maxlength="32"></td>
                         </tr>
+
+                        <!-- Row 9: Rotation -->
+                        <tr>
+                            <td><label for="platformRotationInput"><strong>Rotation:</strong></label></td>
+                            <td><input type="number" id="platformRotationInput" value="${platform.rotation}" class="full-width" min="0" max="360" step="1" required></td>
+                        </tr>
                     </table>
                 </td>
 
@@ -584,6 +590,12 @@ var PlatformConfig = (function() {
 
         // Handle the update button click to save changes to the platform
         $('#updatePlatformButton').on('click', function() {
+            var rotationInput = document.getElementById('platformRotationInput');
+            if (!rotationInput.checkValidity()) {
+                alert('Rotation must be between 0 and 360 degrees.');
+                return;
+            }
+
             // Validate the new platform name
             var newName = $('#platformNameInput').val();
             var platformData = PlatformModel.getPlatformData();
@@ -644,6 +656,7 @@ var PlatformConfig = (function() {
         var newLat = $('#platformLatitudeInput').val();
         var newLon = $('#platformLongitudeInput').val();
         var newAlt = $('#platformAltitudeInput').val();
+        var newRotation = PlatformModel.normalizeRotation($('#platformRotationInput').val());
 
         var updatedWeaponsData = [];
         $('#platformWeaponsTable').DataTable().rows().data().each(function(value) {
@@ -678,6 +691,7 @@ var PlatformConfig = (function() {
             platformToUpdate.latitude = newLat;
             platformToUpdate.longitude = newLon;
             platformToUpdate.altitude = newAlt;
+            platformToUpdate.rotation = newRotation;
             platformToUpdate.weapons = updatedWeaponsData;
             platformToUpdate.sensors = updatedSensorsData;
             platformToUpdate.subgroups = updatedSubgroupsData;

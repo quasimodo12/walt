@@ -2,18 +2,28 @@
 var PlatformModel = (function() {
     var platformData = [];
 
+    function normalizeRotation(rotation) {
+        var numericRotation = Number(rotation);
+        return isFinite(numericRotation) ? numericRotation : 0;
+    }
+
+    function normalizePlatform(platform) {
+        if (!platform.type || (typeof platform.type === 'string' && platform.type.trim() === '')) {
+            platform.type = 'Unspecified';
+        } else if (typeof platform.type === 'string') {
+            platform.type = platform.type.trim();
+        }
+        platform.rotation = normalizeRotation(platform.rotation);
+        return platform;
+    }
+
     // Pulls data from the global PLATFORM_DATA variable
     // defined in platform_details.js and inserts it into 
     // platformData
     function loadInitialData(PLATFORM_DATA) {
         platformData = PLATFORM_DATA.map(function(item) {
             var copy = Object.assign({}, item);
-            if (!copy.type || (typeof copy.type === 'string' && copy.type.trim() === '')) {
-                copy.type = 'Unspecified';
-            } else if (typeof copy.type === 'string') {
-                copy.type = copy.type.trim();
-            }
-            return copy;
+            return normalizePlatform(copy);
         });
     }
 
@@ -48,7 +58,7 @@ var PlatformModel = (function() {
     }
 
     // Function to create and add a platform to platformData
-    function createPlatform(platformName, side, group, subgroups, latitude, longitude, altitude, category, type, weapons, sensors) {
+    function createPlatform(platformName, side, group, subgroups, latitude, longitude, altitude, category, type, weapons, sensors, rotation) {
         var newPlatform = {
             platform_name: platformName,
             side: side,
@@ -57,6 +67,7 @@ var PlatformModel = (function() {
             latitude: latitude,
             longitude: longitude,
             altitude: altitude,
+            rotation: normalizeRotation(rotation),
             category: category,
             type: (typeof type === 'string' && type.trim() !== '') ? type.trim() : 'Unspecified',
             weapons: weapons,
@@ -67,12 +78,7 @@ var PlatformModel = (function() {
 
     // Function to add an already defined platform object to platformData
     function pushPlatform(newPlatform) {
-        if (!newPlatform.type || (typeof newPlatform.type === 'string' && newPlatform.type.trim() === '')) {
-            newPlatform.type = 'Unspecified';
-        } else if (typeof newPlatform.type === 'string') {
-            newPlatform.type = newPlatform.type.trim();
-        }
-        platformData.push(newPlatform);
+        platformData.push(normalizePlatform(newPlatform));
     }
 
     // Deletes a platform from platformData using the name of the platform
@@ -95,6 +101,7 @@ var PlatformModel = (function() {
         getPlatformNames: getPlatformNames,
         updatePlatformPosition: updatePlatformPosition,
         exportData: exportData,
+        normalizeRotation: normalizeRotation,
         createPlatform: createPlatform,
         pushPlatform: pushPlatform,
         getPlatformDataFromName: getPlatformDataFromName,
