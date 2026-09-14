@@ -249,6 +249,7 @@ var View = (function() {
 
                     // Update the range rings array
                     RangeRingStorage.init();
+                    RangeRingLogic.drawRangeRings();
 
                     // Update the distances between platforms
                     DistanceStorage.refreshDistanceData();

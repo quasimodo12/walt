@@ -66,6 +66,41 @@ var SensorConfig = (function() {
         return Number.isFinite(parsed) ? parsed : null;
     }
 
+    function parseAngleInput(value) {
+        if (typeof RangeUtils !== 'undefined' && RangeUtils.parseAngle) {
+            return RangeUtils.parseAngle(value);
+        }
+        return parseRangeInput(value);
+    }
+
+    function getCutoutAngles(sensor) {
+        if (typeof RangeUtils !== 'undefined' && RangeUtils.getCutoutAngles) {
+            return RangeUtils.getCutoutAngles(sensor);
+        }
+
+        var size = parseAngleInput(sensor && sensor.cutout_angle_size);
+        var origin = parseAngleInput(sensor && sensor.cutout_angle_origin);
+        return {
+            size: size === null ? 0 : Math.max(0, Math.min(360, size)),
+            origin: origin === null ? 0 : ((origin % 360) + 360) % 360
+        };
+    }
+
+    function validateCutoutAngles(size, origin) {
+        if (typeof RangeUtils !== 'undefined' && RangeUtils.validateCutoutAngles) {
+            return RangeUtils.validateCutoutAngles(size, origin).errors;
+        }
+
+        var errors = [];
+        if (size === null || size < 0 || size > 360) {
+            errors.push('Cutout angle size must be between 0 and 360 degrees.');
+        }
+        if (origin === null || origin < 0 || origin > 360) {
+            errors.push('Cutout angle origin must be between 0 and 360 degrees.');
+        }
+        return errors;
+    }
+
     function getSensorRangeBand(sensor) {
         if (SensorStorage.getSensorRangeBand) {
             return SensorStorage.getSensorRangeBand(sensor);
@@ -109,6 +144,8 @@ var SensorConfig = (function() {
             '<th>Side</th>' +
             '<th>Minimum Range (m)</th>' +
             '<th>Maximum Range (m)</th>' +
+            '<th>Cutout Size (deg)</th>' +
+            '<th>Cutout Origin (deg)</th>' +
             '<th>Actions</th>' +
             '</tr></thead><tbody>';
 
@@ -116,6 +153,7 @@ var SensorConfig = (function() {
         sensorData.forEach(function(sensor, index) {
             var sideOptions = buildSideOptions(sensor && sensor.side);
             var rangeBand = getSensorRangeBand(sensor);
+            var cutoutAngles = getCutoutAngles(sensor);
             content += '<tr>' +
                 '<td><input type="text" value="' + sensor.sensor_name + '" class="sensor-name" data-index="' + index + '" maxlength="32" /></td>' +
                 '<td><select class="sensor-side" data-index="' + index + '">' +
@@ -123,6 +161,8 @@ var SensorConfig = (function() {
                 '</select></td>' +
                 '<td><input type="number" value="' + rangeBand.min + '" class="sensor-min-range" data-index="' + index + '" min="0" step="any" /></td>' +
                 '<td><input type="number" value="' + rangeBand.max + '" class="sensor-max-range" data-index="' + index + '" min="0" step="any" /></td>' +
+                '<td><input type="number" value="' + cutoutAngles.size + '" class="sensor-cutout-size" data-index="' + index + '" min="0" max="360" step="any" /></td>' +
+                '<td><input type="number" value="' + cutoutAngles.origin + '" class="sensor-cutout-origin" data-index="' + index + '" min="0" max="360" step="any" /></td>' +
                 '<td><button class="delete-sensor" data-index="' + index + '">Delete</button></td>' +
                 '</tr>';
         });
@@ -163,15 +203,21 @@ var SensorConfig = (function() {
             var side = $(this).find('.sensor-side').val() || getDefaultSideId();
             var minRange = parseRangeInput($(this).find('.sensor-min-range').val());
             var maxRange = parseRangeInput($(this).find('.sensor-max-range').val());
+            var cutoutAngleSize = parseAngleInput($(this).find('.sensor-cutout-size').val());
+            var cutoutAngleOrigin = parseAngleInput($(this).find('.sensor-cutout-origin').val());
             var existingSensor = SensorStorage.getSensorData()[index] || {};
             var oldName = existingSensor.sensor_name;
             var rangeErrors = validateSensorRangeBand(minRange, maxRange);
+            var cutoutErrors = validateCutoutAngles(cutoutAngleSize, cutoutAngleOrigin);
 
             if (!name) {
                 errors.push('Sensor name cannot be empty.');
             }
 
             rangeErrors.forEach(function(error) {
+                errors.push((name || oldName || 'Unnamed sensor') + ': ' + error);
+            });
+            cutoutErrors.forEach(function(error) {
                 errors.push((name || oldName || 'Unnamed sensor') + ': ' + error);
             });
 
@@ -184,7 +230,9 @@ var SensorConfig = (function() {
                 side: side,
                 sensor_min_range: minRange,
                 sensor_max_range: maxRange,
-                sensor_range: maxRange
+                sensor_range: maxRange,
+                cutout_angle_size: cutoutAngleSize,
+                cutout_angle_origin: cutoutAngleOrigin
             });
         });
 
@@ -247,6 +295,10 @@ var SensorConfig = (function() {
                 <input type="number" id="newSensorMinRange" class="ui-widget-content ui-corner-all" style="width: 100%;" value="0" min="0" step="any" />
                 <label for="newSensorMaxRange" style="display:block; margin-top: 10px;">Maximum Range (m):</label>
                 <input type="number" id="newSensorMaxRange" class="ui-widget-content ui-corner-all" style="width: 100%;" value="0" min="0" step="any" />
+                <label for="newSensorCutoutSize" style="display:block; margin-top: 10px;">Cutout Angle Size (deg):</label>
+                <input type="number" id="newSensorCutoutSize" class="ui-widget-content ui-corner-all" style="width: 100%;" value="0" min="0" max="360" step="any" />
+                <label for="newSensorCutoutOrigin" style="display:block; margin-top: 10px;">Cutout Angle Origin (deg):</label>
+                <input type="number" id="newSensorCutoutOrigin" class="ui-widget-content ui-corner-all" style="width: 100%;" value="0" min="0" max="360" step="any" />
                 <div style="margin-top: 10px; text-align: right;">
                     <button id="completeAddSensor">Complete</button>
                 </div>
@@ -271,7 +323,10 @@ var SensorConfig = (function() {
             const sensorName = $('#newSensorName').val().trim();
             var minRange = parseRangeInput($('#newSensorMinRange').val());
             var maxRange = parseRangeInput($('#newSensorMaxRange').val());
+            var cutoutAngleSize = parseAngleInput($('#newSensorCutoutSize').val());
+            var cutoutAngleOrigin = parseAngleInput($('#newSensorCutoutOrigin').val());
             var rangeErrors = validateSensorRangeBand(minRange, maxRange);
+            var cutoutErrors = validateCutoutAngles(cutoutAngleSize, cutoutAngleOrigin);
 
             if (!sensorName) {
                 alert("Sensor name cannot be empty. Please enter a valid name.");
@@ -288,13 +343,18 @@ var SensorConfig = (function() {
                 return;
             }
 
-            addSensorToStorage(sensorName, getDefaultSideId(), minRange, maxRange);
+            if (cutoutErrors.length > 0) {
+                alert(cutoutErrors.join('\n'));
+                return;
+            }
+
+            addSensorToStorage(sensorName, getDefaultSideId(), minRange, maxRange, cutoutAngleSize, cutoutAngleOrigin);
             $('#addSensorDialogContent').dialog('close');
             createSensorConfigDialog();
         });
     }
 
-    function addSensorToStorage(name, side, minRange, maxRange) {
+    function addSensorToStorage(name, side, minRange, maxRange, cutoutAngleSize, cutoutAngleOrigin) {
         if (name.trim() === '') {
             alert('Sensor name cannot be empty. Please enter a valid name.');
         } else if (isUniqueSensorName(name)) {
@@ -303,7 +363,9 @@ var SensorConfig = (function() {
                 side: side || getDefaultSideId(),
                 sensor_min_range: minRange,
                 sensor_max_range: maxRange,
-                sensor_range: maxRange
+                sensor_range: maxRange,
+                cutout_angle_size: cutoutAngleSize,
+                cutout_angle_origin: cutoutAngleOrigin
             };
             if (typeof RangeUtils !== 'undefined' && RangeUtils.normalizeSensorRecord) {
                 sensor = RangeUtils.normalizeSensorRecord(sensor);

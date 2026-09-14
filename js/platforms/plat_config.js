@@ -617,6 +617,7 @@ var PlatformConfig = (function() {
             View.renderPlatforms();
             // Update the range rings
             RangeRingStorage.init();
+            RangeRingLogic.drawRangeRings();
             // Update the distances between platforms
             DistanceStorage.refreshDistanceData();
 

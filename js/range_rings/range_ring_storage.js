@@ -6,9 +6,12 @@ var RangeRingStorage = (function() {
         var platformData = PlatformModel.getPlatformData();
         var weaponData = WeaponStorage.getWeaponData();
         var sensorData = SensorStorage.getSensorData();
-        var toggleStates = rangeRings.reduce(function(states, ring) {
-            states[createRangeRingKey(ring.platform_name, ring.system_name)] = ring.toggled === 1 ? 1 : 0;
-            return states;
+        var savedRingSettings = rangeRings.reduce(function(settings, ring) {
+            settings[createRangeRingKey(ring.platform_name, ring.system_name)] = {
+                toggled: ring.toggled === 1 ? 1 : 0,
+                style: ring.style ? Object.assign({}, ring.style) : null
+            };
+            return settings;
         }, {});
 
         rangeRings = [];
@@ -35,9 +38,10 @@ var RangeRingStorage = (function() {
                             platform: platform,
                             systemName: weapon.name,
                             systemType: "weapon",
+                            systemDetails: weaponDetails,
                             rangeBand: weaponBand,
-                            toggled: getSavedToggleState(toggleStates, platform.platform_name, weapon.name),
-                            style: defaultStyle
+                            toggled: getSavedToggleState(savedRingSettings, platform.platform_name, weapon.name),
+                            style: getSavedStyle(savedRingSettings, platform.platform_name, weapon.name, defaultStyle)
                         }));
                     }
                 });
@@ -52,9 +56,10 @@ var RangeRingStorage = (function() {
                             platform: platform,
                             systemName: sensorName,
                             systemType: "sensor",
+                            systemDetails: sensorDetails,
                             rangeBand: sensorBand,
-                            toggled: getSavedToggleState(toggleStates, platform.platform_name, sensorName),
-                            style: defaultStyle
+                            toggled: getSavedToggleState(savedRingSettings, platform.platform_name, sensorName),
+                            style: getSavedStyle(savedRingSettings, platform.platform_name, sensorName, defaultStyle)
                         }));
                     }
                 });
@@ -62,9 +67,15 @@ var RangeRingStorage = (function() {
         });
     }
 
-    function getSavedToggleState(toggleStates, platformName, systemName) {
+    function getSavedToggleState(savedRingSettings, platformName, systemName) {
         var key = createRangeRingKey(platformName, systemName);
-        return Object.prototype.hasOwnProperty.call(toggleStates, key) ? toggleStates[key] : 0;
+        return Object.prototype.hasOwnProperty.call(savedRingSettings, key) ? savedRingSettings[key].toggled : 0;
+    }
+
+    function getSavedStyle(savedRingSettings, platformName, systemName, defaultStyle) {
+        var key = createRangeRingKey(platformName, systemName);
+        var savedRing = savedRingSettings[key];
+        return savedRing && savedRing.style ? Object.assign({}, savedRing.style) : Object.assign({}, defaultStyle);
     }
 
     function createRangeRingKey(platformName, systemName) {
@@ -73,6 +84,7 @@ var RangeRingStorage = (function() {
 
     function createRangeRingRecord(options) {
         var rangeBand = normalizeRangeBand(options.rangeBand);
+        var cutoutAngles = getCutoutAngles(options.systemDetails);
         return {
             platform_name: options.platform.platform_name,
             system_name: options.systemName,
@@ -81,9 +93,49 @@ var RangeRingStorage = (function() {
             range_max_val: rangeBand.max,
             latitude: parseFloat(options.platform.latitude),
             longitude: parseFloat(options.platform.longitude),
+            rotation: normalizeRotation(options.platform.rotation),
+            cutout_angle_size: cutoutAngles.size,
+            cutout_angle_origin: cutoutAngles.origin,
             toggled: options.toggled,
             style: Object.assign({}, options.style)
         };
+    }
+
+    function getCutoutAngles(systemDetails) {
+        if (typeof RangeUtils !== 'undefined' && typeof RangeUtils.getCutoutAngles === 'function') {
+            return RangeUtils.getCutoutAngles(systemDetails);
+        }
+
+        return {
+            size: normalizeCutoutAngleSize(systemDetails && systemDetails.cutout_angle_size),
+            origin: normalizeCutoutAngleOrigin(systemDetails && systemDetails.cutout_angle_origin)
+        };
+    }
+
+    function normalizeCutoutAngleSize(value) {
+        var parsed = parseRange(value);
+        if (parsed === null) {
+            return 0;
+        }
+        return Math.max(0, Math.min(360, parsed));
+    }
+
+    function normalizeCutoutAngleOrigin(value) {
+        var parsed = parseRange(value);
+        if (parsed === null) {
+            return 0;
+        }
+        parsed = parsed % 360;
+        return parsed < 0 ? parsed + 360 : parsed;
+    }
+
+    function normalizeRotation(value) {
+        var parsed = Number(value);
+        if (!isFinite(parsed)) {
+            return 0;
+        }
+        parsed = parsed % 360;
+        return parsed < 0 ? parsed + 360 : parsed;
     }
 
     function getWeaponRangeBand(weapon) {

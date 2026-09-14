@@ -66,6 +66,41 @@ var WeaponConfig = (function() {
         return Number.isFinite(parsed) ? parsed : null;
     }
 
+    function parseAngleInput(value) {
+        if (typeof RangeUtils !== 'undefined' && RangeUtils.parseAngle) {
+            return RangeUtils.parseAngle(value);
+        }
+        return parseRangeInput(value);
+    }
+
+    function getCutoutAngles(weapon) {
+        if (typeof RangeUtils !== 'undefined' && RangeUtils.getCutoutAngles) {
+            return RangeUtils.getCutoutAngles(weapon);
+        }
+
+        var size = parseAngleInput(weapon && weapon.cutout_angle_size);
+        var origin = parseAngleInput(weapon && weapon.cutout_angle_origin);
+        return {
+            size: size === null ? 0 : Math.max(0, Math.min(360, size)),
+            origin: origin === null ? 0 : ((origin % 360) + 360) % 360
+        };
+    }
+
+    function validateCutoutAngles(size, origin) {
+        if (typeof RangeUtils !== 'undefined' && RangeUtils.validateCutoutAngles) {
+            return RangeUtils.validateCutoutAngles(size, origin).errors;
+        }
+
+        var errors = [];
+        if (size === null || size < 0 || size > 360) {
+            errors.push('Cutout angle size must be between 0 and 360 degrees.');
+        }
+        if (origin === null || origin < 0 || origin > 360) {
+            errors.push('Cutout angle origin must be between 0 and 360 degrees.');
+        }
+        return errors;
+    }
+
     function getWeaponRangeBand(weapon) {
         if (WeaponStorage.getWeaponRangeBand) {
             return WeaponStorage.getWeaponRangeBand(weapon);
@@ -109,6 +144,8 @@ var WeaponConfig = (function() {
             '<th>Side</th>' +
             '<th>Minimum Range (m)</th>' +
             '<th>Maximum Range (m)</th>' +
+            '<th>Cutout Size (deg)</th>' +
+            '<th>Cutout Origin (deg)</th>' +
             '<th>Actions</th>' +
             '</tr></thead><tbody>';
 
@@ -116,6 +153,7 @@ var WeaponConfig = (function() {
         weaponData.forEach(function(weapon, index) {
             var sideOptions = buildSideOptions(weapon && weapon.side);
             var rangeBand = getWeaponRangeBand(weapon);
+            var cutoutAngles = getCutoutAngles(weapon);
             content += '<tr>' +
                 '<td><input type="text" value="' + weapon.weapon_name + '" class="weapon-name" data-index="' + index + '" maxlength="32" /></td>' +
                 '<td><select class="weapon-side" data-index="' + index + '">' +
@@ -123,6 +161,8 @@ var WeaponConfig = (function() {
                 '</select></td>' +
                 '<td><input type="number" value="' + rangeBand.min + '" class="weapon-min-range" data-index="' + index + '" min="0" step="any" /></td>' +
                 '<td><input type="number" value="' + rangeBand.max + '" class="weapon-max-range" data-index="' + index + '" min="0" step="any" /></td>' +
+                '<td><input type="number" value="' + cutoutAngles.size + '" class="weapon-cutout-size" data-index="' + index + '" min="0" max="360" step="any" /></td>' +
+                '<td><input type="number" value="' + cutoutAngles.origin + '" class="weapon-cutout-origin" data-index="' + index + '" min="0" max="360" step="any" /></td>' +
                 '<td><button class="delete-weapon" data-index="' + index + '">Delete</button></td>' +
                 '</tr>';
         });
@@ -163,15 +203,21 @@ var WeaponConfig = (function() {
             var side = $(this).find('.weapon-side').val() || getDefaultSideId();
             var minRange = parseRangeInput($(this).find('.weapon-min-range').val());
             var maxRange = parseRangeInput($(this).find('.weapon-max-range').val());
+            var cutoutAngleSize = parseAngleInput($(this).find('.weapon-cutout-size').val());
+            var cutoutAngleOrigin = parseAngleInput($(this).find('.weapon-cutout-origin').val());
             var existingWeapon = WeaponStorage.getWeaponData()[index] || {};
             var oldName = existingWeapon.weapon_name;
             var rangeErrors = validateWeaponRangeBand(minRange, maxRange);
+            var cutoutErrors = validateCutoutAngles(cutoutAngleSize, cutoutAngleOrigin);
 
             if (!name) {
                 errors.push('Weapon name cannot be empty.');
             }
 
             rangeErrors.forEach(function(error) {
+                errors.push((name || oldName || 'Unnamed weapon') + ': ' + error);
+            });
+            cutoutErrors.forEach(function(error) {
                 errors.push((name || oldName || 'Unnamed weapon') + ': ' + error);
             });
 
@@ -184,7 +230,9 @@ var WeaponConfig = (function() {
                 side: side,
                 weapon_min_range: minRange,
                 weapon_max_range: maxRange,
-                weapon_range: maxRange
+                weapon_range: maxRange,
+                cutout_angle_size: cutoutAngleSize,
+                cutout_angle_origin: cutoutAngleOrigin
             });
         });
 
@@ -238,7 +286,7 @@ var WeaponConfig = (function() {
     }
 
     // Function to add a new weapon into weapon storage
-    function addWeaponToStorage(name, side, minRange, maxRange) {
+    function addWeaponToStorage(name, side, minRange, maxRange, cutoutAngleSize, cutoutAngleOrigin) {
         if (name.trim() === '') {
             alert('Weapon name cannot be empty. Please enter a valid name.');
         } else if (isUniqueWeaponName(name)) {
@@ -247,7 +295,9 @@ var WeaponConfig = (function() {
                 side: side || getDefaultSideId(),
                 weapon_min_range: minRange,
                 weapon_max_range: maxRange,
-                weapon_range: maxRange
+                weapon_range: maxRange,
+                cutout_angle_size: cutoutAngleSize,
+                cutout_angle_origin: cutoutAngleOrigin
             };
             if (typeof RangeUtils !== 'undefined' && RangeUtils.normalizeWeaponRecord) {
                 weapon = RangeUtils.normalizeWeaponRecord(weapon);
@@ -268,6 +318,10 @@ var WeaponConfig = (function() {
                 <input type="number" id="newWeaponMinRange" class="ui-widget-content ui-corner-all" style="width: 100%;" value="0" min="0" step="any" />
                 <label for="newWeaponMaxRange" style="display:block; margin-top: 10px;">Maximum Range (m):</label>
                 <input type="number" id="newWeaponMaxRange" class="ui-widget-content ui-corner-all" style="width: 100%;" value="0" min="0" step="any" />
+                <label for="newWeaponCutoutSize" style="display:block; margin-top: 10px;">Cutout Angle Size (deg):</label>
+                <input type="number" id="newWeaponCutoutSize" class="ui-widget-content ui-corner-all" style="width: 100%;" value="0" min="0" max="360" step="any" />
+                <label for="newWeaponCutoutOrigin" style="display:block; margin-top: 10px;">Cutout Angle Origin (deg):</label>
+                <input type="number" id="newWeaponCutoutOrigin" class="ui-widget-content ui-corner-all" style="width: 100%;" value="0" min="0" max="360" step="any" />
                 <div style="margin-top: 10px; text-align: right;">
                     <button id="completeAddWeapon">Complete</button>
                 </div>
@@ -295,7 +349,10 @@ var WeaponConfig = (function() {
             const weaponName = $('#newWeaponName').val().trim();
             var minRange = parseRangeInput($('#newWeaponMinRange').val());
             var maxRange = parseRangeInput($('#newWeaponMaxRange').val());
+            var cutoutAngleSize = parseAngleInput($('#newWeaponCutoutSize').val());
+            var cutoutAngleOrigin = parseAngleInput($('#newWeaponCutoutOrigin').val());
             var rangeErrors = validateWeaponRangeBand(minRange, maxRange);
+            var cutoutErrors = validateCutoutAngles(cutoutAngleSize, cutoutAngleOrigin);
     
             // Validate weapon name
             if (!weaponName) {
@@ -312,9 +369,14 @@ var WeaponConfig = (function() {
                 alert(rangeErrors.join('\n'));
                 return;
             }
+
+            if (cutoutErrors.length > 0) {
+                alert(cutoutErrors.join('\n'));
+                return;
+            }
     
             // Add weapon to storage with default values for side and range
-            addWeaponToStorage(weaponName, getDefaultSideId(), minRange, maxRange);
+            addWeaponToStorage(weaponName, getDefaultSideId(), minRange, maxRange, cutoutAngleSize, cutoutAngleOrigin);
     
             // Close dialog and refresh the main weapon config dialog
             $('#addWeaponDialogContent').dialog('close');

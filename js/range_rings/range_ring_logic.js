@@ -1,5 +1,7 @@
 var RangeRingLogic = (function() {
   var rangeRingLayers = [];
+  var ARC_SEGMENT_ANGLE = 2;
+  var FALLBACK_EARTH_RADIUS = 6371008.8;
 
   function drawRangeRings() {
     var map = View.getMap();
@@ -23,14 +25,6 @@ var RangeRingLogic = (function() {
         if (!isFinite(maxRange)) { return; }
 
         var style = getRangeRingStyle(rangeRing, platformSideLookup[rangeRing.platform_name]);
-        var outerCircle = L.circle([rangeRing.latitude, rangeRing.longitude], {
-          radius: maxRange,
-          color: style.color,
-          weight: style.lineWidth,
-          opacity: style.opacity,
-          fillOpacity: 0.01
-        });
-
         var tooltipContent = [
           rangeRing.system_name || 'Unknown System',
           rangeRing.platform_name || 'Unknown Platform',
@@ -38,31 +32,113 @@ var RangeRingLogic = (function() {
           'Max: ' + formatRangeValue(maxRange) + ' m'
         ].join('<br>');
 
-        outerCircle.bindTooltip(tooltipContent, {
-          direction: 'top',
-          sticky: true,
-          className: 'range-ring-tooltip'
+        createRangeRingLayers(rangeRing, maxRange, {
+          color: style.color,
+          weight: style.lineWidth,
+          opacity: style.opacity,
+          fillOpacity: 0.01
+        }).forEach(function(outerLayer) {
+          outerLayer.bindTooltip(tooltipContent, {
+            direction: 'top',
+            sticky: true,
+            className: 'range-ring-tooltip'
+          });
+
+          outerLayer.addTo(map);
+          rangeRingLayers.push(outerLayer);
         });
 
-        outerCircle.addTo(map);
-        rangeRingLayers.push(outerCircle);
-
         if (isFinite(minRange) && minRange > 0) {
-          var innerCircle = L.circle([rangeRing.latitude, rangeRing.longitude], {
-            radius: minRange,
+          createRangeRingLayers(rangeRing, minRange, {
             color: style.color,
             weight: Math.max(1, style.lineWidth - 1),
             opacity: style.opacity,
             fillOpacity: 0,
             dashArray: '6 6'
+          }).forEach(function(innerLayer) {
+            innerLayer.addTo(map);
+            rangeRingLayers.push(innerLayer);
           });
-
-          innerCircle.addTo(map);
-          rangeRingLayers.push(innerCircle);
         }
       });
 
     updateRangeRingConfigCheckboxes();
+  }
+
+  function createRangeRingLayers(rangeRing, radius, style) {
+    var cutout = getCutout(rangeRing);
+    var center = [rangeRing.latitude, rangeRing.longitude];
+
+    if (cutout.size <= 0) {
+      return [L.circle(center, Object.assign({ radius: radius }, style))];
+    }
+
+    if (cutout.size >= 360) {
+      return [];
+    }
+
+    return [L.polyline(
+      createArcLatLngs(center, radius, cutout.origin + cutout.size, 360 - cutout.size),
+      style
+    )];
+  }
+
+  function getCutout(rangeRing) {
+    var size = normalizeCutoutAngleSize(rangeRing && rangeRing.cutout_angle_size);
+    var origin = normalizeBearing(rangeRing && rangeRing.cutout_angle_origin);
+    var rotation = normalizeBearing(rangeRing && rangeRing.rotation);
+
+    return {
+      size: size,
+      origin: normalizeBearing(origin + rotation)
+    };
+  }
+
+  function normalizeCutoutAngleSize(value) {
+    var parsed = parseRangeValue(value);
+    if (parsed === null) {
+      return 0;
+    }
+    return Math.max(0, Math.min(360, parsed));
+  }
+
+  function normalizeBearing(value) {
+    var parsed = parseRangeValue(value);
+    if (parsed === null) {
+      return 0;
+    }
+    parsed = parsed % 360;
+    return parsed < 0 ? parsed + 360 : parsed;
+  }
+
+  function createArcLatLngs(center, radius, startBearing, coverageAngle) {
+    var segmentCount = Math.max(1, Math.ceil(coverageAngle / ARC_SEGMENT_ANGLE));
+    var points = [];
+
+    for (var index = 0; index <= segmentCount; index++) {
+      var bearing = startBearing + (coverageAngle * index / segmentCount);
+      points.push(getDestinationPoint(center, bearing, radius));
+    }
+
+    return points;
+  }
+
+  function getDestinationPoint(center, bearing, distance) {
+    var earthRadius = L.CRS && L.CRS.Earth && L.CRS.Earth.R ? L.CRS.Earth.R : FALLBACK_EARTH_RADIUS;
+    var angularDistance = distance / earthRadius;
+    var bearingRadians = bearing * Math.PI / 180;
+    var latitudeRadians = Number(center[0]) * Math.PI / 180;
+    var longitudeRadians = Number(center[1]) * Math.PI / 180;
+    var destinationLatitude = Math.asin(
+      Math.sin(latitudeRadians) * Math.cos(angularDistance) +
+      Math.cos(latitudeRadians) * Math.sin(angularDistance) * Math.cos(bearingRadians)
+    );
+    var destinationLongitude = longitudeRadians + Math.atan2(
+      Math.sin(bearingRadians) * Math.sin(angularDistance) * Math.cos(latitudeRadians),
+      Math.cos(angularDistance) - Math.sin(latitudeRadians) * Math.sin(destinationLatitude)
+    );
+
+    return [destinationLatitude * 180 / Math.PI, destinationLongitude * 180 / Math.PI];
   }
 
 

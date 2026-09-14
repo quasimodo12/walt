@@ -3,6 +3,7 @@
 // minimum/maximum range bands for weapons, sensors, and range-aware features.
 var RangeUtils = (function() {
     var DEFAULT_MIN_RANGE = 0;
+    var DEFAULT_CUTOUT_ANGLE = 0;
 
     function firstDefined(values) {
         for (var i = 0; i < values.length; i++) {
@@ -20,6 +21,56 @@ var RangeUtils = (function() {
 
         var parsed = Number(value);
         return isFinite(parsed) ? parsed : null;
+    }
+
+    function parseAngle(value) {
+        return parseRange(value);
+    }
+
+    function normalizeCutoutAngleSize(value) {
+        var angle = parseAngle(value);
+        if (angle === null) {
+            return DEFAULT_CUTOUT_ANGLE;
+        }
+        return Math.max(0, Math.min(360, angle));
+    }
+
+    function normalizeCutoutAngleOrigin(value) {
+        var angle = parseAngle(value);
+        if (angle === null) {
+            return DEFAULT_CUTOUT_ANGLE;
+        }
+        angle = angle % 360;
+        return angle < 0 ? angle + 360 : angle;
+    }
+
+    function getCutoutAngles(record) {
+        record = record || {};
+        return {
+            size: normalizeCutoutAngleSize(record.cutout_angle_size),
+            origin: normalizeCutoutAngleOrigin(record.cutout_angle_origin)
+        };
+    }
+
+    function validateCutoutAngles(size, origin) {
+        var errors = [];
+
+        if (size === null) {
+            errors.push('Cutout angle size must be a numeric value.');
+        } else if (size < 0 || size > 360) {
+            errors.push('Cutout angle size must be between 0 and 360 degrees.');
+        }
+
+        if (origin === null) {
+            errors.push('Cutout angle origin must be a numeric value.');
+        } else if (origin < 0 || origin > 360) {
+            errors.push('Cutout angle origin must be between 0 and 360 degrees.');
+        }
+
+        return {
+            isValid: errors.length === 0,
+            errors: errors
+        };
     }
 
     function clampMinimum(value, minimum) {
@@ -137,9 +188,12 @@ var RangeUtils = (function() {
             minFieldNames: ['weapon_min_range', 'min_range'],
             maxFieldNames: ['weapon_max_range', 'max_range', 'weapon_range']
         });
+        var cutoutAngles = getCutoutAngles(normalized);
 
         normalized.weapon_min_range = band.min;
         normalized.weapon_max_range = band.max;
+        normalized.cutout_angle_size = cutoutAngles.size;
+        normalized.cutout_angle_origin = cutoutAngles.origin;
 
         // Keep the legacy scalar field synchronized with the canonical maximum
         // range during the migration period so existing range-ring,
@@ -156,9 +210,12 @@ var RangeUtils = (function() {
             minFieldNames: ['sensor_min_range', 'min_range'],
             maxFieldNames: ['sensor_max_range', 'max_range', 'sensor_range']
         });
+        var cutoutAngles = getCutoutAngles(normalized);
 
         normalized.sensor_min_range = band.min;
         normalized.sensor_max_range = band.max;
+        normalized.cutout_angle_size = cutoutAngles.size;
+        normalized.cutout_angle_origin = cutoutAngles.origin;
 
         // Keep the legacy scalar field synchronized with the canonical maximum
         // range during the migration period so existing range-ring,
@@ -209,13 +266,19 @@ var RangeUtils = (function() {
 
     return {
         DEFAULT_MIN_RANGE: DEFAULT_MIN_RANGE,
+        DEFAULT_CUTOUT_ANGLE: DEFAULT_CUTOUT_ANGLE,
         parseRange: parseRange,
+        parseAngle: parseAngle,
         getRangeBand: getRangeBand,
         getWeaponRangeBand: getWeaponRangeBand,
         getSensorRangeBand: getSensorRangeBand,
+        getCutoutAngles: getCutoutAngles,
         isValidRangeBand: isValidRangeBand,
         validateRangeBand: validateRangeBand,
+        validateCutoutAngles: validateCutoutAngles,
         normalizeRangeBand: normalizeRangeBand,
+        normalizeCutoutAngleSize: normalizeCutoutAngleSize,
+        normalizeCutoutAngleOrigin: normalizeCutoutAngleOrigin,
         normalizeWeaponRecord: normalizeWeaponRecord,
         normalizeSensorRecord: normalizeSensorRecord,
         toCanonicalWeaponRecord: toCanonicalWeaponRecord,
