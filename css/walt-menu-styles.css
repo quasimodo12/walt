@@ -366,16 +366,28 @@
 /* ============================================= */
 #weaponInfoDialog .weapon-min-range,
 #weaponInfoDialog .weapon-max-range,
+#weaponInfoDialog .weapon-cutout-size,
+#weaponInfoDialog .weapon-cutout-origin,
 #weaponInfoDialog #newWeaponMinRange,
 #weaponInfoDialog #newWeaponMaxRange,
+#weaponInfoDialog #newWeaponCutoutSize,
+#weaponInfoDialog #newWeaponCutoutOrigin,
 #sensorInfoDialog .sensor-min-range,
 #sensorInfoDialog .sensor-max-range,
+#sensorInfoDialog .sensor-cutout-size,
+#sensorInfoDialog .sensor-cutout-origin,
 #sensorInfoDialog #newSensorMinRange,
 #sensorInfoDialog #newSensorMaxRange,
+#sensorInfoDialog #newSensorCutoutSize,
+#sensorInfoDialog #newSensorCutoutOrigin,
 #addWeaponDialogContent #newWeaponMinRange,
 #addWeaponDialogContent #newWeaponMaxRange,
+#addWeaponDialogContent #newWeaponCutoutSize,
+#addWeaponDialogContent #newWeaponCutoutOrigin,
 #addSensorDialogContent #newSensorMinRange,
-#addSensorDialogContent #newSensorMaxRange {
+#addSensorDialogContent #newSensorMaxRange,
+#addSensorDialogContent #newSensorCutoutSize,
+#addSensorDialogContent #newSensorCutoutOrigin {
     box-sizing: border-box;
     width: 50% !important;
 }
