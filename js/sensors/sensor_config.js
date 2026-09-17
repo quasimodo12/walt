@@ -139,7 +139,7 @@ var SensorConfig = (function() {
         var sensorData = SensorStorage.getSensorData();
 
         // Create datatable structure
-        var content = '<table id="sensorTable" class="display"><thead><tr>' +
+        var content = '<table id="sensorTable" class="display sensor-config-table"><thead><tr>' +
             '<th>Name</th>' +
             '<th>Side</th>' +
             '<th>Minimum Range (m)</th>' +
@@ -171,18 +171,23 @@ var SensorConfig = (function() {
 
         // Add "Add Sensor" and "Update" buttons
         content += `
-            <div style="margin-top: 10px;">
-                <button id="addSensor">Add Sensor</button>
-                <button id="updateSensors" style="float: right;">Update</button>
+            <div class="sensor-config-actions">
+                <button id="addSensor" type="button">Add Sensor</button>
+                <button id="updateSensors" type="button">Update</button>
             </div>
         `;
 
         // Open the sensor dialog box
         $('#sensorInfoContent').html(content);
-        $('#sensorInfoDialog').dialog('open');
+        $('#sensorInfoDialog')
+            .dialog('option', 'width', Math.min(1120, Math.max(280, $(window).width() - 32)))
+            .dialog('open');
 
         // Initialize DataTable
-        $('#sensorTable').DataTable();
+        $('#sensorTable').DataTable({
+            autoWidth: false,
+            scrollX: true
+        });
 
         // Bind event listeners for inputs and actions
         bindSensorActions();
@@ -288,19 +293,29 @@ var SensorConfig = (function() {
 
     function openAddSensorDialog() {
         const dialogContent = `
-            <div id="addSensorDialogContent">
-                <label for="newSensorName">Sensor Name:</label>
-                <input type="text" id="newSensorName" class="ui-widget-content ui-corner-all" style="width: 100%;" maxlength="32" />
-                <label for="newSensorMinRange" style="display:block; margin-top: 10px;">Minimum Range (m):</label>
-                <input type="number" id="newSensorMinRange" class="ui-widget-content ui-corner-all" style="width: 100%;" value="0" min="0" step="any" />
-                <label for="newSensorMaxRange" style="display:block; margin-top: 10px;">Maximum Range (m):</label>
-                <input type="number" id="newSensorMaxRange" class="ui-widget-content ui-corner-all" style="width: 100%;" value="0" min="0" step="any" />
-                <label for="newSensorCutoutSize" style="display:block; margin-top: 10px;">Cutout Angle Size (deg):</label>
-                <input type="number" id="newSensorCutoutSize" class="ui-widget-content ui-corner-all" style="width: 100%;" value="0" min="0" max="360" step="any" />
-                <label for="newSensorCutoutOrigin" style="display:block; margin-top: 10px;">Cutout Center Bearing (deg):</label>
-                <input type="number" id="newSensorCutoutOrigin" class="ui-widget-content ui-corner-all" style="width: 100%;" value="0" min="0" max="360" step="any" />
-                <div style="margin-top: 10px; text-align: right;">
-                    <button id="completeAddSensor">Complete</button>
+            <div id="addSensorDialogContent" class="sensor-add-dialog">
+                <div class="sensor-add-field sensor-add-field--wide">
+                    <label for="newSensorName">Sensor Name</label>
+                    <input type="text" id="newSensorName" class="ui-widget-content ui-corner-all" maxlength="32" />
+                </div>
+                <div class="sensor-add-field">
+                    <label for="newSensorMinRange">Minimum Range (m)</label>
+                    <input type="number" id="newSensorMinRange" class="ui-widget-content ui-corner-all" value="0" min="0" step="any" />
+                </div>
+                <div class="sensor-add-field">
+                    <label for="newSensorMaxRange">Maximum Range (m)</label>
+                    <input type="number" id="newSensorMaxRange" class="ui-widget-content ui-corner-all" value="0" min="0" step="any" />
+                </div>
+                <div class="sensor-add-field">
+                    <label for="newSensorCutoutSize">Cutout Size (deg)</label>
+                    <input type="number" id="newSensorCutoutSize" class="ui-widget-content ui-corner-all" value="0" min="0" max="360" step="any" />
+                </div>
+                <div class="sensor-add-field">
+                    <label for="newSensorCutoutOrigin">Cutout Center Bearing (deg)</label>
+                    <input type="number" id="newSensorCutoutOrigin" class="ui-widget-content ui-corner-all" value="0" min="0" max="360" step="any" />
+                </div>
+                <div class="sensor-add-actions">
+                    <button id="completeAddSensor" type="button">Add Sensor</button>
                 </div>
             </div>
         `;
@@ -313,7 +328,7 @@ var SensorConfig = (function() {
             title: "Add New Sensor",
             modal: true,
             resizable: false,
-            width: 360,
+            width: Math.min(440, Math.max(280, $(window).width() - 32)),
             close: function() {
                 $(this).dialog('destroy').remove();
             }
