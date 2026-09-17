@@ -21,7 +21,7 @@ $(function () {
       autoOpen: false,
       draggable: true,
       resizable: true,
-      width: 850,
+      width: 1120,
       position: { 
         my: "center",
         at: "center+0+150",

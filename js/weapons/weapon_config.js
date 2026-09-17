@@ -139,7 +139,7 @@ var WeaponConfig = (function() {
         var weaponData = WeaponStorage.getWeaponData();
 
         // Create datatable structure
-        var content = '<table id="weaponTable" class="display"><thead><tr>' +
+        var content = '<table id="weaponTable" class="display weapon-config-table"><thead><tr>' +
             '<th>Name</th>' +
             '<th>Side</th>' +
             '<th>Minimum Range (m)</th>' +
@@ -171,17 +171,22 @@ var WeaponConfig = (function() {
 
         // Add the "Add Weapon" and "Update" buttons
         content += `
-            <div style="margin-top: 10px;">
-                <button id="addWeapon">Add Weapon</button>
-                <button id="updateWeapons" style="float: right;">Update</button>
+            <div class="weapon-config-actions">
+                <button id="addWeapon" type="button">Add Weapon</button>
+                <button id="updateWeapons" type="button">Update</button>
             </div>
         `;
         // Open the weapon dialog box
         $('#weaponInfoContent').html(content);
-        $('#weaponInfoDialog').dialog('open');
+        $('#weaponInfoDialog')
+            .dialog('option', 'width', Math.min(1120, Math.max(280, $(window).width() - 32)))
+            .dialog('open');
 
         // Initialize DataTable
-        $('#weaponTable').DataTable();
+        $('#weaponTable').DataTable({
+            autoWidth: false,
+            scrollX: true
+        });
 
         // Bind event listeners for inputs and actions
         bindWeaponActions();
@@ -311,19 +316,29 @@ var WeaponConfig = (function() {
     function openAddWeaponDialog() {
         // Create dialog content
         const dialogContent = `
-            <div id="addWeaponDialogContent">
-                <label for="newWeaponName">Weapon Name:</label>
-                <input type="text" id="newWeaponName" class="ui-widget-content ui-corner-all" style="width: 100%;" maxlength="32" />
-                <label for="newWeaponMinRange" style="display:block; margin-top: 10px;">Minimum Range (m):</label>
-                <input type="number" id="newWeaponMinRange" class="ui-widget-content ui-corner-all" style="width: 100%;" value="0" min="0" step="any" />
-                <label for="newWeaponMaxRange" style="display:block; margin-top: 10px;">Maximum Range (m):</label>
-                <input type="number" id="newWeaponMaxRange" class="ui-widget-content ui-corner-all" style="width: 100%;" value="0" min="0" step="any" />
-                <label for="newWeaponCutoutSize" style="display:block; margin-top: 10px;">Cutout Angle Size (deg):</label>
-                <input type="number" id="newWeaponCutoutSize" class="ui-widget-content ui-corner-all" style="width: 100%;" value="0" min="0" max="360" step="any" />
-                <label for="newWeaponCutoutOrigin" style="display:block; margin-top: 10px;">Cutout Center Bearing (deg):</label>
-                <input type="number" id="newWeaponCutoutOrigin" class="ui-widget-content ui-corner-all" style="width: 100%;" value="0" min="0" max="360" step="any" />
-                <div style="margin-top: 10px; text-align: right;">
-                    <button id="completeAddWeapon">Complete</button>
+            <div id="addWeaponDialogContent" class="weapon-add-dialog">
+                <div class="weapon-add-field weapon-add-field--wide">
+                    <label for="newWeaponName">Weapon Name</label>
+                    <input type="text" id="newWeaponName" class="ui-widget-content ui-corner-all" maxlength="32" />
+                </div>
+                <div class="weapon-add-field">
+                    <label for="newWeaponMinRange">Minimum Range (m)</label>
+                    <input type="number" id="newWeaponMinRange" class="ui-widget-content ui-corner-all" value="0" min="0" step="any" />
+                </div>
+                <div class="weapon-add-field">
+                    <label for="newWeaponMaxRange">Maximum Range (m)</label>
+                    <input type="number" id="newWeaponMaxRange" class="ui-widget-content ui-corner-all" value="0" min="0" step="any" />
+                </div>
+                <div class="weapon-add-field">
+                    <label for="newWeaponCutoutSize">Cutout Size (deg)</label>
+                    <input type="number" id="newWeaponCutoutSize" class="ui-widget-content ui-corner-all" value="0" min="0" max="360" step="any" />
+                </div>
+                <div class="weapon-add-field">
+                    <label for="newWeaponCutoutOrigin">Cutout Center Bearing (deg)</label>
+                    <input type="number" id="newWeaponCutoutOrigin" class="ui-widget-content ui-corner-all" value="0" min="0" max="360" step="any" />
+                </div>
+                <div class="weapon-add-actions">
+                    <button id="completeAddWeapon" type="button">Add Weapon</button>
                 </div>
             </div>
         `;
@@ -338,7 +353,7 @@ var WeaponConfig = (function() {
             title: "Add New Weapon",
             modal: true,
             resizable: false,
-            width: 360,
+            width: Math.min(440, Math.max(280, $(window).width() - 32)),
             close: function() {
                 $(this).dialog('destroy').remove();
             }

@@ -391,3 +391,133 @@
     box-sizing: border-box;
     width: 50% !important;
 }
+
+/* ============================================= */
+/* Weapon Configuration Dialog                   */
+/* ============================================= */
+#weaponInfoDialog {
+  padding: 16px;
+  overflow: hidden;
+}
+
+#weaponInfoDialog .dataTables_wrapper {
+  font-size: 13px;
+}
+
+#weaponInfoDialog .dataTables_filter,
+#weaponInfoDialog .dataTables_length {
+  margin-bottom: 12px;
+}
+
+#weaponInfoDialog .dataTables_scroll {
+  margin-bottom: 12px;
+}
+
+#weaponInfoDialog .weapon-config-table {
+  min-width: 950px;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+#weaponInfoDialog .weapon-config-table th,
+#weaponInfoDialog .weapon-config-table td {
+  padding: 8px;
+  vertical-align: middle;
+}
+
+#weaponInfoDialog .weapon-config-table th {
+  color: #333;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.3;
+  white-space: normal;
+}
+
+#weaponInfoDialog .weapon-config-table th:nth-child(1) { min-width: 180px; }
+#weaponInfoDialog .weapon-config-table th:nth-child(2) { min-width: 105px; }
+#weaponInfoDialog .weapon-config-table th:nth-child(3),
+#weaponInfoDialog .weapon-config-table th:nth-child(4) { min-width: 120px; }
+#weaponInfoDialog .weapon-config-table th:nth-child(5) { min-width: 110px; }
+#weaponInfoDialog .weapon-config-table th:nth-child(6) { min-width: 150px; }
+#weaponInfoDialog .weapon-config-table th:nth-child(7) { min-width: 80px; }
+
+#weaponInfoDialog .weapon-config-table input,
+#weaponInfoDialog .weapon-config-table select {
+  box-sizing: border-box;
+  width: 100% !important;
+  min-height: 34px;
+  padding: 6px 8px;
+}
+
+#weaponInfoDialog .weapon-config-table .delete-weapon {
+  min-height: 34px;
+  padding: 6px 10px;
+  white-space: nowrap;
+}
+
+#weaponInfoDialog .weapon-config-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 4px;
+}
+
+#weaponInfoDialog .weapon-config-actions button,
+#addWeaponDialogContent .weapon-add-actions button {
+  min-height: 36px;
+  padding: 7px 14px;
+}
+
+#addWeaponDialogContent.weapon-add-dialog {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px 16px;
+  padding: 4px;
+}
+
+#addWeaponDialogContent .weapon-add-field {
+  min-width: 0;
+}
+
+#addWeaponDialogContent .weapon-add-field--wide,
+#addWeaponDialogContent .weapon-add-actions {
+  grid-column: 1 / -1;
+}
+
+#addWeaponDialogContent .weapon-add-field label {
+  display: block;
+  margin-bottom: 5px;
+  color: #333;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+#addWeaponDialogContent .weapon-add-field input {
+  box-sizing: border-box;
+  width: 100% !important;
+  min-height: 36px;
+  padding: 7px 8px;
+}
+
+#addWeaponDialogContent .weapon-add-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 2px;
+}
+
+@media (max-width: 600px) {
+  #weaponInfoDialog {
+    padding: 12px;
+  }
+
+  #addWeaponDialogContent.weapon-add-dialog {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  #addWeaponDialogContent .weapon-add-field--wide,
+  #addWeaponDialogContent .weapon-add-actions {
+    grid-column: auto;
+  }
+}
