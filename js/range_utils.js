@@ -62,9 +62,9 @@ var RangeUtils = (function() {
         }
 
         if (origin === null) {
-            errors.push('Cutout angle origin must be a numeric value.');
+            errors.push('Cutout center bearing must be a numeric value.');
         } else if (origin < 0 || origin > 360) {
-            errors.push('Cutout angle origin must be between 0 and 360 degrees.');
+            errors.push('Cutout center bearing must be between 0 and 360 degrees.');
         }
 
         return {

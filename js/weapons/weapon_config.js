@@ -145,7 +145,7 @@ var WeaponConfig = (function() {
             '<th>Minimum Range (m)</th>' +
             '<th>Maximum Range (m)</th>' +
             '<th>Cutout Size (deg)</th>' +
-            '<th>Cutout Origin (deg)</th>' +
+            '<th>Cutout Center Bearing (deg)</th>' +
             '<th>Actions</th>' +
             '</tr></thead><tbody>';
 
@@ -320,7 +320,7 @@ var WeaponConfig = (function() {
                 <input type="number" id="newWeaponMaxRange" class="ui-widget-content ui-corner-all" style="width: 100%;" value="0" min="0" step="any" />
                 <label for="newWeaponCutoutSize" style="display:block; margin-top: 10px;">Cutout Angle Size (deg):</label>
                 <input type="number" id="newWeaponCutoutSize" class="ui-widget-content ui-corner-all" style="width: 100%;" value="0" min="0" max="360" step="any" />
-                <label for="newWeaponCutoutOrigin" style="display:block; margin-top: 10px;">Cutout Angle Origin (deg):</label>
+                <label for="newWeaponCutoutOrigin" style="display:block; margin-top: 10px;">Cutout Center Bearing (deg):</label>
                 <input type="number" id="newWeaponCutoutOrigin" class="ui-widget-content ui-corner-all" style="width: 100%;" value="0" min="0" max="360" step="any" />
                 <div style="margin-top: 10px; text-align: right;">
                     <button id="completeAddWeapon">Complete</button>

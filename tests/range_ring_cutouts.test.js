@@ -164,14 +164,14 @@ assert.strictEqual(radarArcs.length, 2);
 assert.strictEqual(omniRadarCircles.length, 1);
 assert.strictEqual(gunArcs[0].options.color, '#123456');
 assert.strictEqual(gunArcs[1].options.dashArray, '6 6');
-assert.ok(Math.abs(bearingFromOrigin(gunArcs[0].latlngs[0]) - 255) < 0.01);
-assert.ok(Math.abs(bearingFromOrigin(gunArcs[0].latlngs[gunArcs[0].latlngs.length - 1]) - 240) < 0.01);
-assert.ok(Math.abs(bearingFromOrigin(gunArcs[1].latlngs[0]) - 255) < 0.01);
-assert.ok(Math.abs(bearingFromOrigin(gunArcs[1].latlngs[gunArcs[1].latlngs.length - 1]) - 240) < 0.01);
-assert.ok(Math.abs(bearingFromOrigin(radarArcs[0].latlngs[0]) - 255) < 0.01);
-assert.ok(Math.abs(bearingFromOrigin(radarArcs[0].latlngs[radarArcs[0].latlngs.length - 1]) - 225) < 0.01);
-assert.ok(Math.abs(bearingFromOrigin(radarArcs[1].latlngs[0]) - 255) < 0.01);
-assert.ok(Math.abs(bearingFromOrigin(radarArcs[1].latlngs[radarArcs[1].latlngs.length - 1]) - 225) < 0.01);
+assert.ok(Math.abs(bearingFromOrigin(gunArcs[0].latlngs[0]) - 247.5) < 0.01);
+assert.ok(Math.abs(bearingFromOrigin(gunArcs[0].latlngs[gunArcs[0].latlngs.length - 1]) - 232.5) < 0.01);
+assert.ok(Math.abs(bearingFromOrigin(gunArcs[1].latlngs[0]) - 247.5) < 0.01);
+assert.ok(Math.abs(bearingFromOrigin(gunArcs[1].latlngs[gunArcs[1].latlngs.length - 1]) - 232.5) < 0.01);
+assert.ok(Math.abs(bearingFromOrigin(radarArcs[0].latlngs[0]) - 240) < 0.01);
+assert.ok(Math.abs(bearingFromOrigin(radarArcs[0].latlngs[radarArcs[0].latlngs.length - 1]) - 210) < 0.01);
+assert.ok(Math.abs(bearingFromOrigin(radarArcs[1].latlngs[0]) - 240) < 0.01);
+assert.ok(Math.abs(bearingFromOrigin(radarArcs[1].latlngs[radarArcs[1].latlngs.length - 1]) - 210) < 0.01);
 
 layers.length = 0;
 platform.rotation = 270;
@@ -182,8 +182,23 @@ var rotatedGunArcs = layers.filter(function(layer) {
 });
 
 assert.strictEqual(rotatedGunArcs.length, 2);
-assert.ok(Math.abs(bearingFromOrigin(rotatedGunArcs[0].latlngs[0]) - 345) < 0.01);
-assert.ok(Math.abs(bearingFromOrigin(rotatedGunArcs[0].latlngs[rotatedGunArcs[0].latlngs.length - 1]) - 330) < 0.01);
+assert.ok(Math.abs(bearingFromOrigin(rotatedGunArcs[0].latlngs[0]) - 337.5) < 0.01);
+assert.ok(Math.abs(bearingFromOrigin(rotatedGunArcs[0].latlngs[rotatedGunArcs[0].latlngs.length - 1]) - 322.5) < 0.01);
+
+layers.length = 0;
+platform.rotation = 0;
+context.RangeRingStorage.init();
+gun = context.RangeRingStorage.getRangeRing('Ship', 'Gun');
+gun.cutout_angle_size = 30;
+gun.cutout_angle_origin = 0;
+context.RangeRingLogic.drawRangeRings();
+var northFacingGunArcs = layers.filter(function(layer) {
+    return layer.kind === 'polyline' && layer.options.color === '#123456';
+});
+
+assert.strictEqual(northFacingGunArcs.length, 2);
+assert.ok(Math.abs(bearingFromOrigin(northFacingGunArcs[0].latlngs[0]) - 15) < 0.01);
+assert.ok(Math.abs(bearingFromOrigin(northFacingGunArcs[0].latlngs[northFacingGunArcs[0].latlngs.length - 1]) - 345) < 0.01);
 
 layers.length = 0;
 gun = context.RangeRingStorage.getRangeRing('Ship', 'Gun');

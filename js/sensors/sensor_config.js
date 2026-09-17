@@ -145,7 +145,7 @@ var SensorConfig = (function() {
             '<th>Minimum Range (m)</th>' +
             '<th>Maximum Range (m)</th>' +
             '<th>Cutout Size (deg)</th>' +
-            '<th>Cutout Origin (deg)</th>' +
+            '<th>Cutout Center Bearing (deg)</th>' +
             '<th>Actions</th>' +
             '</tr></thead><tbody>';
 
@@ -297,7 +297,7 @@ var SensorConfig = (function() {
                 <input type="number" id="newSensorMaxRange" class="ui-widget-content ui-corner-all" style="width: 100%;" value="0" min="0" step="any" />
                 <label for="newSensorCutoutSize" style="display:block; margin-top: 10px;">Cutout Angle Size (deg):</label>
                 <input type="number" id="newSensorCutoutSize" class="ui-widget-content ui-corner-all" style="width: 100%;" value="0" min="0" max="360" step="any" />
-                <label for="newSensorCutoutOrigin" style="display:block; margin-top: 10px;">Cutout Angle Origin (deg):</label>
+                <label for="newSensorCutoutOrigin" style="display:block; margin-top: 10px;">Cutout Center Bearing (deg):</label>
                 <input type="number" id="newSensorCutoutOrigin" class="ui-widget-content ui-corner-all" style="width: 100%;" value="0" min="0" max="360" step="any" />
                 <div style="margin-top: 10px; text-align: right;">
                     <button id="completeAddSensor">Complete</button>

@@ -90,7 +90,7 @@ var RangeRingLogic = (function() {
 
     return {
       size: size,
-      origin: normalizeBearing(origin + rotation)
+      origin: normalizeBearing(origin + rotation - size / 2)
     };
   }
 
